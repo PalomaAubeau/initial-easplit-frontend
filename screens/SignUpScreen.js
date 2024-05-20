@@ -12,20 +12,21 @@ export default function LogScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
+  const [password, setPassword] = useState("");
 
   //2.Comportements
-  const handleRegister = () => {
+  const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
       dispatch(updateEmail(email));
 
-      fetch(`${PATH}/users/signin`, {
+      fetch(`${PATH}/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ firstName, password }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -33,14 +34,12 @@ export default function LogScreen({ navigation }) {
             dispatch(
               login({
                 token: data.token,
-                // firstName: data.firstName,
+                firstName: data.firstName,
                 email: data.email,
               })
             );
         });
-      if (user.token) {
-        navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
-      }
+      navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
     } else {
       setEmailError(true);
     }
@@ -55,13 +54,31 @@ export default function LogScreen({ navigation }) {
       <Text style={styles.title}>Easplit</Text>
       <View style={styles.inputContainer}>
         <TextInput
+          placeholder="prénom"
+          keyboardType="default"
+          textContentType="username"
+          autoComplete="username"
+          onChangeText={(value) => setFirstName(value)}
+          value={firstName}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="nom"
+          keyboardType="default"
+          textContentType="username"
+          autoComplete="username"
+          onChangeText={(value) => setLastName(value)}
+          value={lastName}
+          style={styles.input}
+        />
+        <TextInput
           placeholder="email"
           autoCapitalize="none"
           keyboardType="email-address"
           textContentType="emailAddress"
           autoComplete="email"
           onChangeText={(value) => setEmail(value)}
-          value={firstName}
+          value={email}
           style={styles.input}
         />
         {emailError && (
@@ -78,18 +95,9 @@ export default function LogScreen({ navigation }) {
           value={password}
           style={styles.input}
         />
-        <Text>Pas encore de compte?</Text>
+
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("TabNavigator", { screen: "SignUpScreen" })
-          }
-          style={styles.button}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>Créer un compte</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleRegister()}
+          onPress={() => handleSubmit()}
           style={styles.button}
           activeOpacity={0.8}
         >

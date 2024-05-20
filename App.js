@@ -19,8 +19,8 @@ import { Provider } from "react-redux";
 // import des écrans de navigation
 
 import HomeScreen from "./screens/HomeScreen";
-import LogScreen from "./screens/LogScreen"
-import EventHomeScreen from "./screens/EventHomeScreen"
+import LogScreen from "./screens/LogScreen";
+import EventHomeScreen from "./screens/EventHomeScreen";
 
 // const persistConfig = {
 //   key: "easplit",
@@ -36,26 +36,27 @@ import EventHomeScreen from "./screens/EventHomeScreen"
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-//Contenu de la tabBar : 
+//Contenu de la tabBar :
 const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
-          if (route.name === 'Home') {
+          if (route.name === "Home") {
             // Icône pour Home via Ionicons
             return <Icon name="home-sharp" size={size} color={color} />;
-          } else if (route.name === 'Events') {
+          } else if (route.name === "Events") {
             // Icône pour Event via le component
             return <SvgChampagne width={size} height={size} fill={color} />;
           }
         },
-        tabBarActiveTintColor: '#EB1194',// le rose
-        tabBarInactiveTintColor: '#4E3CBB',// le violet
+        tabBarActiveTintColor: "#EB1194", // le rose
+        tabBarInactiveTintColor: "#4E3CBB", // le violet
         headerShown: false,
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Log" component={LogScreen} />
       <Tab.Screen name="Events" component={EventHomeScreen} />
     </Tab.Navigator>
   );
@@ -64,15 +65,15 @@ const TabNavigator = () => {
 export default function App() {
   return (
     // <Provider store={store}>
-      // <PersistGate persistor={persistor}>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {/* page de Login : */}
-            <Stack.Screen name="Login" component={LogScreen} />
-            <Stack.Screen name="TabNavigator" component={TabNavigator} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      // </PersistGate>
+    // <PersistGate persistor={persistor}>
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {/* page de Login : */}
+        <Stack.Screen name="Login" component={LogScreen} />
+        <Stack.Screen name="TabNavigator" component={TabNavigator} />
+      </Stack.Navigator>
+    </NavigationContainer>
+    // </PersistGate>
     // </Provider>
   );
 }
