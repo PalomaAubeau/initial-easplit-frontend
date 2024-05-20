@@ -3,6 +3,10 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+//Librairie Ionicons :
+import Icon from 'react-native-vector-icons/Ionicons';
+//Sinda : import de mon composant svgChampagne qui correspondant à l'icone des verres de champ :
+import SvgChampagne from './SvgChampagne';
 
 import { Provider } from "react-redux";
 
@@ -30,11 +34,27 @@ import HomeScreen from "./screens/HomeScreen";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+//Contenu de la tabBar : 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen />
-      <Tab.Screen />
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          if (route.name === 'Home') {
+            // Icône pour Home via Ionicons
+            return <Icon name="home-sharp" size={size} color={color} />;
+          } else if (route.name === 'Events') {
+            // Icône pour Event via le component
+            return <SvgChampagne width={size} height={size} fill={color} />;
+          }
+        },
+        tabBarActiveTintColor: '#EB1194',// le rose
+        tabBarInactiveTintColor: '#4E3CBB',// le violet
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Events" component={EventScreen} />
     </Tab.Navigator>
   );
 };
@@ -45,7 +65,8 @@ export default function App() {
       // <PersistGate persistor={persistor}>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Home" component={HomeScreen} />
+          {/* page de Login : */}
+            <Stack.Screen name="Login" component={LogScreen} />
             <Stack.Screen name="TabNavigator" component={TabNavigator} />
           </Stack.Navigator>
         </NavigationContainer>
