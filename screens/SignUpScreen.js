@@ -13,6 +13,7 @@ export default function LogScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
   const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [password, setPassword] = useState("");
@@ -45,9 +46,6 @@ export default function LogScreen({ navigation }) {
   };
 
   //3.RETURN FINAL
-  if (user.token) {
-    navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
-  }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -56,12 +54,21 @@ export default function LogScreen({ navigation }) {
       <Text style={styles.title}>Easplit</Text>
       <View style={styles.inputContainer}>
         <TextInput
+          placeholder="prénom"
+          keyboardType="default"
+          textContentType="username"
+          autoComplete="username"
+          onChangeText={(value) => setFirstName(value)}
+          value={firstName}
+          style={styles.input}
+        />
+        <TextInput
           placeholder="nom"
           keyboardType="default"
           textContentType="username"
           autoComplete="username"
-          onChangeText={(value) => setEmail(value)}
-          value={email}
+          onChangeText={(value) => setLastName(value)}
+          value={lastName}
           style={styles.input}
         />
         <TextInput
@@ -70,8 +77,8 @@ export default function LogScreen({ navigation }) {
           keyboardType="email-address"
           textContentType="emailAddress"
           autoComplete="email"
-          onChangeText={(value) => setFirstName(value)}
-          value={firstName}
+          onChangeText={(value) => setEmail(value)}
+          value={email}
           style={styles.input}
         />
         {emailError && (

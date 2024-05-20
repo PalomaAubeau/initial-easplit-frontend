@@ -4,9 +4,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //Librairie Ionicons :
-import Icon from "react-native-vector-icons/Ionicons";
-//Sinda : import de mon composant svgChampagne qui correspondant à l'icone des verres de champ :
-import SvgChampagne from "./SvgChampagne";
+import Icon from 'react-native-vector-icons/Ionicons';
+//Sinda : import de mon composant svgChampagne qui correspond à l'icone des verres de champ' :
+import SvgChampagne from "./components/SvgChampagne.js";
 
 import { Provider } from "react-redux";
 
