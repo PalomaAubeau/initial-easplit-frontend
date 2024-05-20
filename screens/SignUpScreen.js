@@ -55,18 +55,12 @@ export default function LogScreen({ navigation }) {
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="prénom"
-          keyboardType="default"
-          textContentType="username"
-          autoComplete="username"
           onChangeText={(value) => setFirstName(value)}
           value={firstName}
           style={styles.input}
         />
         <TextInput
           placeholder="nom"
-          keyboardType="default"
-          textContentType="username"
-          autoComplete="username"
           onChangeText={(value) => setLastName(value)}
           value={lastName}
           style={styles.input}
@@ -88,9 +82,7 @@ export default function LogScreen({ navigation }) {
         )}
         <TextInput
           placeholder="mot de passe"
-          keyboardType="default"
-          textContentType="newPassword"
-          autoComplete="email"
+          autoCapitalize="none"
           onChangeText={(value) => setPassword(value)}
           value={password}
           style={styles.input}
