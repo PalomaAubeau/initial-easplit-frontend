@@ -56,7 +56,6 @@ const TabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Log" component={LogScreen} />
       <Tab.Screen name="Events" component={EventHomeScreen} />
     </Tab.Navigator>
   );
