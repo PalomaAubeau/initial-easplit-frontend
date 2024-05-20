@@ -26,7 +26,7 @@ export default function LogScreen({ navigation }) {
       fetch(`${PATH}/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, password }),
+        body: JSON.stringify({ firstName, email, password }),
       })
         .then((response) => response.json())
         .then((data) => {
