@@ -12,20 +12,20 @@ export default function LogScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  const [firstName, setFirstName] = useState("");
+
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(false);
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState(false);
 
   //2.Comportements
-  const handleSubmit = () => {
+  const handleRegister = () => {
     if (EMAIL_REGEX.test(email)) {
       dispatch(updateEmail(email));
 
       fetch(`${PATH}/users/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, password }),
+        body: JSON.stringify({ email, password }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -33,21 +33,20 @@ export default function LogScreen({ navigation }) {
             dispatch(
               login({
                 token: data.token,
-                firstName: data.firstName,
+                // firstName: data.firstName,
                 email: data.email,
               })
             );
         });
-      navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
+      if (user.token) {
+        navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
+      }
     } else {
       setEmailError(true);
     }
   };
 
   //3.RETURN FINAL
-  if (user.token) {
-    navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
-  }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -61,7 +60,7 @@ export default function LogScreen({ navigation }) {
           keyboardType="email-address"
           textContentType="emailAddress"
           autoComplete="email"
-          onChangeText={(value) => setFirstName(value)}
+          onChangeText={(value) => setEmail(value)}
           value={firstName}
           style={styles.input}
         />
@@ -79,17 +78,18 @@ export default function LogScreen({ navigation }) {
           value={password}
           style={styles.input}
         />
+        <Text>Pas encore de compte?</Text>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("TabNavigator", { screen: "EventHomeScreen" })
+            navigation.navigate("TabNavigator", { screen: "SignUpScreen" })
           }
           style={styles.button}
           activeOpacity={0.8}
         >
-          <Text style={styles.textButton}>C'est parti!</Text>
+          <Text style={styles.textButton}>Créer un compte</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => handleSubmit()}
+          onPress={() => handleRegister()}
           style={styles.button}
           activeOpacity={0.8}
         >

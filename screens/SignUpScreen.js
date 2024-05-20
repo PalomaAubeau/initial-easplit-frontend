@@ -45,9 +45,6 @@ export default function LogScreen({ navigation }) {
   };
 
   //3.RETURN FINAL
-  if (user.token) {
-    navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
-  }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
