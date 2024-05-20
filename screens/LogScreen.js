@@ -86,6 +86,7 @@ export default function LogScreen({ navigation }) {
         )}
         <TextInput
           placeholder="mot de passe"
+          autoCapitalize="none"
           onChangeText={(value) => setPassword(value)}
           value={password}
           style={styles.input}
