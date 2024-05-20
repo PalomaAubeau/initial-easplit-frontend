@@ -1,9 +1,16 @@
-import { View, Platform, Text, KeyboardAvoidingView } from "react-native";
+import {
+  View,
+  Platform,
+  Text,
+  KeyboardAvoidingView,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../reducers/user"
 import React, { useState } from "react";
-
+import { login } from "../reducers/user";
 
 const PATH = "http://192.168.1.21:8081";
 // const PATH = "https://easplit-backend.vercel.app"
@@ -16,6 +23,7 @@ export default function LogScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   console.log(user);
 
+  const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
@@ -36,14 +44,14 @@ export default function LogScreen({ navigation }) {
             dispatch(
               login({
                 token: data.token,
-                // firstName: data.firstName,
+                firstName: data.firstName,
                 email: data.email,
               })
             );
+          if (user.token) {
+            navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
+          }
         });
-      if (user.token) {
-        navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
-      }
     } else {
       setEmailError(true);
     }
@@ -58,13 +66,19 @@ export default function LogScreen({ navigation }) {
       <Text style={styles.title}>Easplit</Text>
       <View style={styles.inputContainer}>
         <TextInput
+          placeholder="prénom"
+          onChangeText={(value) => setFirstName(value)}
+          value={firstName}
+          style={styles.input}
+        />
+        <TextInput
           placeholder="email"
           autoCapitalize="none"
           keyboardType="email-address"
           textContentType="emailAddress"
           autoComplete="email"
           onChangeText={(value) => setEmail(value)}
-          value={firstName}
+          value={email}
           style={styles.input}
         />
         {emailError && (
@@ -74,9 +88,6 @@ export default function LogScreen({ navigation }) {
         )}
         <TextInput
           placeholder="mot de passe"
-          keyboardType="default"
-          textContentType="newPassword"
-          autoComplete="email"
           onChangeText={(value) => setPassword(value)}
           value={password}
           style={styles.input}
