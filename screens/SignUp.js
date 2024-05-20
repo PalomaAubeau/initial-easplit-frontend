@@ -22,7 +22,7 @@ export default function LogScreen({ navigation }) {
     if (EMAIL_REGEX.test(email)) {
       dispatch(updateEmail(email));
 
-      fetch(`${PATH}/users/signin`, {
+      fetch(`${PATH}/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ firstName, password }),
@@ -56,6 +56,15 @@ export default function LogScreen({ navigation }) {
       <Text style={styles.title}>Easplit</Text>
       <View style={styles.inputContainer}>
         <TextInput
+          placeholder="nom"
+          keyboardType="default"
+          textContentType="username"
+          autoComplete="username"
+          onChangeText={(value) => setEmail(value)}
+          value={email}
+          style={styles.input}
+        />
+        <TextInput
           placeholder="email"
           autoCapitalize="none"
           keyboardType="email-address"
@@ -79,15 +88,7 @@ export default function LogScreen({ navigation }) {
           value={password}
           style={styles.input}
         />
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("TabNavigator", { screen: "EventHomeScreen" })
-          }
-          style={styles.button}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>C'est parti!</Text>
-        </TouchableOpacity>
+
         <TouchableOpacity
           onPress={() => handleSubmit()}
           style={styles.button}
