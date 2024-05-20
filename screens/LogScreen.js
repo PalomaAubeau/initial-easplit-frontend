@@ -29,8 +29,6 @@ export default function LogScreen({ navigation }) {
   //2.Comportements
   const handleRegister = () => {
     if (EMAIL_REGEX.test(email)) {
-      dispatch(updateEmail(email));
-
       fetch(`${PATH}/users/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -47,7 +45,9 @@ export default function LogScreen({ navigation }) {
               })
             );
           if (user.token) {
-            navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
+            navigation.navigate("TabNavigator", {
+              screen: "EventHomeScreen",
+            });
           }
         });
     } else {
