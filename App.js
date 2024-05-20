@@ -3,6 +3,8 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import user from './reducers/user.js';
+
 //Librairie Ionicons :
 import Icon from 'react-native-vector-icons/Ionicons';
 //Sinda : import de mon composant svgChampagne qui correspond à l'icone des verres de champ' :
@@ -14,7 +16,7 @@ import { Provider } from "react-redux";
 //import { persistStore, persistReducer } from "redux-persist";
 //import AsyncStorage from "@react-native-async-storage/async-storage";
 //import { PersistGate } from "redux-persist/integration/react";
-//import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 
 // import des écrans de navigation
 
@@ -29,7 +31,7 @@ import EventHomeScreen from "./screens/EventHomeScreen";
 
 // const reducers = combineReducers({ user });
 
-// const store = configureStore({});
+const store = configureStore({ reducer : user });
 
 //const persistor = persistStore(store);
 
@@ -64,8 +66,8 @@ const TabNavigator = () => {
 
 export default function App() {
   return (
-    // <Provider store={store}>
-    // <PersistGate persistor={persistor}>
+    <Provider store={store}>
+    {/* // <PersistGate persistor={persistor}> */}
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {/* page de Login : */}
@@ -73,7 +75,7 @@ export default function App() {
         <Stack.Screen name="TabNavigator" component={TabNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
-    // </PersistGate>
-    // </Provider>
+    {/* // </PersistGate> */}
+    </Provider>
   );
 }

@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useState } from "react";
 
+
 const PATH = "http://192.168.1.21:8081";
 // const PATH = "https://easplit-backend.vercel.app"
 const EMAIL_REGEX =
