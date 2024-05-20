@@ -14,14 +14,16 @@ import { Provider } from "react-redux";
 
 // import des écrans de navigation
 
+import HomeScreen from "./screens/HomeScreen";
+
 // const persistConfig = {
 //   key: "easplit",
 //   storage: AsyncStorage,
 // };
 
-const reducers = combineReducers({ user });
+// const reducers = combineReducers({ user });
 
-const store = configureStore({});
+// const store = configureStore({});
 
 //const persistor = persistStore(store);
 
@@ -39,15 +41,15 @@ const TabNavigator = () => {
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <PersistGate persistor={persistor}>
+    // <Provider store={store}>
+      // <PersistGate persistor={persistor}>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="TabNavigator" component={TabNavigator} />
           </Stack.Navigator>
         </NavigationContainer>
-      </PersistGate>
-    </Provider>
+      // </PersistGate>
+    // </Provider>
   );
 }
