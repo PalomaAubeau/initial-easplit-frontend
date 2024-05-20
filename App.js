@@ -22,7 +22,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import HomeScreen from "./screens/HomeScreen";
 import LogScreen from "./screens/LogScreen";
-//import SignUpScreen from "./screens/SignUpScreen.js";
+import SignUpScreen from "./screens/SignUpScreen.js";
 import EventHomeScreen from "./screens/EventHomeScreen";
 
 // const persistConfig = {
@@ -72,7 +72,7 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {/* page de Login : */}
           <Stack.Screen name="Login" component={LogScreen} />
-          {/* <Stack.Screen name="Signup" component={SignUpScreen} /> */}
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>

@@ -1,4 +1,11 @@
-import { View, Platform, Text, KeyboardAvoidingView } from "react-native";
+import {
+  View,
+  Platform,
+  Text,
+  KeyboardAvoidingView,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useState } from "react";
@@ -15,13 +22,13 @@ export default function LogScreen({ navigation }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(false);
+  const [isWrongEmailFormat, setIsWrongEmailFormat] = useState(false);
   const [password, setPassword] = useState("");
 
   //2.Comportements
   const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
-      dispatch(updateEmail(email));
+      dispatch(login(email));
 
       fetch(`${PATH}/users/signup`, {
         method: "POST",
@@ -41,7 +48,7 @@ export default function LogScreen({ navigation }) {
         });
       navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
     } else {
-      setEmailError(true);
+      setIsWrongEmailFormat(true);
     }
   };
 
@@ -75,7 +82,7 @@ export default function LogScreen({ navigation }) {
           value={email}
           style={styles.input}
         />
-        {emailError && (
+        {isWrongEmailFormat && (
           <Text style={styles.error}>
             Le format de l'adresse email est incorrect
           </Text>

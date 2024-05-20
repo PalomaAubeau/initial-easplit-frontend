@@ -11,7 +11,8 @@ import { useSelector, useDispatch } from "react-redux";
 import React, { useState } from "react";
 import { login } from "../reducers/user";
 
-const PATH = "http://192.168.1.21:8081";
+// const PATH = "http://192.168.1.21:8081";
+const PATH = "http://localhost:3000";
 // const PATH = "https://easplit-backend.vercel.app"
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -24,34 +25,39 @@ export default function LogScreen({ navigation }) {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState(false);
+  const [isWrongEmailFormat, setIsWrongEmailFormat] = useState(false);
+  const [loginErrorMessage, setLoginErrorMessage] = useState(null);
 
   //2.Comportements
   const handleRegister = () => {
     if (EMAIL_REGEX.test(email)) {
-      fetch(`${PATH}/users/signin`, {
+      fetch(`${PATH}/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ firstName, email, password }),
       })
         .then((response) => response.json())
         .then((data) => {
-          data.result &&
-            dispatch(
-              login({
-                token: data.token,
-                firstName: data.firstName,
-                email: data.email,
-              })
-            );
-          if (user.token) {
+          console.log(data);
+          if (!data.result) {
+            setLoginErrorMessage(data.error);
+          } else {
+            data.result &&
+              dispatch(
+                login({
+                  token: data.token,
+                  firstName: data.firstName,
+                  email: data.email,
+                })
+              );
+
             navigation.navigate("TabNavigator", {
               screen: "EventHomeScreen",
             });
           }
         });
     } else {
-      setEmailError(true);
+      setIsWrongEmailFormat(true);
     }
   };
 
@@ -79,7 +85,7 @@ export default function LogScreen({ navigation }) {
           value={email}
           style={styles.input}
         />
-        {emailError && (
+        {isWrongEmailFormat && (
           <Text style={styles.error}>
             Le format de l'adresse email est incorrect
           </Text>
@@ -87,24 +93,28 @@ export default function LogScreen({ navigation }) {
         <TextInput
           placeholder="mot de passe"
           autoCapitalize="none"
+          textContentType="password"
           onChangeText={(value) => setPassword(value)}
           value={password}
           style={styles.input}
         />
-        <Text>Pas encore de compte?</Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("SignUpScreen")}
-          style={styles.button}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>Créer un compte</Text>
-        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => handleRegister()}
           style={styles.button}
           activeOpacity={0.8}
         >
           <Text style={styles.textButton}>C'est parti!</Text>
+        </TouchableOpacity>
+        {loginErrorMessage && (
+          <Text style={styles.error}>{loginErrorMessage}</Text>
+        )}
+        <Text>Pas encore de compte?</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("SignUp")}
+          style={styles.button}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.textButton}>Créer un compte</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
