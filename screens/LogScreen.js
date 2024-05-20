@@ -93,9 +93,7 @@ export default function LogScreen({ navigation }) {
         />
         <Text>Pas encore de compte?</Text>
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("TabNavigator", { screen: "SignUpScreen" })
-          }
+          onPress={() => navigation.navigate("SignUpScreen")}
           style={styles.button}
           activeOpacity={0.8}
         >
