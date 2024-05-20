@@ -19,6 +19,8 @@ import { Provider } from "react-redux";
 // import des écrans de navigation
 
 import HomeScreen from "./screens/HomeScreen";
+import LogScreen from "./screens/LogScreen"
+import EventHomeScreen from "./screens/EventHomeScreen"
 
 // const persistConfig = {
 //   key: "easplit",
@@ -54,7 +56,7 @@ const TabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Events" component={EventScreen} />
+      <Tab.Screen name="Events" component={EventHomeScreen} />
     </Tab.Navigator>
   );
 };
