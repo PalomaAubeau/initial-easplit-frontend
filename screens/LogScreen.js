@@ -1,6 +1,7 @@
 import { View, Platform, Text, KeyboardAvoidingView } from "react-native";
 import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
+import { login } from "../reducers/user"
 import React, { useState } from "react";
 
 
@@ -13,6 +14,7 @@ export default function LogScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+  console.log(user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

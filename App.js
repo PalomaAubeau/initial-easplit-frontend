@@ -3,7 +3,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import user from './reducers/user.js';
+import user from './reducers/user';
 
 //Librairie Ionicons :
 import Icon from 'react-native-vector-icons/Ionicons';
