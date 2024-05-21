@@ -11,9 +11,9 @@ import { useSelector, useDispatch } from "react-redux";
 import React, { useState } from "react";
 import { login } from "../reducers/user";
 
-// const PATH = "http://192.168.1.21:8081";
-const PATH = "http://localhost:3000";
-// const PATH = "https://easplit-backend.vercel.app"
+//const PATH = "http://192.168.1.21:8081";
+//const PATH = "http://localhost:3000";
+const PATH = "https://easplit-backend.vercel.app";
 
 export default function LogScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
