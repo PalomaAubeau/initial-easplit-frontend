@@ -61,7 +61,7 @@ export default function LogScreen({ navigation }) {
   return (
     // composant linear gradient qui permet d'avoir le fond en dégradé : doit tout envelopper
     <LinearGradient
-      colors={["white", "#CAD1E0"]}
+      colors={["white", "#CAD1E0"]}//Gradient blanc vers bleu
       start={[0.2, 0.2]}
       end={[0.8, 0.8]}
       style={styles.container}
@@ -121,7 +121,7 @@ export default function LogScreen({ navigation }) {
             activeOpacity={0.8}
           >
             <LinearGradient
-              colors={["#EB1194", "#4E3CBB"]}
+              colors={["#EB1194", "#4E3CBB"]}//Gradient rose vers violet
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.gradientBackground}
