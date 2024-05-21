@@ -40,6 +40,7 @@ export default function LogScreen({ navigation }) {
             login({
               token: data.token,
               email: data.email,
+              firstName: data.firstName,
               password: data.password,
             })
           );
@@ -88,7 +89,7 @@ export default function LogScreen({ navigation }) {
         )}
         <Text>Pas encore de compte?</Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate("SignUp")}
+          //onPress={() => navigation.navigate("SignUp")}
           style={styles.button}
           activeOpacity={0.8}
         >
