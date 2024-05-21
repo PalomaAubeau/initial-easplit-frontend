@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 export default function EventScreen({ navigation }) {
   return (
     <View behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <Text style={styles.title}>Créer un évènement</Text>
+      <Text style={styles.title}>Event</Text>
     </View>
   );
 }

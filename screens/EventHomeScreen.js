@@ -4,12 +4,14 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import { loadEvents } from "../reducers/user";
 import Icon from "react-native-vector-icons/Ionicons";
+import { LinearGradient } from "expo-linear-gradient";
 
 //const PATH = "http://192.168.1.21:8081";
 //const PATH = "http://localhost:3000";
@@ -23,12 +25,18 @@ export default function EventHomeScreen({ navigation }) {
 
   //3.RETURN FINAL
   return (
-    <View
+    <LinearGradient
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
+      colors={["white", "#CAD1E0"]}
+      start={[0.2, 0.2]}
+      end={[0.8, 0.8]}
     >
       <View style={styles.headerContainer}>
-        <Text>easplitLogo</Text>
+        <Image
+          source={require("../assets/EASPLIT-NOIR.png")}
+          style={styles.logo}
+        />
         <Icon name="menu" size={35} color="#4E3CBB" />
       </View>
       <Text style={styles.title}>Bonjour {user.firstName}</Text>
@@ -41,12 +49,12 @@ export default function EventHomeScreen({ navigation }) {
       <TouchableOpacity
         style={styles.newEventContainer}
         activeOpacity={0.8}
-        onPress={() => navigation.navigate("Event")}
+        onPress={() => navigation.navigate("CreateEvent")}
       >
         <Text style={styles.textAddingContainer}>Ajouter un évènement</Text>
         <Icon name="add-circle" size={35} color="#EB1194"></Icon>
       </TouchableOpacity>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -55,7 +63,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 30,
     paddingRight: 30,
-    //backgroundColor: "",
   },
   headerContainer: {
     flex: 0.1,
@@ -101,5 +108,12 @@ const styles = StyleSheet.create({
   textAddingContainer: {
     color: "#EB1194",
     fontWeight: "bold",
+  },
+  logo: {
+    flex: 0.18,
+    justifyContent: "center",
+    alignItems: "center",
+    resizeMode: "contain",
+    marginBottom: 70,
   },
 });
