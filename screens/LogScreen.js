@@ -41,6 +41,7 @@ export default function LogScreen({ navigation }) {
               token: data.token,
               email: data.email,
               password: data.password,
+              firstName: data.firstName,
             })
           );
           navigation.navigate("TabNavigator", {
