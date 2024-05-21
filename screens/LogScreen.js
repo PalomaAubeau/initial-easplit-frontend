@@ -76,11 +76,6 @@ export default function LogScreen({ navigation }) {
           value={email}
           style={styles.input}
         />
-        {isWrongEmailFormat && (
-          <Text style={styles.error}>
-            Le format de l'adresse email est incorrect
-          </Text>
-        )}
         <TextInput
           placeholder="mot de passe"
           autoCapitalize="none"
