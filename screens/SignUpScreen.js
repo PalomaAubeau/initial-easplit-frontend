@@ -5,11 +5,16 @@ import {
   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import React, { useState } from "react";
 import { login } from "../reducers/user";
+import globalStyles from "../styles/globalStyles"; //Appel des styles globaux
+
+//Import de Linear-Gradient pour le dégradé
+import { LinearGradient } from "expo-linear-gradient";
 
 //const PATH = "http://192.168.1.21:8081";
 //const PATH = "http://localhost:3000";
@@ -61,59 +66,96 @@ export default function LogScreen({ navigation }) {
 
   //3.RETURN FINAL
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <LinearGradient
+      colors={["white", "#CAD1E0"]}
+      start={[0.2, 0.2]}
+      end={[0.8, 0.8]}
       style={styles.container}
     >
-      <Text style={styles.title}>Easplit</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="prénom"
-          onChangeText={(value) => setFirstName(value)}
-          value={firstName}
-          style={styles.input}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <Image
+          source={require("../assets/EASPLIT-NOIR.png")}
+          style={globalStyles.logo}
         />
-        <TextInput
-          placeholder="nom"
-          onChangeText={(value) => setLastName(value)}
-          value={lastName}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="email"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          autoComplete="email"
-          onChangeText={(value) => setEmail(value)}
-          value={email}
-          style={styles.input}
-        />
-        {isWrongEmailFormat && (
-          <Text style={styles.error}>
-            Le format de l'adresse email est incorrect
-          </Text>
-        )}
-        <TextInput
-          placeholder="mot de passe"
-          autoCapitalize="none"
-          secureTextEntry={true} //cache le mot de passe
-          onChangeText={(value) => setPassword(value)}
-          value={password}
-          style={styles.input}
-        />
-        {loginErrorMessage && (
-          <Text style={styles.error}>{loginErrorMessage}</Text>
-        )}
-        <TouchableOpacity
+        <View style={globalStyles.inputContainer}>
+          <TextInput
+            placeholder="prénom"
+            onChangeText={(value) => setFirstName(value)}
+            value={firstName}
+            style={globalStyles.input}
+          />
+          <TextInput
+            placeholder="nom"
+            onChangeText={(value) => setLastName(value)}
+            value={lastName}
+            style={globalStyles.input}
+          />
+          <TextInput
+            placeholder="email"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            autoComplete="email"
+            onChangeText={(value) => setEmail(value)}
+            value={email}
+            style={globalStyles.input}
+          />
+          {isWrongEmailFormat && (
+            <>
+              <Text style={globalStyles.error}>
+                Le format de l'adresse email
+              </Text>
+              <Text style={globalStyles.error}>est incorrect</Text>
+            </>
+          )}
+          <TextInput
+            placeholder="mot de passe"
+            autoCapitalize="none"
+            secureTextEntry={true} //cache le mot de passe
+            onChangeText={(value) => setPassword(value)}
+            value={password}
+            style={globalStyles.input}
+          />
+          {loginErrorMessage && (
+            <Text style={globalStyles.error}>{loginErrorMessage}</Text>
+          )}
+          {/* <TouchableOpacity
           onPress={() => handleSubmit()}
-          style={styles.button}
+          style={globalStyles.button}
           activeOpacity={0.8}
         >
-          <Text style={styles.textButton}>C'est parti!</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+          <LinearGradient
+              colors={["#EB1194", "#4E3CBB"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.gradientBackground}>
+
+          <Text style={globalStyles.textButton}>C'est parti!</Text>
+              </LinearGradient>
+        </TouchableOpacity> */}
+
+          <TouchableOpacity
+            onPress={() => handleSubmit()}
+            style={globalStyles.buttonContainer}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={["#EB1194", "#4E3CBB"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={globalStyles.gradientBackground}
+            >
+              <View style={globalStyles.textContainer}>
+                <Text style={globalStyles.buttonText}>C'est parti !</Text>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
@@ -122,7 +164,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(	255, 190, 11, 0.4)",
   },
   title: {
     fontSize: 40,
