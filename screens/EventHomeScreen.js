@@ -22,6 +22,25 @@ export default function EventHomeScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
   //2.Comportements
+  // router.get("/userevents/:token", (req, res) => {
+  //   User.findOne({ token: req.params.token })
+  //     .populate("events")
+  //     .then((user) => {
+  //       if (!user) {
+  //         res.json({ result: false, error: "User not found" });
+  //         return;
+  //       }
+  //       res.json({ result: true, events: user.events });
+  //     });
+  // });
+
+  useEffect(() => {
+    fetch(`${PATH}/userevents/${user.token}`)
+      .then((response) => response.json())
+      .then((data) => {
+        data.result && console.log(data.events);
+      });
+  }, []);
 
   //3.RETURN FINAL
   return (
