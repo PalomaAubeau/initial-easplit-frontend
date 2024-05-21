@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { StyleSheet } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import React, { useState } from "react";
+import { login } from "../reducers/user";
 
 //const PATH = "http://192.168.1.21:8081";
 //const PATH = "http://localhost:3000";
