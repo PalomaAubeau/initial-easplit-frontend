@@ -35,7 +35,7 @@ export default function LogScreen({ navigation }) {
       fetch(`${PATH}/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ firstName, lastName, email, password }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -44,8 +44,11 @@ export default function LogScreen({ navigation }) {
           } else {
             dispatch(
               login({
-                token: data.token,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                password: data.password,
                 email: data.email,
+                token: data.token,
               })
             );
           }
@@ -64,6 +67,18 @@ export default function LogScreen({ navigation }) {
     >
       <Text style={styles.title}>Easplit</Text>
       <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="prénom"
+          onChangeText={(value) => setFirstName(value)}
+          value={firstName}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="nom"
+          onChangeText={(value) => setLastName(value)}
+          value={lastName}
+          style={styles.input}
+        />
         <TextInput
           placeholder="email"
           autoCapitalize="none"

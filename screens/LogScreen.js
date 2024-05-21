@@ -22,7 +22,6 @@ export default function LogScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   console.log(user);
 
-  const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginErrorMessage, setLoginErrorMessage] = useState(null);
@@ -32,7 +31,7 @@ export default function LogScreen({ navigation }) {
     fetch(`${PATH}/users/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ firstName, email, password }),
+      body: JSON.stringify({ email, password }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -42,8 +41,8 @@ export default function LogScreen({ navigation }) {
           dispatch(
             login({
               token: data.token,
-              firstName: data.firstName,
               email: data.email,
+              password: data.password,
             })
           );
           navigation.navigate("TabNavigator", {
@@ -61,12 +60,6 @@ export default function LogScreen({ navigation }) {
     >
       <Text style={styles.title}>Easplit</Text>
       <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="prénom"
-          onChangeText={(value) => setFirstName(value)}
-          value={firstName}
-          style={styles.input}
-        />
         <TextInput
           placeholder="email"
           autoCapitalize="none"
