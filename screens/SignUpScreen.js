@@ -10,20 +10,21 @@ import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useState } from "react";
 
-const PATH = "http://192.168.1.21:8081";
-// const PATH = "https://easplit-backend.vercel.app"
+//const PATH = "http://192.168.1.21:8081";
+//const PATH = "http://localhost:3000";
+const PATH = "https://easplit-backend.vercel.app";
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default function LogScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [isWrongEmailFormat, setIsWrongEmailFormat] = useState(false);
   const [password, setPassword] = useState("");
+  const [loginErrorMessage, setLoginErrorMessage] = useState(null);
 
   //2.Comportements
   const handleSubmit = () => {
@@ -37,7 +38,9 @@ export default function LogScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          data.result &&
+          if (!data.result) {
+            setLoginErrorMessage(data.error);
+          } else {
             dispatch(
               login({
                 token: data.token,
@@ -45,6 +48,7 @@ export default function LogScreen({ navigation }) {
                 email: data.email,
               })
             );
+          }
         });
       navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
     } else {
