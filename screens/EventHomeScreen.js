@@ -4,14 +4,6 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Image,
-} from "react-native";
-import {
-  View,
-  Platform,
-  Text,
-  TouchableOpacity,
-  ScrollView,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
