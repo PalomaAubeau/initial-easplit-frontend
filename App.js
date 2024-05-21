@@ -27,7 +27,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import LogScreen from "./screens/LogScreen";
 import SignUpScreen from "./screens/SignUpScreen.js";
 import HomeScreen from "./screens/HomeScreen";
+
 import EventHomeScreen from "./screens/EventHomeScreen";
+import EventScreen from "./screens/EventScreen";
 import CreatEventScreen from "./screens/CreatEventScreen.js";
 
 
@@ -106,6 +108,7 @@ export default function App() {
           {/* page de Login : */}
           <Stack.Screen name="Login" component={LogScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="Event" component={EventScreen} />
           <Stack.Screen name="CreateEvent" component={CreatEventScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>

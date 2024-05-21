@@ -6,6 +6,13 @@ import {
   ScrollView,
   Image,
 } from "react-native";
+import {
+  View,
+  Platform,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
@@ -90,6 +97,19 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 30,
   },
+  container: {
+    flex: 1,
+    paddingLeft: 30,
+    paddingRight: 30,
+    //backgroundColor: "",
+  },
+  headerContainer: {
+    flex: 0.1,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    marginTop: 30,
+  },
   title: {
     fontSize: 30,
     fontWeight: "bold",
@@ -127,5 +147,38 @@ const styles = StyleSheet.create({
   textAddingContainer: {
     color: "#EB1194",
     fontWeight: "bold",
+    marginBottom: 40,
+  },
+  titleList: {
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#4E3CBB",
+  },
+  scrollView: {},
+  eventContainer: {
+    backgroundColor: "#FFFFFF",
+    flexDirection: "row",
+    justifyContent: "center",
+    padding: 15,
+    borderRadius: 10,
+    color: "#4E3CBB",
+  },
+  newEventContainer: {
+    backgroundColor: "#FFFFFF",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  textCurrentContainer: {
+    color: "#4E3CBB",
+    fontWeight: "bold",
+  },
+  textAddingContainer: {
+    color: "#EB1194",
+    fontWeight: "bold",
   },
 });
+
