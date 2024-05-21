@@ -11,6 +11,7 @@ import { updateFirstName } from "../reducers/user";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from '@react-native-masked-view/masked-view';
+import { FAB } from '@rneui/themed';
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -21,10 +22,10 @@ export default function HomeScreen({ navigation }) {
       style={styles.container}
     >
       <View style={styles.headerContainer}>
+
       <Image
           source={require("../assets/EASPLIT-NOIR.png")}
           style={styles.logo}
-
         />
         <Icon name="menu" size={35} color="#4E3CBB" />
       </View>
@@ -46,6 +47,30 @@ export default function HomeScreen({ navigation }) {
       >
         <Text style={styles.textAddingContainer}>voir plus</Text>
       </TouchableOpacity>
+            {/* Conditionally display FAB based on route name
+      {route.name !== 'CreateEventScreen' && ( */}
+        <FAB
+          visible={true}
+          icon="add"
+          onPress={() => navigation.navigate('CreateEvent')}
+          style={{
+            color:"#fff",
+            position: 'absolute',
+            bottom: 20,
+            transform: [{ translateX: -20 }],
+            borderRadius: 30,
+          }}
+          containerStyle={{
+            backgroundColor: (
+              <LinearGradient
+                colors={['#EB1194', '#4E3CBB']}
+                start={{ x: 0.5, y: 0.5 }}
+                end={{ x: 1, y: 1 }}
+              />
+            ),
+          }}
+        />
+      {/* )} */}
     </View>
   );
 }
@@ -116,3 +141,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+

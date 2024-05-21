@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: 'CodecPro-ExtraBold',
     // fontWeight:"600",
     lineHeight: 28,

@@ -14,7 +14,8 @@ import { LinearGradient } from "expo-linear-gradient";
 //Sinda : ajout module expo-font pour utiliser la Codec pro : faire un yarn add expo-font ou yarn install
 import * as Font from 'expo-font';
 import { useFonts } from 'expo-font';
-import { useState, useEffect } from "react";
+
+
 
 import { Provider } from "react-redux";
 
