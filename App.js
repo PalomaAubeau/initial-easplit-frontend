@@ -29,7 +29,7 @@ import LogScreen from "./screens/LogScreen";
 import SignUpScreen from "./screens/SignUpScreen.js";
 import HomeScreen from "./screens/HomeScreen";
 
-import EventHomeScreen from "./screens/EventHomeScreen";
+//import EventHomeScreen from "./screens/EventHomeScreen";
 import EventScreen from "./screens/EventScreen";
 import CreatEventScreen from "./screens/CreatEventScreen.js";
 

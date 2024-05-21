@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1, // Épaisseur de la ligne de soulignement
     borderBottomColor: 'black', // Couleur de la ligne de soulignement
     marginTop: 2, // Espace entre le texte et la ligne
+    marginBottom: 5,
     },
 
   titleList: {
