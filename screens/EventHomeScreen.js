@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -44,7 +45,10 @@ export default function EventHomeScreen({ navigation }) {
       style={styles.container}
     >
       <View style={styles.headerContainer}>
-        <Text>easplitLogo</Text>
+        <Image
+          source={require("../assets/EASPLIT-NOIR.png")}
+          style={styles.logo}
+        />
         <Icon name="menu" size={35} color="#4E3CBB" />
       </View>
       <Text style={styles.title}>Bonjour {user.firstName}</Text>
@@ -57,7 +61,7 @@ export default function EventHomeScreen({ navigation }) {
       <TouchableOpacity
         style={styles.newEventContainer}
         activeOpacity={0.8}
-        onPress={() => navigation.navigate("EventCreateEvent")}
+        onPress={() => navigation.navigate("CreateEvent")}
       >
         <Text style={styles.textAddingContainer}>Ajouter un évènement</Text>
         <Icon name="add-circle" size={35} color="#EB1194"></Icon>
@@ -71,7 +75,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 30,
     paddingRight: 30,
-    //backgroundColor: "",
+  },
+  logo: {
+    flex: 0.18,
+    justifyContent: "center",
+    alignItems: "center",
+    resizeMode: "contain",
+    marginBottom: 70,
   },
   headerContainer: {
     flex: 0.1,

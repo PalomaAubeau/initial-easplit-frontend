@@ -24,7 +24,6 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
 // import des écrans de navigation
-
 import LogScreen from "./screens/LogScreen";
 import SignUpScreen from "./screens/SignUpScreen.js";
 import HomeScreen from "./screens/HomeScreen";
