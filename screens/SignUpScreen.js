@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: "600",
-    fontFamily: "Futura",
+    fontFamily: "CodecPro-Regular",
     marginBottom: 20,
   },
   inputContainer: {
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     borderRadius: 1,
   },
   textButton: {
-    fontFamily: "Futura",
+    fontFamily: "CodecPro-Regular",
     height: 30,
     fontWeight: "600",
     fontSize: 16,

@@ -14,6 +14,7 @@ import { LinearGradient } from "expo-linear-gradient";
 //Sinda : ajout module expo-font pour utiliser la Codec pro : faire un yarn add expo-font ou yarn install
 import * as Font from 'expo-font';
 import { useFonts } from 'expo-font';
+import { useState, useEffect } from "react";
 
 import { Provider } from "react-redux";
 
@@ -76,24 +77,6 @@ const TabNavigator = () => {
 export default function App() {
   // import des polices
 
-  // useEffect(() => {
-  //   const loadFonts = async () => {
-  //     await Font.loadAsync({
-  //       'CodecPro-Regular': require('./assets/fonts/CodecPro-Regular.ttf'),
-  //       // 'CodecPro-Bold': require('./assets/fonts/CodecPro-Bold.ttf'),
-  //       'CodecPro-ExtraBold': require('./assets/fonts/CodecPro-ExtraBold.ttf'),
-  //       // 'CodecPro-Light': require('./assets/fonts/CodecPro-Light.ttf'),
-  //       // 'CodecPro-Fat': require('./assets/fonts/CodecPro-Fat.ttf'),
-  //       // 'CodecPro-News': require('./assets/fonts/CodecPro-News.ttf'),
-  //       // 'CodecPro-Thin': require('./assets/fonts/CodecPro-Thin.ttf'),
-  //       // 'CodecPro-Ultra': require('./assets/fonts/CodecPro-Ultra.ttf'),
-  //       // 'CodecPro-Heavy': require('./assets/fonts/CodecPro-Heavy.ttf'),
-  //     });
-  //     setFontsLoaded(true);
-  //   };
-
-  //   loadFonts();
-  // }, []);
 
   const [fontsLoaded, fontError] = useFonts({
     'CodecPro-Regular': require('./assets/fonts/CodecPro-Regular.ttf'),

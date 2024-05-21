@@ -23,7 +23,7 @@ export default function LogScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  console.log(user);
+  //console.log(user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,9 +47,9 @@ export default function LogScreen({ navigation }) {
               email: data.email,
               firstName: data.firstName,
               password: data.password,
-              
             })
           );
+          
           navigation.navigate("TabNavigator", {
             screen: "EventHomeScreen",
           });
@@ -75,7 +75,6 @@ export default function LogScreen({ navigation }) {
           style={styles.logo}
         />
         <View style={styles.inputContainer}>
-
           <TextInput
             placeholder="email"
             autoCapitalize="none"
@@ -100,17 +99,17 @@ export default function LogScreen({ navigation }) {
             style={styles.buttonContainer}
             activeOpacity={0.8}
           >
-              <LinearGradient
-                colors={["#EB1194", "#4E3CBB"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.gradientBackground}
-              >
-                <View style={styles.textContainer}>
-                  <Text style={styles.buttonText}>C'est parti !</Text>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
+            <LinearGradient
+              colors={["#EB1194", "#4E3CBB"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.gradientBackground}
+            >
+              <View style={styles.textContainer}>
+                <Text style={styles.buttonText}>C'est parti !</Text>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
 
           {loginErrorMessage && (
             <Text style={styles.error}>{loginErrorMessage}</Text>
@@ -121,17 +120,17 @@ export default function LogScreen({ navigation }) {
             style={styles.buttonContainer}
             activeOpacity={0.8}
           >
-              <LinearGradient
-                colors={["#EB1194", "#4E3CBB"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.gradientBackground}
-              >
-                <View style={styles.textContainer}>
-                  <Text style={styles.buttonText}>Créer un compte</Text>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
+            <LinearGradient
+              colors={["#EB1194", "#4E3CBB"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.gradientBackground}
+            >
+              <View style={styles.textContainer}>
+                <Text style={styles.buttonText}>Créer un compte</Text>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </LinearGradient>
@@ -149,25 +148,25 @@ const styles = StyleSheet.create({
     display: "flex",
     height: 40,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 10,
   },
   gradientBackground: {
     flex: 1,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20, 
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
 
   textContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'CodecPro-ExtraBold',
     // fontWeight:"600",
     lineHeight: 28,
@@ -191,25 +190,24 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    // width: "100%",
+    width: 180,
     borderBottomColor: "#b5B5B5",
     borderBottomWidth: 1,
-    marginBottom:20,
+    marginBottom: 20,
     fontSize: 16,
   },
 
   textButton: {
-    fontFamily: "Codec Pro",
+    fontFamily: "CodecPro-Regular",
     height: 30,
-    fontWeight: "600",
     fontSize: 16,
   },
   error: {
     marginTop: 10,
     color: "red",
   },
-  noaccount:{
-    paddingTop:30,
-    paddingBottom:10,
-  }
+  noaccount: {
+    paddingTop: 30,
+    paddingBottom: 10,
+  },
 });
