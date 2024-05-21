@@ -36,7 +36,6 @@ export default function LogScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (!data.result) {
           setLoginErrorMessage(data.error);
         } else {

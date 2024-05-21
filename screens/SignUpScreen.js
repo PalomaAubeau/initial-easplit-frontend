@@ -7,23 +7,25 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { StyleSheet } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import React, { useState } from "react";
+import { login } from "../reducers/user";
 
-const PATH = "http://192.168.1.21:8081";
-// const PATH = "https://easplit-backend.vercel.app"
+//const PATH = "http://192.168.1.21:8081";
+//const PATH = "http://localhost:3000";
+const PATH = "https://easplit-backend.vercel.app";
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default function LogScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [isWrongEmailFormat, setIsWrongEmailFormat] = useState(false);
   const [password, setPassword] = useState("");
+  const [loginErrorMessage, setLoginErrorMessage] = useState(null);
 
   //2.Comportements
   const handleSubmit = () => {
@@ -33,18 +35,20 @@ export default function LogScreen({ navigation }) {
       fetch(`${PATH}/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, email, password }),
+        body: JSON.stringify({ email, password }),
       })
         .then((response) => response.json())
         .then((data) => {
-          data.result &&
+          if (!data.result) {
+            setLoginErrorMessage(data.error);
+          } else {
             dispatch(
               login({
                 token: data.token,
-                firstName: data.firstName,
                 email: data.email,
               })
             );
+          }
         });
       navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
     } else {
@@ -60,18 +64,6 @@ export default function LogScreen({ navigation }) {
     >
       <Text style={styles.title}>Easplit</Text>
       <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="prénom"
-          onChangeText={(value) => setFirstName(value)}
-          value={firstName}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="nom"
-          onChangeText={(value) => setLastName(value)}
-          value={lastName}
-          style={styles.input}
-        />
         <TextInput
           placeholder="email"
           autoCapitalize="none"
@@ -94,7 +86,9 @@ export default function LogScreen({ navigation }) {
           value={password}
           style={styles.input}
         />
-
+        {loginErrorMessage && (
+          <Text style={styles.error}>{loginErrorMessage}</Text>
+        )}
         <TouchableOpacity
           onPress={() => handleSubmit()}
           style={styles.button}
