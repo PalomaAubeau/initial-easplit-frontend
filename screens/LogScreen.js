@@ -45,6 +45,7 @@ export default function LogScreen({ navigation }) {
             login({
               token: data.token,
               email: data.email,
+              firstName: data.firstName,
               password: data.password,
             })
           );
