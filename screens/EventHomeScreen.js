@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import { loadEvents } from "../reducers/user";
 import Icon from "react-native-vector-icons/Ionicons";
+import { LinearGradient } from "expo-linear-gradient";
 
 //const PATH = "http://192.168.1.21:8081";
 //const PATH = "http://localhost:3000";
@@ -20,11 +21,26 @@ export default function EventHomeScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
   //2.Comportements
+  //récupération de tous les events liés au compte de l'utilisateur via son token
+  useEffect(() => {
+    if (!user.token) {
+      return;
+    }
+    fetch(`${PATH}/userevents/${user.token}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        data.result && dispatch(loadEvents(data.events));
+      });
+  }, []);
 
   //3.RETURN FINAL
   return (
-    <View
+    <LinearGradient
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      colors={["white", "#CAD1E0"]}
+      start={[0.2, 0.2]}
+      end={[0.8, 0.8]}
       style={styles.container}
     >
       <View style={styles.headerContainer}>
@@ -41,12 +57,12 @@ export default function EventHomeScreen({ navigation }) {
       <TouchableOpacity
         style={styles.newEventContainer}
         activeOpacity={0.8}
-        onPress={() => navigation.navigate("Event")}
+        onPress={() => navigation.navigate("EventCreateEvent")}
       >
         <Text style={styles.textAddingContainer}>Ajouter un évènement</Text>
         <Icon name="add-circle" size={35} color="#EB1194"></Icon>
       </TouchableOpacity>
-    </View>
+    </LinearGradient>
   );
 }
 

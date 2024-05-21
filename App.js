@@ -12,9 +12,8 @@ import SvgChampagne from "./components/SvgChampagne.js";
 //Sinda : ajout pour pouvoir utiliser des dégradés : faire un yarn add expo-linear-gradient ou yarn install
 import { LinearGradient } from "expo-linear-gradient";
 //Sinda : ajout module expo-font pour utiliser la Codec pro : faire un yarn add expo-font ou yarn install
-import * as Font from 'expo-font';
+import * as Font from "expo-font";
 import { useState, useEffect } from "react";
-
 
 import { Provider } from "react-redux";
 
@@ -79,9 +78,9 @@ export default function App() {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'CodecPro-Regular': require('./assets/fonts/CodecPro-Regular.ttf'),
+        "CodecPro-Regular": require("./assets/fonts/CodecPro-Regular.ttf"),
         // 'CodecPro-Bold': require('./assets/fonts/CodecPro-Bold.ttf'),
-        'CodecPro-ExtraBold': require('./assets/fonts/CodecPro-ExtraBold.ttf'),
+        "CodecPro-ExtraBold": require("./assets/fonts/CodecPro-ExtraBold.ttf"),
         // 'CodecPro-Light': require('./assets/fonts/CodecPro-Light.ttf'),
         // 'CodecPro-Fat': require('./assets/fonts/CodecPro-Fat.ttf'),
         // 'CodecPro-News': require('./assets/fonts/CodecPro-News.ttf'),
@@ -103,7 +102,7 @@ export default function App() {
           {/* page de Login : */}
           <Stack.Screen name="Login" component={LogScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="Event" component={EventScreen} />
+          <Stack.Screen name="CreateEvent" component={CreatEventScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
