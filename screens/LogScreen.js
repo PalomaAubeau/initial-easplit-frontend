@@ -14,8 +14,6 @@ import { login } from "../reducers/user";
 // const PATH = "http://192.168.1.21:8081";
 const PATH = "http://localhost:3000";
 // const PATH = "https://easplit-backend.vercel.app"
-const EMAIL_REGEX =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default function LogScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
@@ -25,40 +23,33 @@ export default function LogScreen({ navigation }) {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isWrongEmailFormat, setIsWrongEmailFormat] = useState(false);
   const [loginErrorMessage, setLoginErrorMessage] = useState(null);
 
   //2.Comportements
   const handleRegister = () => {
-    if (EMAIL_REGEX.test(email)) {
-      fetch(`${PATH}/users/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, email, password }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          if (!data.result) {
-            setLoginErrorMessage(data.error);
-          } else {
-            data.result &&
-              dispatch(
-                login({
-                  token: data.token,
-                  firstName: data.firstName,
-                  email: data.email,
-                })
-              );
-
-            navigation.navigate("TabNavigator", {
-              screen: "EventHomeScreen",
-            });
-          }
-        });
-    } else {
-      setIsWrongEmailFormat(true);
-    }
+    fetch(`${PATH}/users/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firstName, email, password }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (!data.result) {
+          setLoginErrorMessage(data.error);
+        } else {
+          dispatch(
+            login({
+              token: data.token,
+              firstName: data.firstName,
+              email: data.email,
+            })
+          );
+          navigation.navigate("TabNavigator", {
+            screen: "EventHomeScreen",
+          });
+        }
+      });
   };
 
   //3.RETURN FINAL
