@@ -20,10 +20,11 @@ import { configureStore } from "@reduxjs/toolkit";
 
 // import des écrans de navigation
 
-import HomeScreen from "./screens/HomeScreen";
 import LogScreen from "./screens/LogScreen";
 import SignUpScreen from "./screens/SignUpScreen.js";
+import HomeScreen from "./screens/HomeScreen";
 import EventHomeScreen from "./screens/EventHomeScreen";
+import EventScreen from "./screens/EventScreen";
 
 // const persistConfig = {
 //   key: "easplit",
@@ -73,6 +74,7 @@ export default function App() {
           {/* page de Login : */}
           <Stack.Screen name="Login" component={LogScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="Event" component={EventScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>

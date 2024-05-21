@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  value: { token: null, firstName: null, email: null },
+  value: { token: null, firstName: null, email: null, events: [] },
 };
 
 export const userSlice = createSlice({
@@ -18,11 +18,20 @@ export const userSlice = createSlice({
       state.value.email = null;
       state.value.firstName = null;
     },
-    updateFirstName: (state, action) => {
-      state.value.firstName = action.payload;
+    addEvent: (state, action) => {
+      state.value.events.push(action.payload);
+    },
+    // removeEvent: (state, action) => {
+    //   state.value.events = state.value.events.filter(
+    //     (e) => e.name !== action.payload
+    //   );
+    // },
+    loadEvents: (state, action) => {
+      state.value.events = action.payload;
     },
   },
 });
 
-export const { login, logout, updateFirstName } = userSlice.actions;
+export const { login, logout, addEvent, removeEvent, loadEvents } =
+  userSlice.actions;
 export default userSlice.reducer;
