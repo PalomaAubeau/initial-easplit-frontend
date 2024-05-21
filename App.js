@@ -14,8 +14,7 @@ import { LinearGradient } from "expo-linear-gradient";
 //Sinda : ajout module expo-font pour utiliser la Codec pro : faire un yarn add expo-font ou yarn install
 import * as Font from 'expo-font';
 import { useFonts } from 'expo-font';
-
-
+import { useState, useEffect } from "react";
 
 import { Provider } from "react-redux";
 
@@ -71,6 +70,30 @@ const TabNavigator = () => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="CreateEvent" component={CreatEventScreen} />
       <Tab.Screen name="Events" component={EventHomeScreen} />
+      {/* Conditionally display FAB based on route name
+      {route.name !== 'CreateEventScreen' && ( */}
+        <Fab
+          visible={true}
+          icon="add"
+          onPress={() => navigation.navigate('CreateEvent')}
+          style={{
+            position: 'absolute',
+            bottom: 20,
+            left: '50%',
+            transform: [{ translateX: -30 }],
+            borderRadius: 30,
+          }}
+          containerStyle={{
+            backgroundColor: (
+              <LinearGradient
+                colors={['#EB1194', '#4E3CBB']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              />
+            ),
+          }}
+        />
+      {/* )} */}
     </Tab.Navigator>
   );
 };
