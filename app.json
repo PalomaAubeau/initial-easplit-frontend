@@ -6,6 +6,24 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "plugin": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/CodecPro-ExtraBold.ttf",
+            "./assets/fonts/CodecPro-Regular.ttf",
+            "./assets/fonts/CodecPro-Heavy.ttf",
+            "./assets/fonts/CodecPro-Fat.ttf",
+            "./assets/fonts/CodecPro-Thin.ttf",
+            "./assets/fonts/CodecPro-Ultra.ttf",
+            "./assets/fonts/CodecPro-News.ttf",
+            "./assets/fonts/CodecPro-Light.ttf"
+
+          ]
+        }
+      ]
+    ],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
