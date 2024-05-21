@@ -9,6 +9,8 @@ import user from "./reducers/user.js";
 import Icon from "react-native-vector-icons/Ionicons";
 //Sinda : import de mon composant svgChampagne qui correspond à l'icone des verres de champ' :
 import SvgChampagne from "./components/SvgChampagne.js";
+//Sinda : ajout pour pouvoir utiliser des dégradés : faire un yarn add expo-linear-gradient ou yarn install
+import { LinearGradient } from "expo-linear-gradient";
 
 import { Provider } from "react-redux";
 

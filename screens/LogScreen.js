@@ -10,7 +10,6 @@ import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../reducers/user"
 import React, { useState } from "react";
-import { login } from "../reducers/user";
 
 //const PATH = "http://192.168.1.21:8081";
 //const PATH = "http://localhost:3000";
@@ -74,6 +73,7 @@ export default function LogScreen({ navigation }) {
           placeholder="mot de passe"
           autoCapitalize="none"
           textContentType="password"
+          secureTextEntry={true} // Masque le texte d'entrée
           onChangeText={(value) => setPassword(value)}
           value={password}
           style={styles.input}
