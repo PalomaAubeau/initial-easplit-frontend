@@ -47,9 +47,9 @@ export default function LogScreen({ navigation }) {
               email: data.email,
               firstName: data.firstName,
               password: data.password,
-              
             })
           );
+          
           navigation.navigate("TabNavigator", {
             screen: "EventHomeScreen",
           });
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'CodecPro-ExtraBold',
     // fontWeight:"600",
     lineHeight: 28,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    // width: "100%",
+    width: 180,
     borderBottomColor: "#b5B5B5",
     borderBottomWidth: 1,
     marginBottom:20,
@@ -199,9 +199,8 @@ const styles = StyleSheet.create({
   },
 
   textButton: {
-    fontFamily: "Codec Pro",
+    fontFamily: "CodecPro-Regular",
     height: 30,
-    fontWeight: "600",
     fontSize: 16,
   },
   error: {
