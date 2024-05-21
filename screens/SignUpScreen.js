@@ -64,18 +64,6 @@ export default function LogScreen({ navigation }) {
       <Text style={styles.title}>Easplit</Text>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="prénom"
-          onChangeText={(value) => setFirstName(value)}
-          value={firstName}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="nom"
-          onChangeText={(value) => setLastName(value)}
-          value={lastName}
-          style={styles.input}
-        />
-        <TextInput
           placeholder="email"
           autoCapitalize="none"
           keyboardType="email-address"
