@@ -146,7 +146,8 @@ const styles = StyleSheet.create({
   // style du bouton :
   buttonContainer: {
     display: "flex",
-    height: 40,
+    width:180,
+    height: 45,
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
@@ -155,6 +156,7 @@ const styles = StyleSheet.create({
   gradientBackground: {
     flex: 1,
     borderRadius: 10,
+    width:200,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
@@ -190,6 +192,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
+    fontFamily: "CodecPro-Regular",
     width: 180,
     borderBottomColor: "#b5B5B5",
     borderBottomWidth: 1,
@@ -200,7 +203,7 @@ const styles = StyleSheet.create({
   textButton: {
     fontFamily: "CodecPro-Regular",
     height: 30,
-    fontSize: 16,
+    fontSize: 12,
   },
   error: {
     marginTop: 10,
