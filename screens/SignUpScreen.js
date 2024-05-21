@@ -34,7 +34,7 @@ export default function LogScreen({ navigation }) {
       fetch(`${PATH}/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, email, password }),
+        body: JSON.stringify({ email, password }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -44,7 +44,6 @@ export default function LogScreen({ navigation }) {
             dispatch(
               login({
                 token: data.token,
-                firstName: data.firstName,
                 email: data.email,
               })
             );
@@ -98,7 +97,9 @@ export default function LogScreen({ navigation }) {
           value={password}
           style={styles.input}
         />
-
+        {loginErrorMessage && (
+          <Text style={styles.error}>{loginErrorMessage}</Text>
+        )}
         <TouchableOpacity
           onPress={() => handleSubmit()}
           style={styles.button}
