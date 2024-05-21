@@ -1,8 +1,10 @@
-import {  View,
+import {
+  View,
   Platform,
   Text,
   TouchableOpacity,
-  ScrollView } from "react-native";
+  ScrollView,
+} from "react-native";
 import { StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { updateFirstName } from "../reducers/user";
@@ -64,11 +66,11 @@ const styles = StyleSheet.create({
   },
 
   underline: {
-    width: '100%', // Ajustez cette valeur pour la longueur de la ligne de soulignement
+    width: "100%", // Ajustez cette valeur pour la longueur de la ligne de soulignement
     borderBottomWidth: 1, // Épaisseur de la ligne de soulignement
-    borderBottomColor: 'black', // Couleur de la ligne de soulignement
+    borderBottomColor: "black", // Couleur de la ligne de soulignement
     marginTop: 2, // Espace entre le texte et la ligne
-    },
+  },
 
   titleList: {
     fontWeight: "bold",
@@ -83,6 +85,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     color: "#4E3CBB",
+    marginTop: 10,
   },
   newEventContainer: {
     backgroundColor: "#FFFFFF",
