@@ -75,7 +75,7 @@ export default function LogScreen({ navigation }) {
         />
         <TextInput
           placeholder="nom"
-          onChangeText={(value) => setFirstName(value)}
+          onChangeText={(value) => setLastName(value)}
           value={lastName}
           style={styles.input}
         />
