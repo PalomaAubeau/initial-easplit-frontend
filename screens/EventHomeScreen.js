@@ -21,6 +21,7 @@ export default function EventHomeScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+  //console.log(user);
   //2.Comportements
   // router.get("/userevents/:token", (req, res) => {
   //   User.findOne({ token: req.params.token })
@@ -38,6 +39,9 @@ export default function EventHomeScreen({ navigation }) {
     fetch(`${PATH}/userevents/${user.token}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log(
+          "test pour voir si la route d'affichage des events de l'user est bien appelée"
+        );
         data.result && console.log(data.events);
       });
   }, []);
