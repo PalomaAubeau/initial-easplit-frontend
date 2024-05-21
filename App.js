@@ -11,6 +11,10 @@ import Icon from "react-native-vector-icons/Ionicons";
 import SvgChampagne from "./components/SvgChampagne.js";
 //Sinda : ajout pour pouvoir utiliser des dégradés : faire un yarn add expo-linear-gradient ou yarn install
 import { LinearGradient } from "expo-linear-gradient";
+//Sinda : ajout module expo-font pour utiliser la Codec pro : faire un yarn add expo-font ou yarn install
+import * as Font from 'expo-font';
+import { useState, useEffect } from "react";
+
 
 import { Provider } from "react-redux";
 
@@ -26,6 +30,7 @@ import HomeScreen from "./screens/HomeScreen";
 import LogScreen from "./screens/LogScreen";
 import SignUpScreen from "./screens/SignUpScreen.js";
 import EventHomeScreen from "./screens/EventHomeScreen";
+import CreatEventScreen from "./screens/CreatEventScreen.js";
 
 // const persistConfig = {
 //   key: "easplit",
@@ -61,12 +66,35 @@ const TabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="CreateEvent" component={CreatEventScreen} />
       <Tab.Screen name="Events" component={EventHomeScreen} />
     </Tab.Navigator>
   );
 };
 
 export default function App() {
+  // import des polices
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadFonts = async () => {
+      await Font.loadAsync({
+        'CodecPro-Regular': require('./assets/fonts/CodecPro-Regular.ttf'),
+        // 'CodecPro-Bold': require('./assets/fonts/CodecPro-Bold.ttf'),
+        'CodecPro-ExtraBold': require('./assets/fonts/CodecPro-ExtraBold.ttf'),
+        // 'CodecPro-Light': require('./assets/fonts/CodecPro-Light.ttf'),
+        // 'CodecPro-Fat': require('./assets/fonts/CodecPro-Fat.ttf'),
+        // 'CodecPro-News': require('./assets/fonts/CodecPro-News.ttf'),
+        // 'CodecPro-Thin': require('./assets/fonts/CodecPro-Thin.ttf'),
+        // 'CodecPro-Ultra': require('./assets/fonts/CodecPro-Ultra.ttf'),
+        // 'CodecPro-Heavy': require('./assets/fonts/CodecPro-Heavy.ttf'),
+      });
+      setFontsLoaded(true);
+    };
+
+    loadFonts();
+  }, []);
+
   return (
     <Provider store={store}>
       {/* // <PersistGate persistor={persistor}> */}
