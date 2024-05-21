@@ -2,7 +2,9 @@ import {  View,
   Platform,
   Text,
   TouchableOpacity,
-  ScrollView } from "react-native";
+  ScrollView,
+  Image
+ } from "react-native";
 import { StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { updateFirstName } from "../reducers/user";
@@ -17,7 +19,11 @@ export default function HomeScreen({ navigation }) {
       style={styles.container}
     >
       <View style={styles.headerContainer}>
-        <Text>easplitLogo</Text>
+      <Image
+          source={require("../assets/EASPLIT-NOIR.png")}
+          style={styles.logo}
+
+        />
         <Icon name="menu" size={35} color="#4E3CBB" />
       </View>
       <Text style={styles.title}>Bonjour {user.firstName}</Text>
@@ -48,12 +54,17 @@ const styles = StyleSheet.create({
     paddingRight: 30,
     //backgroundColor: "",
   },
+  logo: {
+    width: 100,
+    height: 100,  // Assurez-vous de définir à la fois la largeur et la hauteur
+    resizeMode: "contain", 
+  },
   headerContainer: {
     flex: 0.1,
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 30,
+    marginTop: 50,
   },
   title: {
     fontSize: 30,
