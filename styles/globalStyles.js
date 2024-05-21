@@ -2,16 +2,18 @@
 import { StyleSheet } from 'react-native';
 
 const globalStyles = StyleSheet.create({
-
+      // container de chaque page
     container: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        paddingLeft: 30,
+        paddingRight: 30,
       },
-      // style du bouton :
+      // style du bouton type Submit/Login:
       buttonContainer: {
         display: "flex",
-        width:180,
+        width:180, 
         height: 45,
         borderRadius: 10,
         justifyContent: "center",
@@ -26,7 +28,6 @@ const globalStyles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: 20,
       },
-    
       textContainer: {
         justifyContent: "center",
         alignItems: "center",
@@ -39,7 +40,14 @@ const globalStyles = StyleSheet.create({
         lineHeight: 28,
         letterSpacing: 0.15,
       },
-      // fin du style du bouton
+// ??? 
+      textButton: {
+        fontFamily: "CodecPro-Regular",
+        height: 30,
+        fontSize: 12,
+      },
+
+      // Logo page accueil
       logo: {
         flex: 0.18,
         justifyContent: "center",
@@ -47,7 +55,7 @@ const globalStyles = StyleSheet.create({
         resizeMode: "contain",
         marginBottom: 70,
       },
-    
+    //Style des inputs
       inputContainer: {
         width: "100%",
         alignItems: "center",
@@ -65,15 +73,24 @@ const globalStyles = StyleSheet.create({
         fontSize: 16,
       },
     
-      textButton: {
-        fontFamily: "CodecPro-Regular",
-        height: 30,
-        fontSize: 12,
-      },
+
+    //   Style des erreurs
       error: {
         marginTop: 10,
         color: "red",
       },
+    // couleurs:
+
+    violet:{
+        color:"#4E3CBB",
+    },
+    rose:{
+        color:"#EB1194",
+    },
+    bleuclair:{
+        color:"#f4f3ff",
+    }
+
     //   noaccount: {
     //     paddingTop: 30,
     //     paddingBottom: 10,
