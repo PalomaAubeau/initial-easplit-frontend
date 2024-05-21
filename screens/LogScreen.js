@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontFamily: 'CodecPro-ExtraBold',
+    // fontWeight:"600",
     lineHeight: 28,
     letterSpacing: 0.15,
   },
