@@ -38,10 +38,9 @@ export default function EventHomeScreen({ navigation }) {
       .then((response) => response.json())
       .then((data) => {
         data.result && dispatch(loadEvents(data.events));
-        //console.log(data.events[0].name);
       });
   }, []);
-  // .map sur la BDD pour faire une copie du tableau d'objet récupéré et afficher un composant
+  // .map sur la BDD pour faire une copie du tableau d'objets récupéré et afficher un composant
   const userEvents = user.events.map((data, i) => {
     return (
       <TouchableOpacity
@@ -71,7 +70,15 @@ export default function EventHomeScreen({ navigation }) {
       </View>
       <Text style={styles.title}>Bonjour {user.firstName}</Text>
       <Text style={styles.titleList}>MES ÉVÈNEMENTS</Text>
-      <ScrollView style={styles.scrollView}>{userEvents}</ScrollView>
+      <ScrollView style={styles.scrollView}>
+        {user.events.length === 0 ? (
+          <Text style={styles.message}>
+            Aucun évènement à afficher pour le moment
+          </Text>
+        ) : (
+          <>{userEvents}</>
+        )}
+      </ScrollView>
       <TouchableOpacity
         style={styles.newEventContainer}
         activeOpacity={0.8}
@@ -142,5 +149,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     resizeMode: "contain",
     marginBottom: 70,
+  },
+  message: {
+    color: "#EB1194",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 30,
+    fontSize: 16,
   },
 });
