@@ -15,9 +15,9 @@ import React, { useState } from "react";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
 
+  // const PATH = "http://localhost:3000"; 
 //const PATH = "http://192.168.1.21:8081";
-//const PATH = "http://localhost:3000";
-const PATH = "https://easplit-backend.vercel.app";
+ const PATH = "https://easplit-backend.vercel.app";
 
 export default function LogScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
@@ -38,19 +38,21 @@ export default function LogScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         if (!data.result) {
           setLoginErrorMessage(data.error);
         } else {
+          console.log(data);
           dispatch(
             login({
               token: data.token,
               email: data.email,
               firstName: data.firstName,
-              password: data.password,
-              balance: data.balance
+              balance: data.balance,
+              //password: data.password, //pourquoi save le password dans le reducer ??
             })
           );
-          
+
           navigation.navigate("TabNavigator", {
             screen: "EventHomeScreen",
           });
@@ -62,7 +64,7 @@ export default function LogScreen({ navigation }) {
   return (
     // composant linear gradient qui permet d'avoir le fond en dégradé : doit tout envelopper
     <LinearGradient
-      colors={["white", "#CAD1E0"]}//Gradient blanc vers bleu
+      colors={["white", "#CAD1E0"]} //Gradient blanc vers bleu
       start={[0.2, 0.2]}
       end={[0.8, 0.8]}
       style={styles.container}
@@ -122,7 +124,7 @@ export default function LogScreen({ navigation }) {
             activeOpacity={0.8}
           >
             <LinearGradient
-              colors={["#EB1194", "#4E3CBB"]}//Gradient rose vers violet
+              colors={["#EB1194", "#4E3CBB"]} //Gradient rose vers violet
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.gradientBackground}
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
   // style du bouton :
   buttonContainer: {
     display: "flex",
-    width:180,
+    width: 180,
     height: 45,
     borderRadius: 10,
     justifyContent: "center",
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
   gradientBackground: {
     flex: 1,
     borderRadius: 10,
-    width:200,
+    width: 200,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
@@ -168,9 +170,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 13,
-    fontFamily: 'CodecPro-ExtraBold',
+    fontFamily: "CodecPro-ExtraBold",
     // fontWeight:"600",
     lineHeight: 28,
     letterSpacing: 0.15,
