@@ -1,5 +1,4 @@
-import {
-  View,
+import {View,
   Platform,
   Text,
   TouchableOpacity,
@@ -12,11 +11,11 @@ import { updateFirstName } from "../reducers/user";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from '@react-native-masked-view/masked-view'; //pour nom en gradient
-import LastTransactions from "../components/LastTransaction"; //import du composant
+// import LastTransactions from "../components/LastTransaction"; //import du composant
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
-// console.log(user)
+ console.log('reducerUser' + user)
   return (
     <View
       //behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -196,4 +195,3 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-

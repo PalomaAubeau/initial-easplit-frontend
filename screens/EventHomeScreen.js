@@ -1,10 +1,20 @@
-import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { StyleSheet } from "react-native";
+import globalStyles from "../styles/globalStyles";
+import { LinearGradient } from "expo-linear-gradient";
+import MaskedView from "@react-native-masked-view/masked-view";
+import DropdownMenu from "../components/DropdownMenu";
+import Icon from "react-native-vector-icons/Ionicons";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import { loadEvents } from "../reducers/user";
-import Icon from "react-native-vector-icons/Ionicons";
-import { LinearGradient } from "expo-linear-gradient";
 
 //const PATH = "http://192.168.1.21:8081";
 //const PATH = "http://localhost:3000";
@@ -38,18 +48,20 @@ export default function EventHomeScreen({ navigation }) {
       .then((response) => response.json())
       .then((data) => {
         data.result && dispatch(loadEvents(data.events));
-        //console.log(data.events[0].name);
       });
   }, []);
-  // .map sur la BDD pour faire une copie du tableau d'objet récupéré et afficher un composant
+  // .map sur la BDD pour faire une copie du tableau d'objets récupéré et afficher un composant
   const userEvents = user.events.map((data, i) => {
     return (
       <TouchableOpacity
-        style={styles.eventContainer}
+        style={[
+          styles.eventContainer,
+          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+        ]}
         key={i}
         onPress={() => navigation.navigate("Event")}
       >
-        <Text style={styles.textCurrentContainer}>{data.name}</Text>
+        <Text style={styles.textCurrentEventContainer}>{data.name}</Text>
       </TouchableOpacity>
     );
   });
@@ -67,57 +79,96 @@ export default function EventHomeScreen({ navigation }) {
           source={require("../assets/EASPLIT-NOIR.png")}
           style={styles.logo}
         />
-        <Icon name="menu" size={35} color="#4E3CBB" />
+        {/* <Icon name="menu" size={35} color="#4E3CBB" /> */}
+        <DropdownMenu />
       </View>
-      <Text style={styles.title}>Bonjour {user.firstName}</Text>
-      <Text style={styles.titleList}>MES ÉVÈNEMENTS</Text>
-      <ScrollView style={styles.scrollView}>{userEvents}</ScrollView>
+      <MaskedView
+        style={{ flexDirection: "row" }}
+        maskElement={
+          <Text style={styles.titleText}>Bonjour {user.firstName}</Text>
+        }
+      >
+        <LinearGradient
+          colors={["#EB1194", "#4E3CBB"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.linearGradient}
+        />
+      </MaskedView>
+      <Text
+        style={[styles.margin, globalStyles.inputLabel, globalStyles.capital]}
+      >
+        MES ÉVÈNEMENTS
+      </Text>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
+        {user.events.length === 0 ? (
+          <Text style={styles.message}>
+            Aucun évènement à afficher pour le moment
+          </Text>
+        ) : (
+          <>{userEvents}</>
+        )}
+      </ScrollView>
       <TouchableOpacity
-        style={styles.newEventContainer}
+        style={[
+          styles.newEventContainer,
+          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+        ]}
         activeOpacity={0.8}
         onPress={() => navigation.navigate("CreateEvent")}
       >
         <Text style={styles.textAddingContainer}>Ajouter un évènement</Text>
-        <Icon name="add-circle" size={35} color="#EB1194"></Icon>
+        <Icon name="add-circle" size={30} color="#EB1194"></Icon>
       </TouchableOpacity>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  margin: {
+    marginHorizontal: 10,
+  },
+  //MAINS CONTAINERS
   container: {
     flex: 1,
+    //alignItems: "center",
+    //justifyContent: "center",
     paddingLeft: 30,
     paddingRight: 30,
   },
+  scrollView: {
+    //flex: 0.1,
+    //height: 60,
+    //backgroundColor: "#4E3CBB",
+    marginTop: 10,
+    marginBottom: 20,
+  },
   headerContainer: {
-    flex: 0.1,
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
     justifyContent: "space-between",
     marginTop: 30,
   },
-  title: {
-    fontSize: 30,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginTop: 50,
-    marginBottom: 40,
+  // ELEMENT RAPPORTE
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
   },
-  titleList: {
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "#4E3CBB",
-  },
-  scrollView: {},
+  // EVENTS CONTAINER
   eventContainer: {
     backgroundColor: "#FFFFFF",
     flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center",
     padding: 15,
     borderRadius: 10,
     color: "#4E3CBB",
-    marginBottom: 10,
+    marginBottom: 15,
+    height: 60,
   },
   newEventContainer: {
     backgroundColor: "#FFFFFF",
@@ -126,21 +177,52 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 15,
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 50,
+    height: 60,
   },
-  textCurrentContainer: {
-    color: "#4E3CBB",
+  shadowAndroid: {
+    elevation: 6,
+  },
+  shadowIOS: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+  },
+  // TEXTES
+  linearGradient: {
+    borderRadius: 0,
+    height: 40,
+    marginTop: 30,
+    width: "100%",
+  },
+  titleText: {
+    //fontFamily: "CodecPro-ExtraBold",
     fontWeight: "bold",
+    fontSize: 28,
+    textAlign: "center",
+    color: "white",
+    marginTop: 30,
+    // marginBottom: 40,
+  },
+  textCurrentEventContainer: {
+    fontFamily: "CodecPro-Heavy",
+    color: "#4E3CBB",
+    fontSize: 16,
   },
   textAddingContainer: {
+    fontFamily: "CodecPro-Heavy",
     color: "#EB1194",
-    fontWeight: "bold",
+    fontSize: 16,
   },
-  logo: {
-    flex: 0.18,
-    justifyContent: "center",
-    alignItems: "center",
-    resizeMode: "contain",
-    marginBottom: 70,
+  message: {
+    fontFamily: "CodecPro-Heavy",
+    color: "#EB1194",
+    textAlign: "center",
+    marginTop: 30,
+    fontSize: 16,
   },
 });
