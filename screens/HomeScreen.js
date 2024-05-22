@@ -11,7 +11,8 @@ import { useSelector } from "react-redux";
 import { updateFirstName } from "../reducers/user";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
-import MaskedView from '@react-native-masked-view/masked-view'; //pour non en gradient
+import { FAB } from '@rneui/themed';
+import MaskedView from '@react-native-masked-view/masked-view'; //pour nom en gradient
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -22,10 +23,10 @@ export default function HomeScreen({ navigation }) {
       style={styles.container}
     >
       <View style={styles.headerContainer}>
+
       <Image
           source={require("../assets/EASPLIT-NOIR.png")}
           style={styles.logo}
-
         />
         <Icon name="menu" size={35} color="#4E3CBB" />
       </View>
@@ -195,3 +196,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+

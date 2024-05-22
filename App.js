@@ -12,8 +12,8 @@ import SvgChampagne from "./components/SvgChampagne.js";
 //Sinda : ajout pour pouvoir utiliser des dégradés : faire un yarn add expo-linear-gradient ou yarn install
 import { LinearGradient } from "expo-linear-gradient";
 //Sinda : ajout module expo-font pour utiliser la Codec pro : faire un yarn add expo-font ou yarn install
-import * as Font from 'expo-font';
-import { useFonts } from 'expo-font';
+import * as Font from "expo-font";
+import { useFonts } from "expo-font";
 import { useState, useEffect } from "react";
 
 import { Provider } from "react-redux";
@@ -32,7 +32,6 @@ import HomeScreen from "./screens/HomeScreen";
 import EventHomeScreen from "./screens/EventHomeScreen";
 import EventScreen from "./screens/EventScreen";
 import CreatEventScreen from "./screens/CreatEventScreen.js";
-
 
 // const persistConfig = {
 //   key: "easplit",
@@ -77,11 +76,15 @@ const TabNavigator = () => {
 export default function App() {
   // import des polices
 
-
   const [fontsLoaded, fontError] = useFonts({
-    'CodecPro-Regular': require('./assets/fonts/CodecPro-Regular.ttf'),
-    'CodecPro-ExtraBold': require('./assets/fonts/CodecPro-ExtraBold.ttf'),
+    "CodecPro-Regular": require("./assets/fonts/CodecPro-Regular.ttf"),
+    "CodecPro-ExtraBold": require("./assets/fonts/CodecPro-ExtraBold.ttf"),
   });
+
+  // Si le hook useFonts n'a pas eu le temps de charger les polices, on return null pour éviter de faire crasher l'app.
+  if (!fontsLoaded || fontError) {
+    return null;
+  }
 
   return (
     <Provider store={store}>
