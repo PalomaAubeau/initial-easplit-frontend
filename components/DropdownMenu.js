@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
   logout:{
     color:"#EB1194",
     fontFamily: "CodecPro-ExtraBold",
+    marginTop:30,
   }
 });
 
