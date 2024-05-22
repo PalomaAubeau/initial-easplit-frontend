@@ -15,6 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useSelector, useDispatch } from "react-redux";
 import Input from "../components/Input";
+import DropdownMenu from "../components/DropdownMenu";
 import MaskedView from "@react-native-masked-view/masked-view";
 import globalStyles from "../styles/globalStyles"; //Appel des styles globaux
 
@@ -46,7 +47,8 @@ export default function CreatEventScreen({ navigation }) {
                   source={require("../assets/EASPLIT-NOIR.png")}
                   style={styles.logo}
                 />
-                <Icon name="menu" size={35} color="#4E3CBB" />
+                {/* <Icon name="menu" size={35} color="#4E3CBB" /> */}
+                <DropdownMenu/>
               </View>
               {/* Titre en dégradé */}
               <MaskedView
@@ -127,7 +129,7 @@ export default function CreatEventScreen({ navigation }) {
 
               <View styles={styles.containerList}>
 
-                
+
               </View>
 
 
