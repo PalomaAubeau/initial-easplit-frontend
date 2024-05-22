@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const GuestInput = ({ onAddGuest }) => {
+const GuestCard = ({ onAddGuest }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
-  const handleAddGuest = () => {
-    if (name && email) {
-      onAddGuest({ name, email });
-      setName('');
-      setEmail('');
-    }
-  };
+  // const handleAddGuest = () => {
+  //   if (name && email) {
+  //     onAddGuest({ name, email });
+  //     setName('');
+  //     setEmail('');
+  //   }
+  // };
 
   return (
     <View style={[styles.inputWrapper, styles.shadowAndroid]}>
@@ -30,8 +30,10 @@ const GuestInput = ({ onAddGuest }) => {
         onChangeText={setEmail}
       />
       </View>
-      <TouchableOpacity onPress={handleAddGuest}>
-        <Ionicons name="add-circle" size={45} color="#EB1194" />
+      <TouchableOpacity 
+      // onPress={handleAddGuest}
+      >
+        <Ionicons name="add-circle" size={35} color="#EB1194" />
       </TouchableOpacity>
     </View>
   );
@@ -39,14 +41,14 @@ const GuestInput = ({ onAddGuest }) => {
 
 const styles = StyleSheet.create({
   inputWrapper: {
-    padding: 20,
+    // padding: 20,
     marginHorizontal: 10,
     backgroundColor: "#f4f3ff",
     borderRadius: 10,
-    marginBottom: 10,
+    // marginBottom: 10,
     display:"flex",
-    flexDirection:"column",
-    // justifyContent:"space-between",
+    flexDirection:"row",
+    justifyContent:"space-between",
     alignItems:"center",
   },
   inputField: {
@@ -59,7 +61,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   inputContainer:{
-    width:"100%",
+    width:"80%",
+    paddingRight:10,
   },
   // shadowAndroid: {
   //   elevation: 6,
@@ -75,4 +78,4 @@ const styles = StyleSheet.create({
   // },
 });
 
-export default GuestInput;
+export default GuestCard;
