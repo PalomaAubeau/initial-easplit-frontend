@@ -55,7 +55,7 @@ const globalStyles = StyleSheet.create({
         resizeMode: "contain",
         marginBottom: 70,
       },
-    //Style des inputs
+    //Style des inputs SignIn/SignUp
       inputContainer: {
         width: "100%",
         alignItems: "center",
@@ -72,7 +72,38 @@ const globalStyles = StyleSheet.create({
         marginBottom: 20,
         fontSize: 16,
       },
-    
+
+      // Les typos
+      title: {
+        fontSize: 28,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginTop: 30,
+      },
+
+      titleList: {
+        fontWeight: "bold",
+        textAlign: "center",
+        marginBottom: 30,
+        marginTop:15,
+        color: "#4E3CBB",
+      },
+
+      inputLabel: {
+        fontFamily: 'CodecPro-ExtraBold',
+        fontSize: 14,
+        letterSpacing:0.5,
+        fontWeight: "bold",
+        textAlign: "left",
+        marginBottom: 5,
+        marginTop:15,
+        color: "#4E3CBB",
+      },
+
+
+      capital: {
+        textTransform: 'uppercase',
+      },
 
     //   Style des erreurs
       error: {

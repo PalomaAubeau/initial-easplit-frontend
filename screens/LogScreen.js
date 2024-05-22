@@ -215,6 +215,6 @@ const styles = StyleSheet.create({
   noaccount: {
     paddingTop: 30,
     paddingBottom: 10,
-    fontFamily: "CodecPro-Regular",
+    
   },
 });
