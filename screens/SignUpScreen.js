@@ -56,9 +56,9 @@ export default function LogScreen({ navigation }) {
                 token: data.token,
               })
             );
+            navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
           }
         });
-      navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
     } else {
       setIsWrongEmailFormat(true);
     }
