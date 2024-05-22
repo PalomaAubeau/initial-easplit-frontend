@@ -1,4 +1,5 @@
-import {  View,
+import {
+  View,
   Platform,
   Text,
   KeyboardAvoidingView,
@@ -34,8 +35,6 @@ export default function LogScreen({ navigation }) {
   //2.Comportements
   const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
-      // dispatch(login(email));//double ecrasement
-        // console.log(firstName, lastName, email)
       fetch(`${PATH}/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -43,11 +42,10 @@ export default function LogScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data)
+          console.log(data);
           if (!data.result) {
             setLoginErrorMessage(data.error);
           } else {
-            
             dispatch(
               login({
                 firstName: data.firstName,
@@ -121,7 +119,27 @@ export default function LogScreen({ navigation }) {
             style={globalStyles.input}
           />
           {loginErrorMessage && (
-            <Text style={globalStyles.error}>{loginErrorMessage}</Text>
+            <>
+              <Text style={globalStyles.error}>{loginErrorMessage}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Login");
+                }}
+                style={globalStyles.buttonContainer}
+                activeOpacity={0.8}
+              >
+                <LinearGradient
+                  colors={["#EB1194", "#4E3CBB"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={globalStyles.gradientBackground}
+                >
+                  <View style={globalStyles.textContainer}>
+                    <Text style={globalStyles.buttonText}>Me connecter</Text>
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+            </>
           )}
           {/* <TouchableOpacity
           onPress={() => handleSubmit()}
