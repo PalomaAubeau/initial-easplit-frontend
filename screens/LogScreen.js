@@ -41,12 +41,14 @@ export default function LogScreen({ navigation }) {
         if (!data.result) {
           setLoginErrorMessage(data.error);
         } else {
+          console.log(data)
           dispatch(
             login({
               token: data.token,
               email: data.email,
               firstName: data.firstName,
-              password: data.password,
+              balance: data.balance,
+              //password: data.password, //pourquoi save le password dans le reducer ??
             })
           );
           

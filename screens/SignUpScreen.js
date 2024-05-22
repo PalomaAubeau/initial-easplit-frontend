@@ -16,9 +16,9 @@ import { login } from "../reducers/user";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
 
+const PATH = "http://localhost:3000";
 //const PATH = "http://192.168.1.21:8081";
-//const PATH = "http://localhost:3000";
-const PATH = "https://easplit-backend.vercel.app";
+// const PATH = "https://easplit-backend.vercel.app";
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -35,8 +35,8 @@ export default function LogScreen({ navigation }) {
   //2.Comportements
   const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
-      dispatch(login(email));
-
+      // dispatch(login(email));//double ecrasement
+        // console.log(firstName, lastName, email)
       fetch(`${PATH}/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -44,15 +44,17 @@ export default function LogScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
+          console.log(data)
           if (!data.result) {
             setLoginErrorMessage(data.error);
           } else {
+            
             dispatch(
               login({
-                firstName,
-                lastName,
-                password,
-                email,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                balance: data.balance,
                 token: data.token,
               })
             );
