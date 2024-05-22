@@ -11,16 +11,13 @@ import { useSelector } from "react-redux";
 import { updateFirstName } from "../reducers/user";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
-import MaskedView from "@react-native-masked-view/masked-view"; //pour non en gradient
+import MaskedView from "@react-native-masked-view/masked-view"; //pour nom en gradient
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
 
   return (
-    <View
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Image
           source={require("../assets/EASPLIT-NOIR.png")}
@@ -36,7 +33,7 @@ export default function HomeScreen({ navigation }) {
 
       <View style={styles.View}>
         <TouchableOpacity style={styles.eventContainer}>
-          <Text style={styles.textCurrentContainer}>16 521 565€</Text>
+          <Text style={styles.textCurrentContainer}>16 521 000</Text>
         </TouchableOpacity>
         <View style={styles.buttonReloadView}>
           <TouchableOpacity style={styles.buttonReload} activeOpacity={0.8}>
@@ -51,11 +48,11 @@ export default function HomeScreen({ navigation }) {
           COMPOSANT LAST TRANSACTION
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.composantContainer}>
+      <View style={styles.composantContainer}>
         <Text style={styles.textAddingContainer}>
           COMPOSANT LAST TRANSACTION
         </Text>
-      </TouchableOpacity>
+      </View>
       <Text style={styles.titleList2}>MES DERNIERS EVENTS</Text>
 
       <TouchableOpacity
@@ -94,21 +91,20 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 100,
-    height: 100, // Assurez-vous de définir à la fois la largeur et la hauteur
+    height: 100,
     resizeMode: "contain",
   },
   headerContainer: {
-    flex: 0.1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 50,
+    marginTop: 30,
   },
   title: {
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
-    marginTop: 50,
+    marginTop: 30,
     marginBottom: 40,
   },
 

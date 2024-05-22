@@ -47,6 +47,7 @@ export default function LogScreen({ navigation }) {
               email: data.email,
               firstName: data.firstName,
               password: data.password,
+              balance: data.balance
             })
           );
           
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: 'CodecPro-ExtraBold',
     // fontWeight:"600",
     lineHeight: 28,
@@ -212,5 +213,6 @@ const styles = StyleSheet.create({
   noaccount: {
     paddingTop: 30,
     paddingBottom: 10,
+    fontFamily: "CodecPro-Regular",
   },
 });

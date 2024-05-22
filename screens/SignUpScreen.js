@@ -8,10 +8,10 @@ import {
   Image,
 } from "react-native";
 import { StyleSheet } from "react-native";
+import globalStyles from "../styles/globalStyles"; //Appel des styles globaux
 import { useDispatch } from "react-redux";
 import React, { useState } from "react";
 import { login } from "../reducers/user";
-import globalStyles from "../styles/globalStyles"; //Appel des styles globaux
 
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
@@ -28,8 +28,8 @@ export default function LogScreen({ navigation }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [isWrongEmailFormat, setIsWrongEmailFormat] = useState(false);
   const [password, setPassword] = useState("");
+  const [isWrongEmailFormat, setIsWrongEmailFormat] = useState(false);
   const [loginErrorMessage, setLoginErrorMessage] = useState(null);
 
   //2.Comportements
@@ -49,10 +49,10 @@ export default function LogScreen({ navigation }) {
           } else {
             dispatch(
               login({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                password: data.password,
-                email: data.email,
+                firstName,
+                lastName,
+                password,
+                email,
                 token: data.token,
               })
             );
