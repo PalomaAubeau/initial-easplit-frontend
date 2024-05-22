@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
-  Button,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -164,39 +163,10 @@ export default function CreatEventScreen({ navigation }) {
                   <GuestInput />
                 </View>
 
-                <View styles={styles.sumContainer}>
-                  <View>
-                    <TextInput
-                      placeholder="Somme totale"
-                      value={totalAmount}
-                      onChangeText={setTotalAmount}
-                      keyboardType="numeric"
-                    />
-                    {/* Utilisez le composant GuestInput pour ajouter un participant */}
-                    <GuestInput onAddParticipant={handleAddParticipant} />
-                    {/* Affichez les participants ajoutés */}
-                    {participants.map((participant, index) => (
-                      <View
-                        key={index}
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <Text>{participant.name}</Text>
-                        <Text>{participant.email}</Text>
-                        <TouchableOpacity
-                          onPress={() => handleRemoveParticipant(participant)}
-                        >
-                          <Text>Supprimer</Text>
-                        </TouchableOpacity>
-                      </View>
-                    ))}
-                    <Button title="Calculer" onPress={handleCalculateAmounts} />
-                    <Text>Somme par personne: {amountPerPerson}</Text>
-                  </View>
-                </View>
 
                 {/* //Bouton Submit */}
                 <TouchableOpacity
-                  onPress={() => handleSubmitEvent()}
+                  // onPress={() => handleSubmitEvent()}
                   style={styles.buttonContainer}
                   activeOpacity={0.8}
                 >
