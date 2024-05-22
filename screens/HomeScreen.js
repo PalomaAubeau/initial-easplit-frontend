@@ -19,7 +19,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      //behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
       <View style={styles.headerContainer}>
