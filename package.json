@@ -31,8 +31,6 @@
     "@react-navigation/native": "6",
     "@react-navigation/native-stack": "6",
     "@reduxjs/toolkit": "^1.8.3",
-    "@rneui/base": "^4.0.0-rc.8",
-    "@rneui/themed": "^4.0.0-rc.8",
     "expo": "~51.0.8",
     "expo-camera": "~15.0.9",
     "expo-font": "^12.0.5",

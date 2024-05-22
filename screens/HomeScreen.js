@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { updateFirstName } from "../reducers/user";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
+import { FAB } from '@rneui/themed';
 import MaskedView from '@react-native-masked-view/masked-view'; //pour nom en gradient
 
 export default function HomeScreen({ navigation }) {
@@ -84,30 +85,6 @@ export default function HomeScreen({ navigation }) {
       >
         <Text style={styles.textAddingContainer}>voir plus</Text>
       </TouchableOpacity>
-            {/* Conditionally display FAB based on route name
-      {route.name !== 'CreateEventScreen' && ( */}
-        <FAB
-          visible={true}
-          icon="add"
-          onPress={() => navigation.navigate('CreateEvent')}
-          style={{
-            color:"#fff",
-            position: 'absolute',
-            bottom: 20,
-            transform: [{ translateX: -20 }],
-            borderRadius: 30,
-          }}
-          containerStyle={{
-            backgroundColor: (
-              <LinearGradient
-                colors={['#EB1194', '#4E3CBB']}
-                start={{ x: 0.5, y: 0.5 }}
-                end={{ x: 1, y: 1 }}
-              />
-            ),
-          }}
-        />
-      {/* )} */}
     </View>
   );
 }
