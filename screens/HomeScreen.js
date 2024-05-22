@@ -11,7 +11,6 @@ import { useSelector } from "react-redux";
 import { updateFirstName } from "../reducers/user";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
-import { FAB } from '@rneui/themed';
 import MaskedView from '@react-native-masked-view/masked-view'; //pour nom en gradient
 
 export default function HomeScreen({ navigation }) {
@@ -98,21 +97,20 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 100,
-    height: 100,  // Assurez-vous de définir à la fois la largeur et la hauteur
+    height: 100, 
     resizeMode: "contain", 
   },
   headerContainer: {
-    flex: 0.1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 50,
+    marginTop: 30,
   },
   title: {
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
-    marginTop: 50,
+    marginTop: 30,
     marginBottom: 40,
   },
 
@@ -189,7 +187,7 @@ const styles = StyleSheet.create({
   textCurrentContainer: {
     color: "#4E3CBB",
     fontWeight: "bold",
-    fontSize: '24px',
+    fontSize: 24,
   },
   textAddingContainer: {
     color: "#EB1194",
