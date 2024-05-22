@@ -1,11 +1,4 @@
-import {
-  View,
-  Platform,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
@@ -14,42 +7,56 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 
 //const PATH = "http://192.168.1.21:8081";
-const PATH = "http://localhost:3000";
-// const PATH = "https://easplit-backend.vercel.app";
+//const PATH = "http://localhost:3000";
+const PATH = "https://easplit-backend.vercel.app";
 
 export default function EventHomeScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  //console.log(user);
-  //2.Comportements
-  // router.get("/userevents/:token", (req, res) => {
-  //   User.findOne({ token: req.params.token })
-  //     .populate("events")
-  //     .then((user) => {
-  //       if (!user) {
-  //         res.json({ result: false, error: "User not found" });
-  //         return;
-  //       }
-  //       res.json({ result: true, events: user.events });
-  //     });
-  // });
+  const [newEvent, setNewEvent] = useState("");
 
+  //le back renvoie un tableau d'objet comme celui-ci
+  const mockUpRepBackEvents = [
+    {
+      __v: 7,
+      _id: "664caee366f7e725eb4e8820",
+      description: "final foot JO",
+      eventDate: "2024-05-30T00:00:00.000Z",
+      guests: [[Object], [Object], [Object], [Object]],
+      name: "JO",
+      organizer: "664cac72a1ac241f7accda7e",
+      paymentDate: "2024-05-29T00:00:00.000Z",
+      shareAmount: 5,
+      totalSum: 0,
+      transactions: [],
+    },
+  ];
+  // Récupération de tous les events liés à l'user
   useEffect(() => {
     fetch(`${PATH}/events/userevents/${user.token}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(
-          "test pour voir si la route d'affichage des events de l'user est bien appelée"
-        );
-        data.result && console.log(data.events);
+        data.result && dispatch(loadEvents(data.events));
+        //console.log(data.events[0].name);
       });
   }, []);
+  // .map sur la BDD pour faire une copie du tableau d'objet récupéré et afficher un composant
+  const userEvents = user.events.map((data, i) => {
+    return (
+      <TouchableOpacity
+        style={styles.eventContainer}
+        key={i}
+        onPress={() => navigation.navigate("Event")}
+      >
+        <Text style={styles.textCurrentContainer}>{data.name}</Text>
+      </TouchableOpacity>
+    );
+  });
 
   //3.RETURN FINAL
   return (
     <LinearGradient
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
       colors={["white", "#CAD1E0"]}
       start={[0.2, 0.2]}
@@ -64,11 +71,7 @@ export default function EventHomeScreen({ navigation }) {
       </View>
       <Text style={styles.title}>Bonjour {user.firstName}</Text>
       <Text style={styles.titleList}>MES ÉVÈNEMENTS</Text>
-      <ScrollView style={styles.scrollView}>
-        <TouchableOpacity style={styles.eventContainer}>
-          <Text style={styles.textCurrentContainer}>Nom de l'évènement</Text>
-        </TouchableOpacity>
-      </ScrollView>
+      <ScrollView style={styles.scrollView}>{userEvents}</ScrollView>
       <TouchableOpacity
         style={styles.newEventContainer}
         activeOpacity={0.8}
@@ -114,6 +117,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     color: "#4E3CBB",
+    marginBottom: 10,
   },
   newEventContainer: {
     backgroundColor: "#FFFFFF",
