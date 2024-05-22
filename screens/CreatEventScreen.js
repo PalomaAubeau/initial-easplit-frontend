@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
+  Button,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,13 +17,45 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { useSelector, useDispatch } from "react-redux";
 import Input from "../components/Input";
 import DropdownMenu from "../components/DropdownMenu";
+import GuestInput from "../components/GuestInput";
 import MaskedView from "@react-native-masked-view/masked-view";
 import globalStyles from "../styles/globalStyles"; //Appel des styles globaux
+import { useState } from "react";
 
 export default function CreatEventScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+
+  const [eventName, setEventName] = useState(null);
+  const [eventDate, setEventDate] = useState(null);
+  const [deadLine, setDeadLine] = useState(null);
+  const [eventDesc, setEventDesc] = useState(null);
+
+  const [participants, setParticipants] = useState([]);
+  const [totalAmount, setTotalAmount] = useState("");
+  const [amountPerPerson, setAmountPerPerson] = useState("");
+
+  //Ajouter un participant
+  const handleAddParticipant = (participant) => {
+    setParticipants([...participants, participant]);
+  };
+
+  //Retirer un participant
+  const handleRemoveParticipant = (participantToRemove) => {
+    const updatedParticipants = participants.filter(
+      (participant) => participant !== participantToRemove
+    );
+    setParticipants(updatedParticipants);
+  };
+
+  //Calcule le montant par personne
+  const handleCalculateAmounts = () => {
+    const total = parseFloat(totalAmount);
+    const totalParts = participants.reduce((acc, curr) => acc + curr.parts, 0);
+    const perPerson = total / totalParts;
+    setAmountPerPerson(perPerson.toFixed(2));
+  };
 
   return (
     <LinearGradient
@@ -48,7 +81,7 @@ export default function CreatEventScreen({ navigation }) {
                   style={styles.logo}
                 />
                 {/* <Icon name="menu" size={35} color="#4E3CBB" /> */}
-                <DropdownMenu/>
+                <DropdownMenu />
               </View>
               {/* Titre en dégradé */}
               <MaskedView
@@ -116,23 +149,50 @@ export default function CreatEventScreen({ navigation }) {
                 </Text>
                 <Input placeholder="Description" />
 
-                  {/* //Ajout des participants */}
+                {/* //Ajout des participants */}
                 <Text
-                style={[
-                  globalStyles.titleList,
-                  globalStyles.rose,
-                  globalStyles.capital,
-                ]}
-              >
-                Ajout des participants
-              </Text>
+                  style={[
+                    globalStyles.titleList,
+                    globalStyles.rose,
+                    globalStyles.capital,
+                  ]}
+                >
+                  Ajout des participants
+                </Text>
 
-              <View styles={styles.containerList}>
+                <View styles={styles.containerList}>
+                  <GuestInput />
+                </View>
 
-
-              </View>
-
-
+                <View styles={styles.sumContainer}>
+                  <View>
+                    <TextInput
+                      placeholder="Somme totale"
+                      value={totalAmount}
+                      onChangeText={setTotalAmount}
+                      keyboardType="numeric"
+                    />
+                    {/* Utilisez le composant GuestInput pour ajouter un participant */}
+                    <GuestInput onAddParticipant={handleAddParticipant} />
+                    {/* Affichez les participants ajoutés */}
+                    {participants.map((participant, index) => (
+                      <View
+                        key={index}
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Text>{participant.name}</Text>
+                        <Text>{participant.email}</Text>
+                        <TouchableOpacity
+                          onPress={() => handleRemoveParticipant(participant)}
+                        >
+                          <Text>Supprimer</Text>
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+                    <Button title="Calculer" onPress={handleCalculateAmounts} />
+                    <Text>Somme par personne: {amountPerPerson}</Text>
+                  </View>
+                </View>
 
                 {/* //Bouton Submit */}
                 <TouchableOpacity
@@ -151,8 +211,6 @@ export default function CreatEventScreen({ navigation }) {
                     </View>
                   </LinearGradient>
                 </TouchableOpacity>
-
-
               </View>
             </ScrollView>
           </TouchableWithoutFeedback>

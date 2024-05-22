@@ -9,6 +9,7 @@ import user from "./reducers/user.js";
 import Icon from "react-native-vector-icons/Ionicons";
 //Sinda : import de mon composant svgChampagne qui correspond à l'icone des verres de champ' :
 import SvgChampagne from "./components/SvgChampagne.js";
+import PlusButton from "./components/plusButton.js";
 //Sinda : ajout pour pouvoir utiliser des dégradés : faire un yarn add expo-linear-gradient ou yarn install
 import { LinearGradient } from "expo-linear-gradient";
 //Sinda : ajout module expo-font pour utiliser la Codec pro : faire un yarn add expo-font ou yarn install
@@ -59,6 +60,8 @@ const TabNavigator = () => {
           } else if (route.name === "Events") {
             // Icône pour Event via le component
             return <SvgChampagne width={size} height={size} fill={color} />;
+          }else if (route.name === "CreateEvent"){
+            return <PlusButton width={size} height={size}/>;
           }
         },
         tabBarActiveTintColor: "#EB1194", // le rose
