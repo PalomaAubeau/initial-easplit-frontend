@@ -5,7 +5,7 @@ import Svg, { Circle, Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 const PlusButton = () => {
   return (
     <View style={styles.container}>
-      <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style={styles.svg}>
+      <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style={[styles.svg, styles.shadow]}>
         <Defs>
           <LinearGradient id="gradient" x1="-4.2075" y1="-4.7975" x2="436.7925" y2="437.2025" gradientUnits="userSpaceOnUse">
             <Stop offset="0.1303" stopColor="#EB1194" />
@@ -25,11 +25,21 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    transform: [{ translateY: -10 }],
+    transform: [{ translateY: -20 }],
   },
   svg: {
-    width: 50,
-    height: 50,
+    width: 60,  // Augmenter la largeur pour donner plus de place à l'ombre
+    height: 60,  // Augmenter la hauteur pour donner plus de place à l'ombre
+  },
+  shadow: {
+    shadowColor: '#EB1194',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
+    margin: 10,  // Ajouter une marge pour éviter que l'ombre soit coupée
+    backgroundColor: 'rgba(235, 17, 148, 0.2)',
+    borderRadius: 30,  // Ajouter un rayon de bordure pour rendre le conteneur circulaire
   },
 });
 
