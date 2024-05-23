@@ -20,7 +20,10 @@ import { useSelector, useDispatch } from "react-redux";
 //const PATH = "http://localhost:3000";
 const PATH = "https://easplit-backend.vercel.app";
 
-export default function EventScreen({ navigation }) {
+export default function EventScreen({ route, navigation }) {
+  const { eventId } = route.params;
+
+  console.log({ eventId });
   //1.Déclaration des états et imports reducers si besoin
   //const isFocused = useIsFocused();
   //const dispatch = useDispatch();
