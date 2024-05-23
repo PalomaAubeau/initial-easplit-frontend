@@ -26,7 +26,7 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
 // import des écrans de navigation
-import LogScreen from "./screens/LogScreen";
+import SigninScreen from "./screens/SigninScreen";
 import SignUpScreen from "./screens/SignUpScreen.js";
 import HomeScreen from "./screens/HomeScreen";
 
@@ -96,8 +96,7 @@ export default function App() {
       {/* // <PersistGate persistor={persistor}> */}
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {/* page de Login : */}
-          <Stack.Screen name="Login" component={LogScreen} />
+          <Stack.Screen name="Signin" component={SigninScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="Event" component={EventScreen} />
           <Stack.Screen name="CreateEvent" component={CreatEventScreen} />
