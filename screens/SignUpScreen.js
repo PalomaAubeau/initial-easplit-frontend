@@ -119,27 +119,7 @@ export default function LogScreen({ navigation }) {
             style={globalStyles.input}
           />
           {loginErrorMessage && (
-            <>
-              <Text style={globalStyles.error}>{loginErrorMessage}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("Login");
-                }}
-                style={globalStyles.buttonContainer}
-                activeOpacity={0.8}
-              >
-                <LinearGradient
-                  colors={["#EB1194", "#4E3CBB"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={globalStyles.gradientBackground}
-                >
-                  <View style={globalStyles.textContainer}>
-                    <Text style={globalStyles.buttonText}>Me connecter</Text>
-                  </View>
-                </LinearGradient>
-              </TouchableOpacity>
-            </>
+            <Text style={globalStyles.error}>{loginErrorMessage}</Text>
           )}
           {/* <TouchableOpacity
           onPress={() => handleSubmit()}
@@ -172,6 +152,14 @@ export default function LogScreen({ navigation }) {
               </View>
             </LinearGradient>
           </TouchableOpacity>
+          <View
+            style={globalStyles.textContainer}
+            onPress={() => {
+              navigation.navigate("Login");
+            }}
+          >
+            <Text style={styles.existingAccount}>Compte déjà existant?</Text>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </LinearGradient>
@@ -219,5 +207,11 @@ const styles = StyleSheet.create({
   error: {
     marginTop: 10,
     color: "red",
+  },
+  existingAccount: {
+    fontFamily: "CodecPro-Regular",
+    fontSize: 16,
+    paddingTop: 30,
+    paddingBottom: 10,
   },
 });
