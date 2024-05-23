@@ -56,7 +56,7 @@ export default function SignUpScreen({ navigation }) {
                 userId: data.userId,
               })
             );
-            navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
+            navigation.navigate("TabNavigator", { screen: "EventsListScreen" });
           }
         });
     } else {

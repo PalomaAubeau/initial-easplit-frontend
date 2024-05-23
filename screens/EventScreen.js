@@ -137,7 +137,7 @@ export default function EventScreen({ route, navigation }) {
       <TouchableOpacity
         style={styles.goback}
         activeOpacity={0.8}
-        onPress={() => navigation.navigate("Events")}
+        onPress={() => navigation.navigate("EventsList")}
       >
         <Icon name="arrow-back" size={35} color="#4E3CBB"></Icon>
         <Text style={styles.textGoBack}>{event.name}</Text>

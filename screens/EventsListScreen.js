@@ -37,7 +37,7 @@ const mockUpRepBackEvents = [
 // const PATH = "http://localhost:3000";
 const PATH = "https://easplit-backend.vercel.app";
 
-export default function EventHomeScreen({ navigation }) {
+export default function EventsListScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const [events, setEvents] = useState([]);
   const dispatch = useDispatch();

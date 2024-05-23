@@ -30,7 +30,7 @@ import SigninScreen from "./screens/SigninScreen";
 import SignUpScreen from "./screens/SignUpScreen.js";
 import HomeScreen from "./screens/HomeScreen";
 
-import EventHomeScreen from "./screens/EventHomeScreen";
+import EventsListScreen from "./screens/EventsListScreen.js";
 import EventScreen from "./screens/EventScreen";
 import CreatEventScreen from "./screens/CreatEventScreen.js";
 
@@ -72,7 +72,7 @@ const TabNavigator = () => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="CreateEvent" component={CreatEventScreen} />
       {/*Peut-être à renommer en UserEvents la ligne d'apprès pour ne pas confondre avec le screen Event (quand on press le bouton pour aller sur le détail de l'event)?*/}
-      <Tab.Screen name="Events" component={EventHomeScreen} />
+      <Tab.Screen name="EventsList" component={EventsListScreen} />
     </Tab.Navigator>
   );
 };
