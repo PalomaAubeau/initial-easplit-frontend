@@ -34,7 +34,6 @@ const mockUpRepBackEvents = [
   },
 ];
 
-//const PATH = "http://192.168.1.21:8081";
 // const PATH = "http://localhost:3000";
 const PATH = "https://easplit-backend.vercel.app";
 
@@ -51,8 +50,10 @@ export default function EventHomeScreen({ navigation }) {
       fetch(`${PATH}/events/user-events/${user.token}`)
         .then((response) => response.json())
         .then((data) => {
-          data.result && dispatch(loadEvents(data.events));
-          setEvents(data.events);
+          if (data.result) {
+            dispatch(loadEvents(data.events));
+            setEvents(data.events);
+          }
         });
     }, [])
   );
