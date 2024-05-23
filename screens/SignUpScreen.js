@@ -152,14 +152,13 @@ export default function LogScreen({ navigation }) {
               </View>
             </LinearGradient>
           </TouchableOpacity>
-          <View
-            style={globalStyles.textContainer}
+          <TouchableOpacity
             onPress={() => {
               navigation.navigate("Login");
             }}
           >
             <Text style={styles.existingAccount}>Compte déjà existant?</Text>
-          </View>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </LinearGradient>
@@ -212,6 +211,5 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-Regular",
     fontSize: 16,
     paddingTop: 30,
-    paddingBottom: 10,
   },
 });
