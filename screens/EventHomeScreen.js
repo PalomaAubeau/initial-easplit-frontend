@@ -43,6 +43,8 @@ export default function EventHomeScreen({ navigation }) {
       transactions: [],
     },
   ];
+
+  //2. Comportements
   // Récupération de tous les events liés à l'user avec isFocused plutôt que le hook useEffect pour recharhement de la page à chaque fois qu'on est dessus (si invitation à un évènement pendant la session de l'user)
   if (isFocused) {
     fetch(`${PATH}/events/userevents/${user.token}`)
@@ -68,7 +70,7 @@ export default function EventHomeScreen({ navigation }) {
     );
   });
 
-  //3.RETURN FINAL
+  //3. RETURN FINAL
   return (
     <LinearGradient
       style={styles.container}
@@ -81,7 +83,6 @@ export default function EventHomeScreen({ navigation }) {
           source={require("../assets/EASPLIT-NOIR.png")}
           style={styles.logo}
         />
-        {/* <Icon name="menu" size={35} color="#4E3CBB" /> */}
         <DropdownMenu />
       </View>
       <MaskedView
