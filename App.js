@@ -60,8 +60,8 @@ const TabNavigator = () => {
           } else if (route.name === "Events") {
             // Icône pour Event via le component
             return <SvgChampagne width={size} height={size} fill={color} />;
-          }else if (route.name === "CreateEvent"){
-            return <PlusButton width={size} height={size}/>;
+          } else if (route.name === "CreateEvent") {
+            return <PlusButton width={size} height={size} />;
           }
         },
         tabBarActiveTintColor: "#EB1194", // le rose
@@ -83,6 +83,7 @@ export default function App() {
   const [fontsLoaded, fontError] = useFonts({
     "CodecPro-Regular": require("./assets/fonts/CodecPro-Regular.ttf"),
     "CodecPro-ExtraBold": require("./assets/fonts/CodecPro-ExtraBold.ttf"),
+    "CodecPro-Heavy": require("./assets/fonts/CodecPro-Heavy.ttf"),
   });
 
   // Si le hook useFonts n'a pas eu le temps de charger les polices, on return null pour éviter de faire crasher l'app.
