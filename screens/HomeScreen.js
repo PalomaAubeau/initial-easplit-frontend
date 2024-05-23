@@ -1,36 +1,36 @@
-import {View,
+import {
+  View,
   Platform,
   Text,
   TouchableOpacity,
   ScrollView,
-  Image
- } from "react-native";
+  Image,
+} from "react-native";
 import { StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { updateFirstName } from "../reducers/user";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
-import MaskedView from '@react-native-masked-view/masked-view'; //pour nom en gradient
+import MaskedView from "@react-native-masked-view/masked-view"; //pour nom en gradient
 // import LastTransactions from "../components/LastTransaction"; //import du composant
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
- console.log('reducerUser' + user)
+  //console.log('reducerUser' + user)
   return (
     <View
       //behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
       <View style={styles.headerContainer}>
-
-      <Image
+        <Image
           source={require("../assets/EASPLIT-NOIR.png")}
           style={styles.logo}
         />
         <Icon name="menu" size={35} color="#4E3CBB" />
       </View>
 
-      <Text style={styles.title}>Bonjour {user.firstName}</Text> 
+      <Text style={styles.title}>Bonjour {user.firstName}</Text>
 
       <Text style={styles.titleList}>MON SOLDE</Text>
       <View style={styles.underline} />
@@ -48,19 +48,17 @@ export default function HomeScreen({ navigation }) {
 
       <Text style={styles.titleList2}>MES DERNIERES TRANSACTIONS</Text>
       <View></View>
-      <TouchableOpacity
-        style={styles.composantContainer}
-      >
-        <Text style={styles.textAddingContainer}></Text>
+      <TouchableOpacity style={styles.composantContainer}>
+        <Text style={styles.textAddingContainer}>
+          COMPOSANT LAST TRANSACTION
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.composantContainer}
-      >
-        <Text style={styles.textAddingContainer}>COMPOSANT LAST TRANSACTION</Text>
+      <TouchableOpacity style={styles.composantContainer}>
+        <Text style={styles.textAddingContainer}>
+          COMPOSANT LAST TRANSACTION
+        </Text>
       </TouchableOpacity>
       <Text style={styles.titleList2}>MES DERNIERS EVENTS</Text>
-
-
 
       <TouchableOpacity
         style={styles.newEventContainer}
@@ -98,8 +96,8 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 100,
-    height: 100, 
-    resizeMode: "contain", 
+    height: 100,
+    resizeMode: "contain",
   },
   headerContainer: {
     flexDirection: "row",
@@ -132,18 +130,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
-    
   },
   buttonReloadView: {
     //pour glisser a droite le button
     flexDirection: "row",
     justifyContent: "flex-end",
     marginTop: 10,
-    marginBottom:15,
+    marginBottom: 15,
   },
-  buttonReload2:{
+  buttonReload2: {
     color: "#EB1194",
-
   },
   titleList: {
     fontWeight: "bold",

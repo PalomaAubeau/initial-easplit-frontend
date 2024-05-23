@@ -15,16 +15,14 @@ import React, { useState } from "react";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
 
-// const PATH = "http://localhost:3000";
+//  const PATH = "http://localhost:3000";
 //const PATH = "http://192.168.1.21:8081";
 const PATH = "https://easplit-backend.vercel.app";
 
-export default function LogScreen({ navigation }) {
+export default function SigninScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  //console.log(user);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginErrorMessage, setLoginErrorMessage] = useState(null);
@@ -38,19 +36,17 @@ export default function LogScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (!data.result) {
           setLoginErrorMessage(data.error);
         } else {
-          console.log(data);
+          console.log('data renvoyée lors du login', data)
           dispatch(
             login({
               token: data.token,
               email: data.email,
               firstName: data.firstName,
               balance: data.balance,
-              transactions: data.transactions
-              //password: data.password, //pourquoi save le password dans le reducer ??
+              userId: data.userId
             })
           );
 

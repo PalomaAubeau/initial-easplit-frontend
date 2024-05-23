@@ -22,7 +22,7 @@ const PATH = "http://localhost:3000";
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-export default function LogScreen({ navigation }) {
+export default function SignUpScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const dispatch = useDispatch();
   const [firstName, setFirstName] = useState("");
@@ -53,6 +53,7 @@ export default function LogScreen({ navigation }) {
                 email: data.email,
                 balance: data.balance,
                 token: data.token,
+                userId: data.userId,
               })
             );
             navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
@@ -154,7 +155,7 @@ export default function LogScreen({ navigation }) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("Login");
+              navigation.navigate("Signin");
             }}
           >
             <Text style={styles.existingAccount}>Compte déjà existant?</Text>

@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { useSelector } from 'react-redux';
+
+
+
 
 // Composant Transaction
 const Transaction = ({ name, type, amount }) => {
@@ -43,13 +47,17 @@ const LastTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const token = 'user_token_here'; // Remplacez par le token réel de l'utilisateur
+  // const token = 'user_token_here'; // Remplacez par le token réel de l'utilisateur
+
+  const user = useSelector((state) => state.user.value);
+
+  const userId = user.userId
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
         // Récupération des transactions de l'utilisateur
-        const response = await fetch(`http://localhost:3000/transactions/${token}`);
+        const response = await fetch(`http://localhost:3000/transactions/userTransactions/${userId}`);
         const data = await response.json();
         
         if (data.status === 200) {
