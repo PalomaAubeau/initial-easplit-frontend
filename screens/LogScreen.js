@@ -49,6 +49,7 @@ export default function LogScreen({ navigation }) {
               email: data.email,
               firstName: data.firstName,
               balance: data.balance,
+              transactions: data.transactions
               //password: data.password, //pourquoi save le password dans le reducer ??
             })
           );

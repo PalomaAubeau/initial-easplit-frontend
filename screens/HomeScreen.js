@@ -51,7 +51,7 @@ export default function HomeScreen({ navigation }) {
       <TouchableOpacity
         style={styles.composantContainer}
       >
-        <Text style={styles.textAddingContainer}>COMPOSANT LAST TRANSACTION</Text>
+        <Text style={styles.textAddingContainer}></Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.composantContainer}
