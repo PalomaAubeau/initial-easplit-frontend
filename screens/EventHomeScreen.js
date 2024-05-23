@@ -13,9 +13,8 @@ import {
   Platform,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-//import React, { useState, useEffect } from "react";
 import { loadEvents } from "../reducers/user";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 
 //mock
@@ -36,7 +35,7 @@ const mockUpRepBackEvents = [
 ];
 
 //const PATH = "http://192.168.1.21:8081";
-// const PATH = "http://localhost:3000";
+//const PATH = "http://localhost:3000";
 const PATH = "https://easplit-backend.vercel.app";
 
 export default function EventHomeScreen({ navigation }) {
@@ -46,7 +45,7 @@ export default function EventHomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
 
   //2. Comportements
-  // Récupération de tous les events liés à l'user avec useFocusEffect avec useCallback (pour éviter des fetch à l'infini) plutôt que le hook useEffect pour recharhement de la page à chaque fois qu'on est dessus (si invitation à un évènement pendant la session de l'user)
+  // Récupération de tous les events liés à l'user - mise à jour à chaque fois qu'on revient sur le screen
   useFocusEffect(
     useCallback(() => {
       fetch(`${PATH}/events/user-events/${user.token}`)
@@ -59,6 +58,7 @@ export default function EventHomeScreen({ navigation }) {
   );
 
   // .map sur la BDD pour faire une copie du tableau d'objets récupéré et afficher un composant
+  // Au moment d'appeler la fonction navigate on ajoute en paramètre l'_id de l'event pour pouvoir le récupérer ailleurs
   const userEvents = events.map((data) => {
     return (
       <TouchableOpacity
@@ -234,3 +234,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+// Explications du choix de hook:
+
+//Le hook useEffect ne permet pas de recharger à nouveau la page si une invitation est envoyée à l'user alors qu'il est connecté (pas de mise à jour de la page entre les navigations entre les différents écran)
+
+//Le hook useFocusEffect est utilisé pour exécuter des effets secondaires lorsqu'un écran est mis au point et pour les nettoyer lorsqu'il devient flou . D'un autre côté, useIsFocused est un hook qui renvoie simplement un booléen indiquant si l'écran est actuellement focalisé ou non.
+
+//Le hook useCallback est un outil puissant qui peut être utilisé pour améliorer les performances des composants React . En mémorisant les fonctions de rappel, useCallback peut éviter les rendus inutiles, ce qui peut conduire à une expérience utilisateur plus fluide.
