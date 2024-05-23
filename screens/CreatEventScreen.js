@@ -219,7 +219,10 @@ export default function CreateEventScreen({ navigation }) {
                 >
                   Nom de l'évènement
                 </Text>
-                <Input placeholder="Nom de l'évènement" />
+                <Input placeholder="Nom de l'évènement" 
+                value={eventName}
+                onChangeText={setEventName}
+                />
                 <Text
                   style={[
                     globalStyles.inputLabel,
@@ -229,17 +232,24 @@ export default function CreateEventScreen({ navigation }) {
                 >
                   Date de l'évènement
                 </Text>
-                <Input placeholder="Date de l'évènement" isDate={true} />
+                <Input 
+                value={eventDate}
+                onChangeText={setEventDate}
+                placeholder="Date de l'évènement" isDate={true} />
                 <Text
                   style={[
                     globalStyles.inputLabel,
                     globalStyles.capital,
                     styles.margin,
                   ]}
+                  
                 >
                   Date de limite de paiement
                 </Text>
-                <Input placeholder="Date de l'évènement" isDate={true} />
+                <Input placeholder="Date limite de paiement" isDate={true} 
+                value={deadLine}
+                onChangeText={setDeadLine}
+                />
                 <Text
                   style={[
                     globalStyles.inputLabel,
@@ -249,7 +259,10 @@ export default function CreateEventScreen({ navigation }) {
                 >
                   Description
                 </Text>
-                <Input placeholder="Description" />
+                <Input placeholder="Description"
+                value={eventDesc}
+                onChangeText={setEventDesc}
+                 />
                 <Text
                   style={[
                     globalStyles.titleList,

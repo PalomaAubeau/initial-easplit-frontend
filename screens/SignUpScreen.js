@@ -53,6 +53,7 @@ export default function SignUpScreen({ navigation }) {
                 email: data.email,
                 balance: data.balance,
                 token: data.token,
+                userId: data.userId,
               })
             );
             navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });
