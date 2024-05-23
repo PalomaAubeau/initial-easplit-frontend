@@ -1,61 +1,90 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
+import { useSelector } from "react-redux";
 
 // Composant Transaction
 const Transaction = ({ name, type, amount }) => {
   const getTransactionText = () => {
     switch (type) {
-      case 'refund':
+      case "refund":
         return `Remboursement +${name}`;
-      case 'reload':
-        return 'Rechargement de mon compte';
-      case 'payment':
+      case "reload":
+        return "Rechargement de mon compte";
+      case "payment":
         return `Paiement pour l'évènement ${name}`;
       default:
-        return '';
+        return "";
     }
   };
 
   const getTransactionDescription = () => {
     switch (type) {
-      case 'refund':
-        return 'Remboursement clôture événement';
-      case 'reload':
-        return 'Rechargement de mon compte';
-      case 'payment':
+      case "refund":
+        return "Remboursement clôture événement";
+      case "reload":
+        return "Rechargement de mon compte";
+      case "payment":
         return `Participation`;
       default:
-        return '';
+        return "";
     }
   };
 
   return (
     <View style={styles.transactionContainer}>
-      <Text style={styles.transactionText}>{getTransactionText()}</Text>
-      <Text style={styles.transactionDescription}>{getTransactionDescription()}</Text>
+      <Text style={styles.transactionName}>{name}</Text>
+      <Text style={styles.transactionDescription}>
+        {getTransactionDescription()}
+      </Text>
       <Text style={styles.transactionAmount}>{amount} €</Text>
     </View>
   );
 };
 
 // Composant LastTransactions
-const LastTransactions = ({ userId }) => {
+const LastTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const user = useSelector((state) => state.user.value);
+  const userId = user.userId;
+  console.log('dans le composant', userId)
+
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        // Récupération des transactions de l'utilisateur
-        const response = await fetch(`http://localhost:3000/user/${userId}/transactions`);
+        const response = await fetch(
+          `https://easplit-backend.vercel.app/transactions/userTransactions/${userId}`
+        );
+    
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP ! Statut : ${response.status}`);
+        }
+    
         const data = await response.json();
-        
+    
         if (data.response) {
           const transactionDetails = await Promise.all(
             data.transactions.map(async (transaction) => {
-              const res = await fetch(`http://localhost:3000/${transaction._id}`);
+              const res = await fetch(
+                `https://easplit-backend.vercel.app/transactions/${transaction._id}`
+              );
+    
+              if (!res.ok) {
+                throw new Error(`Erreur HTTP ! Statut : ${res.status}`);
+              }
+    
               const transactionData = await res.json();
-              return transactionData.response ? transactionData.transaction : null;
+              return transactionData.response
+                ? transactionData.transaction
+                : null;
             })
           );
           setTransactions(transactionDetails.filter(Boolean)); // Filtre les valeurs nulles
@@ -64,35 +93,40 @@ const LastTransactions = ({ userId }) => {
         }
         setLoading(false);
       } catch (error) {
-        console.error(error);
+        console.error("Échec de la récupération des transactions", error);
         setLoading(false);
       }
     };
+    
 
     fetchTransactions();
   }, [userId]);
 
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
-
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>MES DERNIÈRES TRANSACTIONS</Text>
-      <FlatList
-        data={transactions}
-        renderItem={({ item }) => (
-          <Transaction
-            name={item.eventId.name}
-            type={item.type}
-            amount={item.amount}
-          />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <FlatList
+          data={transactions}
+          renderItem={({ item }) => {
+            if (item && item.eventId) {
+              return (
+                <Transaction
+                  name={item.eventId.name}
+                  type={item.type}
+                  amount={item.amount}
+                />
+              );
+            } else {
+              return null; // ou une autre indication d'erreur
+            }
+          }}
+        />
+      )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -100,28 +134,28 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   transactionContainer: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     padding: 15,
     marginBottom: 10,
     borderRadius: 5,
   },
-  transactionText: {
+  transactionName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   transactionDescription: {
     fontSize: 14,
-    color: '#888',
+    color: "#888",
   },
   transactionAmount: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#ff69b4',
-    textAlign: 'right',
+    fontWeight: "bold",
+    color: "#ff69b4",
+    textAlign: "right",
   },
 });
 

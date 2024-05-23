@@ -12,6 +12,7 @@ import { updateFirstName } from "../reducers/user";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view"; //pour nom en gradient
+import LastTransactions from "../components/LastTransaction";
 // import LastTransactions from "../components/LastTransaction"; //import du composant
 
 export default function HomeScreen({ navigation }) {
@@ -47,17 +48,9 @@ export default function HomeScreen({ navigation }) {
       </View>
 
       <Text style={styles.titleList2}>MES DERNIERES TRANSACTIONS</Text>
-      <View></View>
-      <TouchableOpacity style={styles.composantContainer}>
-        <Text style={styles.textAddingContainer}>
-          COMPOSANT LAST TRANSACTION
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.composantContainer}>
-        <Text style={styles.textAddingContainer}>
-          COMPOSANT LAST TRANSACTION
-        </Text>
-      </TouchableOpacity>
+      <LastTransactions/>
+      
+    
       <Text style={styles.titleList2}>MES DERNIERS EVENTS</Text>
 
       <TouchableOpacity

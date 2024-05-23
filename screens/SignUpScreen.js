@@ -16,9 +16,9 @@ import { login } from "../reducers/user";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
 
-const PATH = "http://localhost:3000";
+// const PATH = "http://localhost:3000";
 //const PATH = "http://192.168.1.21:8081";
-// const PATH = "https://easplit-backend.vercel.app";
+const PATH = "https://easplit-backend.vercel.app";
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -53,6 +53,7 @@ export default function SignUpScreen({ navigation }) {
                 email: data.email,
                 balance: data.balance,
                 token: data.token,
+                userId: data.userId,
               })
             );
             navigation.navigate("TabNavigator", { screen: "EventHomeScreen" });

@@ -15,7 +15,7 @@ import React, { useState } from "react";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
 
-// const PATH = "http://localhost:3000";
+//  const PATH = "http://localhost:3000";
 //const PATH = "http://192.168.1.21:8081";
 const PATH = "https://easplit-backend.vercel.app";
 
@@ -39,12 +39,14 @@ export default function SigninScreen({ navigation }) {
         if (!data.result) {
           setLoginErrorMessage(data.error);
         } else {
+          console.log('data renvoyée lors du login', data)
           dispatch(
             login({
               token: data.token,
               email: data.email,
               firstName: data.firstName,
               balance: data.balance,
+              userId: data.userId
             })
           );
 
