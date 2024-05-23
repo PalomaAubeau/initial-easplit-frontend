@@ -22,18 +22,18 @@ import GuestCard from '../components/GuestCard';
 import MaskedView from '@react-native-masked-view/masked-view';
 import globalStyles from '../styles/globalStyles';
 
-//const PATH = "http://192.168.1.21:8081";
-//const PATH = "http://localhost:3000";
-const PATH = "https://easplit-backend.vercel.app";
+const PATH = "http://192.168.1.92:3000"
+// const PATH = "http://localhost:3000";
+// const PATH = "https://easplit-backend.vercel.app";
 
 export default function CreateEventScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
-  const [eventName, setEventName] = useState(null);
-  const [eventDate, setEventDate] = useState(null);
-  const [deadLine, setDeadLine] = useState(null);
-  const [eventDesc, setEventDesc] = useState(null);
+  const [eventName, setEventName] = useState('');
+  const [eventDate, setEventDate] = useState('');
+  const [deadLine, setDeadLine] = useState('');
+  const [eventDesc, setEventDesc] = useState('');
 
   const [participants, setParticipants] = useState([]);
   const [totalAmount, setTotalAmount] = useState('');
@@ -81,6 +81,14 @@ export default function CreateEventScreen({ navigation }) {
   //Fonction en cours :) 
   const createEvent = async () => {
     try {
+      console.log('Organizer:', user.token);
+      console.log('Event Name:', eventName);
+      console.log('Event Date:', eventDate);
+      console.log('Payment Date:', deadLine);
+      console.log('Description:', eventDesc);
+      console.log('Participants:', participants);
+      console.log('Total Amount:', totalAmount);
+      console.log('Amount Per Part:', amountPerPart);
       // 1. Envoyer les données de l'événement au backend pour enregistrer l'événement dans la base de données
       const eventResponse = await fetch(`${PATH}/events/create-event/${user.token}`, { // Faut bien mettre le token, on est d'accord ?
         method: 'POST',
@@ -88,60 +96,59 @@ export default function CreateEventScreen({ navigation }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          organizer: user._id, // Id normalement récupéré grâce au useSelector plus haut
           name: eventName,
           eventDate,
           paymentDate: deadLine,
           description: eventDesc,
-          guests: participants.map((participant) => ({
-            // Pour chaque participant, on peut transmettre les ID s'ils existent déjà dans la base de données,
-            // soit les adresse e-mail pour les invités qui ne sont pas encore enregistrés
-            _id: participant._id, // Si y a l'ID de l'utilisateur, sinon null
-            email: participant.email, // Si pas existant
-            share: participant.parts, // Le nombre de parts qu'ils prennent
-            hasPaid: false, // false car ils n'ont pas encore payé
-          })),
-          totalSum: parseFloat(totalAmount),
-          shareAmount: parseFloat(amountPerPart),
+          // guests: participants.map((participant) => ({
+          //   // Pour chaque participant, on peut transmettre les ID s'ils existent déjà dans la base de données,
+          //   // soit les adresse e-mail pour les invités qui ne sont pas encore enregistrés
+          //   _id: participant._id, // Si y a l'ID de l'utilisateur, sinon null
+          //   email: participant.email, // Si pas existant
+          //   share: participant.parts, // Le nombre de parts qu'ils prennent
+          //   hasPaid: false, // false car ils n'ont pas encore payé
+          // })),
+          // totalSum: parseFloat(totalAmount),
+          // shareAmount: parseFloat(amountPerPart),
         }),
       });
-  
-      if (!eventResponse.ok) {
-        throw new Error('Erreur lors de la création de l\'événement');
-      }
-  
       // 2. Récupérer l'ID de l'événement créé à partir de la réponse du serveur
-      const { _id } = await eventResponse.json();
+      const data = await eventResponse.json();
+      console.log(data)
   
-      // 3. on met à jour chaque participant avec l'ID de l'événement créé (en cours car je galère de ouf)
-      await Promise.all(participants.map(async (participant) => {
 
-        //Création fonction pour update le User avec un nouvel évènement :
-        const updateUserWithEvent = async (userId, eventId) => {
-          try {
-            // Rechercher l'utilisateur par son ID
-            const user = await User.findById(userId);
+  
+  
+      // // 3. on met à jour chaque participant avec l'ID de l'événement créé (en cours car je galère de ouf)
+      // await Promise.all(participants.map(async (participant) => {
+
+      //   //Création fonction pour update le User avec un nouvel évènement :
+      //   const updateUserWithEvent = async (userId, eventId) => {
+      //     try {
+      //       // Rechercher l'utilisateur par son ID
+      //       const user = await User.findById(userId);
         
-            // Si l'utilisateur est trouvé, mettre à jour son champ events avec l'ID de l'événement
-            if (user) {
-              user.events.push(eventId);
-              await user.save();
-            } else {
-              console.log(`Utilisateur avec l'ID ${userId} non trouvé`);
-            }
-          } catch (error) {
-            console.error('Erreur lors de la mise à jour de l\'utilisateur avec l\'événement :', error);
-          }
-        };
-        // Si l'utilisateur existe déjà dans la base de données, mettez à jour son champ events avec l'ID de l'événement
-        if (participant._id) {
-          await updateUserWithEvent(participant._id, _id);//Faire la manipulation pour Update les user avec un event
-        }
-      }));
+      //       // Si l'utilisateur est trouvé, mettre à jour son champ events avec l'ID de l'événement
+      //       if (user) {
+      //         user.events.push(eventId);
+      //         await user.save();
+      //       } else {
+      //         console.log(`Utilisateur avec l'ID ${userId} non trouvé`);
+      //       }
+      //     } catch (error) {
+      //       console.error('Erreur lors de la mise à jour de l\'utilisateur avec l\'événement :', error);
+      //     }
+      //   };
+      //   // Si l'utilisateur existe déjà dans la base de données, mettez à jour son champ events avec l'ID de l'événement
+      //   if (participant._id) {
+      //     await updateUserWithEvent(participant._id, _id);//Faire la manipulation pour Update les user avec un event
+      //   }
+      // }));
   
       // 4. Rediriger ou effectuer toute autre action nécessaire après la création de l'événement
       // Rediriger vers une autre page, afficher un message de succès, etc.
-      navigation.navigate('Page avec des confettis, Hourra');
+
+      // navigation.navigate('Page avec des confettis, Hourra');
   
     } catch (error) {
       console.error('Erreur lors de la création de l\'événement :', error);
@@ -151,15 +158,27 @@ export default function CreateEventScreen({ navigation }) {
 
 
   //Bouton handleSubmit
+  // const handleSubmitEvent = () => {
+  //   // Vérifiez que toutes les données requises sont remplies avant de créer l'événement
+  //   if (eventName && eventDate && deadLine && eventDesc && participants.length > 0 && totalAmount && amountPerPart) {
+  //     // Appelez la fonction pour créer l'événement
+  //     createEvent();
+  //   } else {
+  //     // Affichez un message d'erreur ou effectuez d'autres actions en fonction de vos besoins
+  //     console.error('Veuillez remplir tous les champs avant de créer l\'événement');
+  //   }
+  // };
+
   const handleSubmitEvent = () => {
-    // Vérifiez que toutes les données requises sont remplies avant de créer l'événement
-    if (eventName && eventDate && deadLine && eventDesc && participants.length > 0 && totalAmount && amountPerPart) {
-      // Appelez la fonction pour créer l'événement
-      createEvent();
-    } else {
-      // Affichez un message d'erreur ou effectuez d'autres actions en fonction de vos besoins
-      console.error('Veuillez remplir tous les champs avant de créer l\'événement');
-    }
+    console.log('Event Name:', eventName);
+    console.log('Event Date:', eventDate);
+    console.log('Dead Line:', deadLine);
+    console.log('Event Description:', eventDesc);
+    console.log('Participants:', participants.length);
+    console.log('Total Amount:', totalAmount);
+    console.log('Amount Per Part:', amountPerPart);
+  
+    createEvent();
   };
 
   return (
@@ -221,7 +240,7 @@ export default function CreateEventScreen({ navigation }) {
                 </Text>
                 <Input placeholder="Nom de l'évènement" 
                 value={eventName}
-                onChangeText={setEventName}
+                onChangeText={(value) => setEventName(value)}
                 />
                 <Text
                   style={[
@@ -234,8 +253,8 @@ export default function CreateEventScreen({ navigation }) {
                 </Text>
                 <Input 
                 value={eventDate}
-                onChangeText={setEventDate}
-                placeholder="Date de l'évènement" isDate={true} />
+                onChangeText={(value) => setEventDate(value)}
+                placeholder="Date de l'évènement"  />
                 <Text
                   style={[
                     globalStyles.inputLabel,
@@ -246,9 +265,9 @@ export default function CreateEventScreen({ navigation }) {
                 >
                   Date de limite de paiement
                 </Text>
-                <Input placeholder="Date limite de paiement" isDate={true} 
+                <Input placeholder="Date limite de paiement" 
                 value={deadLine}
-                onChangeText={setDeadLine}
+                onChangeText={(value) => setDeadLine(value)}
                 />
                 <Text
                   style={[
@@ -261,7 +280,7 @@ export default function CreateEventScreen({ navigation }) {
                 </Text>
                 <Input placeholder="Description"
                 value={eventDesc}
-                onChangeText={setEventDesc}
+                onChangeText={(value) => setEventDesc(value)}
                  />
                 <Text
                   style={[

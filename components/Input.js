@@ -3,14 +3,9 @@ import { StyleSheet, View, TextInput, Text, TouchableOpacity, Platform } from 'r
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Input = (props) => {
-  const { placeholder, label, secureTextEntry, isDate } = props;
-  const [text, setText] = useState('');
+  const { placeholder, label, secureTextEntry, isDate, value, onChangeText } = props;
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
-
-  const onChangeText = (value) => {
-    setText(value);
-  };
 
   const showDatePicker = () => {
     setShow(true);
@@ -20,7 +15,7 @@ const Input = (props) => {
     setShow(Platform.OS === 'ios');
     if (selectedDate) {
       setDate(selectedDate);
-      setText(selectedDate.toLocaleDateString('fr-FR'));
+      onChangeText(selectedDate.toLocaleDateString('fr-FR'));//A changer pour format YYYY-MM-DD
     }
   };
 
@@ -31,7 +26,7 @@ const Input = (props) => {
           style={styles.inputField}
           placeholder={placeholder}
           secureTextEntry={secureTextEntry}
-          value={text}
+          value={value}
           onChangeText={onChangeText}
           placeholderTextColor="transparent"
         />
@@ -40,7 +35,7 @@ const Input = (props) => {
           <TextInput
             style={styles.inputField}
             placeholder={placeholder}
-            value={text}
+            value={value}
             editable={false}
             placeholderTextColor="transparent"
           />
@@ -65,10 +60,10 @@ const styles = StyleSheet.create({
   inputWrapper: {
     position: 'relative',
     padding: 20,
-    marginHorizontal:10,
-    backgroundColor:"#fff",
-    borderRadius:10,
-    marginBottom:10,
+    marginHorizontal: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    marginBottom: 10,
   },
   inputField: {
     borderBottomWidth: 1,
@@ -80,7 +75,7 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     position: 'absolute',
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     top: 20,
     left: 0,
     fontSize: 14,
@@ -99,7 +94,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
   },
-
 });
 
 export default Input;
