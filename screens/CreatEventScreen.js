@@ -22,6 +22,10 @@ import GuestCard from '../components/GuestCard';
 import MaskedView from '@react-native-masked-view/masked-view';
 import globalStyles from '../styles/globalStyles';
 
+//const PATH = "http://192.168.1.21:8081";
+//const PATH = "http://localhost:3000";
+const PATH = "https://easplit-backend.vercel.app";
+
 export default function CreateEventScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
@@ -78,7 +82,7 @@ export default function CreateEventScreen({ navigation }) {
   const createEvent = async () => {
     try {
       // 1. Envoyer les données de l'événement au backend pour enregistrer l'événement dans la base de données
-      const eventResponse = await fetch('url', {
+      const eventResponse = await fetch(`${PATH}/events/create-event/${user.token}`, { // Faut bien mettre le token, on est d'accord ?
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
