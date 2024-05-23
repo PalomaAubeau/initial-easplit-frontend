@@ -1,6 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  value: { token: null, firstName: null, email: null, events: [], balance: null },
+  value: {
+    token: null,
+    firstName: null,
+    email: null,
+    events: [],
+    balance: null,
+  },
 };
 
 export const userSlice = createSlice({
@@ -20,7 +26,7 @@ export const userSlice = createSlice({
       state.value.balance = null; //bien réinitialiser au logout pour éviter les bugs et conflits (et bien reset à zero le champs)
     },
     addEvent: (state, action) => {
-      state.value.events.push(action.payload);
+      state.value.events.unshift(action.payload);
     },
     // removeEvent: (state, action) => {
     //   state.value.events = state.value.events.filter(
