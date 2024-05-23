@@ -31,7 +31,7 @@ const Transaction = ({ name, type, amount }) => {
 
   return (
     <View style={styles.transactionContainer}>
-      <Text style={styles.transactionName}>{name}</Text>
+      <Text style={styles.transactionText}>{getTransactionText()}</Text>
       <Text style={styles.transactionDescription}>{getTransactionDescription()}</Text>
       <Text style={styles.transactionAmount}>{amount} €</Text>
     </View>
@@ -39,23 +39,28 @@ const Transaction = ({ name, type, amount }) => {
 };
 
 // Composant LastTransactions
-const LastTransactions = () => {
+const LastTransactions = ({ userId }) => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const token = 'user_token_here'; // Remplacez par le token réel de l'utilisateur
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
         // Récupération des transactions de l'utilisateur
-        const response = await fetch(`http://localhost:3000/transactions/${token}`);
+        const response = await fetch(`http://localhost:3000/user/${userId}/transactions`);
         const data = await response.json();
         
-        if (data.status === 200) {
-          setTransactions(data.data);
+        if (data.response) {
+          const transactionDetails = await Promise.all(
+            data.transactions.map(async (transaction) => {
+              const res = await fetch(`http://localhost:3000/${transaction._id}`);
+              const transactionData = await res.json();
+              return transactionData.response ? transactionData.transaction : null;
+            })
+          );
+          setTransactions(transactionDetails.filter(Boolean)); // Filtre les valeurs nulles
         } else {
-          console.error(data.data);
+          console.error(data.error);
         }
         setLoading(false);
       } catch (error) {
@@ -65,7 +70,7 @@ const LastTransactions = () => {
     };
 
     fetchTransactions();
-  }, [token]);
+  }, [userId]);
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -78,7 +83,7 @@ const LastTransactions = () => {
         data={transactions}
         renderItem={({ item }) => (
           <Transaction
-            name={item.name}
+            name={item.eventId.name}
             type={item.type}
             amount={item.amount}
           />
@@ -104,7 +109,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
   },
-  transactionName: {
+  transactionText: {
     fontSize: 16,
     fontWeight: 'bold',
   },
