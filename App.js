@@ -57,7 +57,7 @@ const TabNavigator = () => {
           if (route.name === "Home") {
             // Icône pour Home via Ionicons
             return <Icon name="home-sharp" size={size} color={color} />;
-          } else if (route.name === "Events") {
+          } else if (route.name === "EventsList") {
             // Icône pour Event via le component
             return <SvgChampagne width={size} height={size} fill={color} />;
           } else if (route.name === "CreateEvent") {
