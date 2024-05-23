@@ -95,11 +95,7 @@ export default function EventHomeScreen({ navigation }) {
           style={styles.linearGradient}
         />
       </MaskedView>
-      <Text
-        style={[styles.margin, globalStyles.inputLabel, globalStyles.capital]}
-      >
-        MES ÉVÈNEMENTS
-      </Text>
+      <Text style={styles.listText}>MES ÉVÈNEMENTS</Text>
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -200,13 +196,18 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   titleText: {
-    //fontFamily: "CodecPro-ExtraBold",
     fontWeight: "bold",
     fontSize: 28,
     textAlign: "center",
     color: "white",
     marginTop: 30,
-    // marginBottom: 40,
+    //marginBottom: 40,
+  },
+  listText: {
+    fontFamily: "CodecPro-ExtraBold",
+    color: "#4E3CBB",
+    fontSize: 16,
+    marginTop: 30,
   },
   textCurrentEventContainer: {
     fontFamily: "CodecPro-Heavy",
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   message: {
-    fontFamily: "CodecPro-Heavy",
+    fontFamily: "CodecPro-Regular",
     color: "#EB1194",
     textAlign: "center",
     marginTop: 30,

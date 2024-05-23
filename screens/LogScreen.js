@@ -15,9 +15,9 @@ import React, { useState } from "react";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
 
-  // const PATH = "http://localhost:3000"; 
+// const PATH = "http://localhost:3000";
 //const PATH = "http://192.168.1.21:8081";
- const PATH = "https://easplit-backend.vercel.app";
+const PATH = "https://easplit-backend.vercel.app";
 
 export default function LogScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
@@ -38,7 +38,7 @@ export default function LogScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
+        console.log(data);
         if (!data.result) {
           setLoginErrorMessage(data.error);
         } else {
@@ -213,8 +213,9 @@ const styles = StyleSheet.create({
     color: "red",
   },
   noaccount: {
+    fontFamily: "CodecPro-Regular",
+    fontSize: 16,
     paddingTop: 30,
     paddingBottom: 10,
-    
   },
 });
