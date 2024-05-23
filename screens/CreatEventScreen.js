@@ -111,9 +111,27 @@ export default function CreateEventScreen({ navigation }) {
   
       // 3. on met à jour chaque participant avec l'ID de l'événement créé (en cours car je galère de ouf)
       await Promise.all(participants.map(async (participant) => {
+
+        //Création fonction pour update le User avec un nouvel évènement :
+        const updateUserWithEvent = async (userId, eventId) => {
+          try {
+            // Rechercher l'utilisateur par son ID
+            const user = await User.findById(userId);
+        
+            // Si l'utilisateur est trouvé, mettre à jour son champ events avec l'ID de l'événement
+            if (user) {
+              user.events.push(eventId);
+              await user.save();
+            } else {
+              console.log(`Utilisateur avec l'ID ${userId} non trouvé`);
+            }
+          } catch (error) {
+            console.error('Erreur lors de la mise à jour de l\'utilisateur avec l\'événement :', error);
+          }
+        };
         // Si l'utilisateur existe déjà dans la base de données, mettez à jour son champ events avec l'ID de l'événement
         if (participant._id) {
-          await updateUserWithEvent(participant._id, _id);//Faire la manipulation pour Update les user avec un event (la fonction existe pas encore;c'est un pense-bête)
+          await updateUserWithEvent(participant._id, _id);//Faire la manipulation pour Update les user avec un event
         }
       }));
   
