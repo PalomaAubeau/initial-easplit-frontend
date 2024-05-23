@@ -45,24 +45,47 @@ export default function EventScreen({ navigation }) {
         <DropdownMenu />
       </View>
       <TouchableOpacity
-        style={[
-          styles.newEventContainer,
-          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-        ]}
+        style={styles.goback}
         activeOpacity={0.8}
         onPress={() => navigation.navigate("Events")}
       >
-        <Text style={styles.textAddingContainer}>Retour</Text>
+        <Icon name="arrow-back" size={35} color="#4E3CBB"></Icon>
+        <Text style={styles.textGoBack}>Récupérer nom event via son id</Text>
       </TouchableOpacity>
-      <Text style={styles.listText}>MES ÉVÈNEMENTS</Text>
+
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.message}>
-          Aucun évènement à afficher pour le moment
-        </Text>
+        <View
+          style={[
+            styles.currentListContainer,
+            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+          ]}
+        >
+          <Text style={styles.textCurrentListContainer}>Nom dépense </Text>
+          <View style={styles.leftPartInsideContainer}>
+            <View style={styles.leftPartText}>
+              <Text style={styles.textCurrentListContainer}>XX€</Text>
+            </View>
+            <Icon name="document-text-sharp" size={25} color="#4E3CBB"></Icon>
+          </View>
+        </View>
       </ScrollView>
+      <View
+        style={[
+          styles.newEventContainer,
+          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+        ]}
+      >
+        <Text style={styles.textAddingContainer}>Ajouter une dépense </Text>
+        <View style={styles.leftPartInsideContainer}>
+          <View style={styles.leftPartText}>
+            <Text style={styles.textAddingContainer}>XX€</Text>
+          </View>
+          <Icon name="add-circle" size={30} color="#EB1194"></Icon>
+        </View>
+      </View>
     </LinearGradient>
   );
 }
@@ -78,6 +101,13 @@ const styles = StyleSheet.create({
     //justifyContent: "center",
     paddingLeft: 30,
     paddingRight: 30,
+  },
+  goback: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginTop: 30,
+    marginBottom: 30,
   },
   scrollView: {
     //flex: 0.1,
@@ -99,10 +129,10 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   // EVENTS CONTAINER
-  eventContainer: {
+  currentListContainer: {
     backgroundColor: "#FFFFFF",
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     padding: 15,
     borderRadius: 10,
@@ -132,6 +162,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
   },
+  leftPartInsideContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   // TEXTES
   linearGradient: {
     borderRadius: 0,
@@ -153,8 +187,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 30,
   },
-  textCurrentEventContainer: {
-    fontFamily: "CodecPro-Heavy",
+  textCurrentListContainer: {
+    fontFamily: "CodecPro-Regular",
     color: "#4E3CBB",
     fontSize: 16,
   },
@@ -169,5 +203,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     fontSize: 16,
+  },
+  textGoBack: {
+    fontFamily: "CodecPro-ExtraBold",
+    color: "#4E3CBB",
+    fontSize: 20,
+    marginLeft: 20,
+  },
+  //AUTRES
+  leftPartText: {
+    marginRight: 30,
   },
 });
