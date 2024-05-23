@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import globalStyles from "../styles/globalStyles";
+//import globalStyles from "../styles/globalStyles";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
 import DropdownMenu from "../components/DropdownMenu";
@@ -13,8 +13,9 @@ import {
   Platform,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import React, { useState, useEffect } from "react";
+//import React, { useState, useEffect } from "react";
 import { loadEvents } from "../reducers/user";
+import { useIsFocused } from "@react-navigation/native";
 
 //const PATH = "http://192.168.1.21:8081";
 //const PATH = "http://localhost:3000";
@@ -22,9 +23,9 @@ const PATH = "https://easplit-backend.vercel.app";
 
 export default function EventHomeScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
+  const isFocused = useIsFocused();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  const [newEvent, setNewEvent] = useState("");
 
   //le back renvoie un tableau d'objet comme celui-ci
   const mockUpRepBackEvents = [
@@ -42,14 +43,15 @@ export default function EventHomeScreen({ navigation }) {
       transactions: [],
     },
   ];
-  // Récupération de tous les events liés à l'user
-  useEffect(() => {
+  // Récupération de tous les events liés à l'user avec isFocused plutôt que le hook useEffect pour recharhement de la page à chaque fois qu'on est dessus (si invitation à un évènement pendant la session de l'user)
+  if (isFocused) {
     fetch(`${PATH}/events/userevents/${user.token}`)
       .then((response) => response.json())
       .then((data) => {
         data.result && dispatch(loadEvents(data.events));
       });
-  }, []);
+  }
+
   // .map sur la BDD pour faire une copie du tableau d'objets récupéré et afficher un composant
   const userEvents = user.events.map((data, i) => {
     return (
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
     //flex: 0.1,
     //height: 60,
     //backgroundColor: "#4E3CBB",
-    marginTop: 10,
+    marginTop: 20,
     marginBottom: 20,
   },
   headerContainer: {
@@ -223,7 +225,7 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-Regular",
     color: "#EB1194",
     textAlign: "center",
-    marginTop: 30,
+    marginTop: 20,
     fontSize: 16,
   },
 });
