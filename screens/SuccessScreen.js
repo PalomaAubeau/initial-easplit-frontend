@@ -15,7 +15,6 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 
 
-
 export default function SuccessScreen({ navigation }) {
   //3.RETURN FINAL
   return (
@@ -34,12 +33,6 @@ export default function SuccessScreen({ navigation }) {
           style={globalStyles.logo}
         />
         <View style={globalStyles.inputContainer}>
-          <TextInput
-            placeholder="prénom"
-            onChangeText={(value) => setFirstName(value)}
-            value={firstName}
-            style={globalStyles.input}
-          />
           <MaskedView
             style={{ flexDirection: "row" }}
             maskElement={<Text style={styles.titleText}>Félicitation !</Text>}
