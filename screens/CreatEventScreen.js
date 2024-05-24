@@ -36,8 +36,8 @@ export default function CreateEventScreen({ navigation }) {
   const [eventDesc, setEventDesc] = useState('');
 
   const [participants, setParticipants] = useState([]);
-  const [totalAmount, setTotalAmount] = useState('');
-  const [amountPerPart, setAmountPerPart] = useState('');
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [amountPerPart, setAmountPerPart] = useState(0);
 
   // Le UseEffect permet de mettre à jour en temps réel les montants à chaque changement
   useEffect(() => {
@@ -59,6 +59,7 @@ export default function CreateEventScreen({ navigation }) {
   useEffect(() => {
     if (user) {
       handleAddParticipant({
+        name: user.firstName,
         email: user.email,
         parts: 1,
       });
