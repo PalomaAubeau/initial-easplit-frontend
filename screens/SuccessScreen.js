@@ -14,6 +14,8 @@ import MaskedView from "@react-native-masked-view/masked-view";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
 
+
+
 export default function SuccessScreen({ navigation }) {
   //3.RETURN FINAL
   return (

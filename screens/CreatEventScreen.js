@@ -22,7 +22,7 @@ import GuestCard from '../components/GuestCard';
 import MaskedView from '@react-native-masked-view/masked-view';
 import globalStyles from '../styles/globalStyles';
 
-const PATH = "http://192.168.0.12:3000"
+const PATH = "http://192.168.1.92:3000"
 // const PATH = "http://localhost:3000";
 // const PATH = "https://easplit-backend.vercel.app";
 
@@ -131,7 +131,6 @@ export default function CreateEventScreen({ navigation }) {
   
       console.log(participants)
   
-      navigation.navigate('Page avec des confettis, Hourra');
     } catch (error) {
       console.error('Erreur lors de la création de l\'événement :', error);
     }
