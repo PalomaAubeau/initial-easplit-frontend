@@ -281,7 +281,6 @@ export default function CreateEventScreen({ navigation }) {
                 ))}
                 <TextInput
   style={[styles.input, styles.amount]}
-  placeholder="Montant Total"
   keyboardType="numeric"
   value={localTotalAmount}
   onChangeText={(text) => {
@@ -302,7 +301,6 @@ export default function CreateEventScreen({ navigation }) {
 />
 <TextInput
   style={[styles.input, styles.amount]}
-  placeholder="Montant Par Part"
   keyboardType="numeric"
   value={amountPerPart}
   onChangeText={(text) => {
