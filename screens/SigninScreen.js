@@ -11,13 +11,9 @@ import { StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import React, { useState } from "react";
-
+import { PATH } from "../utils/path";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
-
-// const PATH = "http://localhost:3000";
-//const PATH = "http://192.168.1.21:8081";
-const PATH = "https://easplit-backend.vercel.app";
 
 export default function SigninScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin

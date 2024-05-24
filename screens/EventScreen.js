@@ -15,10 +15,7 @@ import {
 import React, { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 //import { useSelector, useDispatch } from "react-redux";
-
-//const PATH = "http://192.168.1.21:8081";
-//const PATH = "http://localhost:3000";
-const PATH = "https://easplit-backend.vercel.app";
+import { PATH } from "../utils/path";
 
 //mockUp de ce que renvoie le back pour avancer en attendant
 const mockUp = {

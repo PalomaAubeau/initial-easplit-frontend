@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { loadEvents } from "../reducers/user";
 import React, { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { PATH } from "../utils/path";
 
 //mock
 const mockUpRepBackEvents = [
@@ -33,9 +34,6 @@ const mockUpRepBackEvents = [
     transactions: [],
   },
 ];
-
-// const PATH = "http://localhost:3000";
-const PATH = "https://easplit-backend.vercel.app";
 
 export default function EventsListScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
