@@ -9,11 +9,12 @@ import {
 import { useSelector } from "react-redux";
 import { PATH_lastTransaction } from "../utils/path";
 
+
 // Composant Transaction
 const Transaction = ({ name, transactionText, transactionDescription, amount }) => {
   return (
     <View style={styles.transactionContainer}>
-      <View> 
+      <View>
       <Text style={styles.transactionName}>{name}</Text>
       <Text style={styles.transactionDescription}>
         {transactionDescription}
@@ -24,10 +25,12 @@ const Transaction = ({ name, transactionText, transactionDescription, amount }) 
   );
 };
 
+
 // Composant LastTransactions
 const LastTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+
 
   const user = useSelector((state) => state.user.value);
   const token = user.token;
@@ -40,12 +43,15 @@ const LastTransactions = () => {
           `${PATH_lastTransaction}/transactions/userTransactions/${token}`
         );
 
+
         if (!response.ok) {
           throw new Error(`Erreur HTTP ! Statut : ${response.status}`);
         }
 
+
         const data = await response.json();
         console.log('data des transactions', data);
+
 
         const formattedData = data.transactions.map(transaction => {
           let transactionText = "";
@@ -61,8 +67,9 @@ const LastTransactions = () => {
           } else if (transaction.type === "payment") {
             transactionText = `Paiement pour l'évènement ${transaction.name}`;
             transactionDescription = "Participation";
-            
+           
           }
+
 
           return {
             ...transaction,
@@ -71,6 +78,7 @@ const LastTransactions = () => {
           };
         });
 
+
         setTransactions(formattedData);
         setLoading(false);
       } catch (error) {
@@ -78,6 +86,7 @@ const LastTransactions = () => {
         setLoading(false);
       }
     };
+
 
     fetchTransactions();
   }, []); // Utilisation du token pour la récupération des transactions ???
@@ -90,7 +99,7 @@ console.log('transaction formaté', transactions)
         <FlatList
           data={transactions.slice(0,2)}
           renderItem={({ item }) => {
-          
+         
               return (
                 <Transaction
                   name={item.name}
@@ -106,6 +115,7 @@ console.log('transaction formaté', transactions)
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -143,5 +153,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
 });
+
 
 export default LastTransactions;

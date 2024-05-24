@@ -13,15 +13,20 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view"; //pour nom en gradient
 import LastTransactions from "../components/LastTransaction";
-// import LastTransactions from "../components/LastTransaction"; //import du composant
-
+import globalStyles from "../styles/globalStyles"; //Appel des styles globaux
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   //console.log('reducerUser' + user)
   return (
+    <LinearGradient
+      style={styles.container}
+      colors={["white", "#CAD1E0"]}
+      start={[0.2, 0.2]}
+      end={[0.8, 0.8]}
+    > 
     <View
       //behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
+      // style={styles.container}
     >
       <View style={styles.headerContainer}>
         <Image
@@ -31,21 +36,53 @@ export default function HomeScreen({ navigation }) {
         <Icon name="menu" size={35} color="#4E3CBB" />
       </View>
 
-      <Text style={styles.title}>Bonjour {user.firstName}</Text>
+      <MaskedView
+        style={{ flexDirection: "row" }}
+        maskElement={
+          <Text style={styles.titleText}>Bonjour {user.firstName}</Text>
+        }
+      >
+        <LinearGradient
+          colors={["#EB1194", "#4E3CBB"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.linearGradient}
+        />
+      </MaskedView>
 
       <Text style={styles.titleList}>MON SOLDE</Text>
       <View style={styles.underline} />
 
       <View style={styles.View}>
-        <TouchableOpacity style={styles.eventContainer}>
-          <Text style={styles.textCurrentContainer}>{user.balance}€</Text>
-        </TouchableOpacity>
-        <View style={styles.buttonReloadView}>
-          <TouchableOpacity style={styles.buttonReload} activeOpacity={0.8}>
-            <Text style={styles.buttonReload2}>RECHARGER</Text>
-          </TouchableOpacity>
+        <View style={styles.balanceContainer}>
+          <Text style={styles.textBalanceContainer}>{user.balance.toFixed(2)}€</Text>
         </View>
+        
       </View>
+       
+      <TouchableOpacity
+            onPress={() => handleSubmit()}
+            style={globalStyles.buttonContainer}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={["#EB1194", "#4E3CBB"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={globalStyles.gradientBackground}
+            >
+              <View style={globalStyles.textContainer}>
+                <Text style={globalStyles.buttonText}>Recharger</Text>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+             // navigation.navigate("Signin");
+            }}
+          ></TouchableOpacity>
+
+
 
       <Text style={styles.titleList2}>MES DERNIERES TRANSACTIONS</Text>
       <LastTransactions/>
@@ -78,6 +115,7 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.textAddingContainer}>voir plus</Text>
       </TouchableOpacity>
     </View>
+    </LinearGradient>
   );
 }
 
@@ -101,12 +139,24 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    fontWeight: "bold",
+    fontFamily: "CodecPro-ExtraBold",
     textAlign: "center",
     marginTop: 30,
     marginBottom: 40,
   },
-
+  linearGradient: {
+    borderRadius: 0,
+    height: 40,
+    marginTop: 30,
+    width: "100%",
+  },
+  titleText: {
+    fontWeight: "bold",
+    fontSize: 28,
+    textAlign: "center",
+    color: "white",
+    marginTop: 30,
+  },
   underline: {
     width: "100%", // Ajustez cette valeur pour la longueur de la ligne de soulignement
     borderBottomWidth: 1, // Épaisseur de la ligne de soulignement
@@ -136,26 +186,28 @@ const styles = StyleSheet.create({
     color: "#EB1194",
   },
   titleList: {
-    fontWeight: "bold",
-    marginBottom: 10,
+    fontFamily: "CodecPro-ExtraBold",
+    marginTop: 10,
     color: "#4E3CBB",
     fontSize: 20,
   },
   titleList2: {
-    fontWeight: "bold",
-    marginBottom: 10,
+    fontFamily: "CodecPro-ExtraBold",
+    marginBottom: 0,
     color: "#4E3CBB",
     marginTop: 5,
     fontSize: 20,
   },
   View: {},
-  eventContainer: {
-    backgroundColor: "#FFFFFF",
-    flexDirection: "row",
-    justifyContent: "center",
-    padding: 15,
-    borderRadius: 10,
-    color: "#4E3CBB",
+  balanceContainer: {
+    backgroundColor:"#FFFFFF",
+    
+    color: '#4E3CBB',
+    fontFamily: "CodecPro-Regular",
+    marginBottom: 10,
+    borderTopLeftRadius: 5.33,
+    borderTopRightRadius: 5.33,
+    padding: 10,
   },
   newEventContainer: {
     backgroundColor: "#FFFFFF",
@@ -177,8 +229,14 @@ const styles = StyleSheet.create({
   },
   textCurrentContainer: {
     color: "#4E3CBB",
-    fontWeight: "bold",
+    fontFamily: "CodecPro-ExtraBold",
     fontSize: 24,
+  },
+  textBalanceContainer: {
+    color: "#4E3CBB",
+    fontFamily: "CodecPro-ExtraBold",
+    textAlign: 'center',
+    fontSize: 28,
   },
   textAddingContainer: {
     color: "#EB1194",
