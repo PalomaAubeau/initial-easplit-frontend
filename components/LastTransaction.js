@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
 import { PATH_lastTransaction } from "../utils/path";
 
 // Composant Transaction
-const Transaction = ({ name, transactionText, transactionDescription, amount }) => {
+const Transaction = ({ name, transactionText, transactionDescription, amount, amountSign }) => {
   return (
     <View style={styles.transactionContainer}>
-      <View> 
-      <Text style={styles.transactionName}>{name}</Text>
-      <Text style={styles.transactionDescription}>
-        {transactionDescription}
-      </Text>
+      <View>
+        <Text style={styles.transactionName}>{name}</Text>
+        <Text style={styles.transactionDescription}>{transactionDescription}</Text>
       </View>
-      <Text style={styles.transactionAmount}>{amount} €</Text>
+      <Text style={styles.transactionAmount}>
+        {amountSign}{amount} €
+      </Text>
     </View>
   );
 };
@@ -31,8 +25,9 @@ const LastTransactions = () => {
 
   const user = useSelector((state) => state.user.value);
   const token = user.token;
-  console.log('dans le composant token trouvé', token);
-  console.log('controle du path', PATH_lastTransaction)
+  console.log("dans le composant token trouvé", token);
+  console.log("controle du path", PATH_lastTransaction);
+  
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -45,29 +40,43 @@ const LastTransactions = () => {
         }
 
         const data = await response.json();
-        console.log('data des transactions', data);
+        console.log("data des transactions", data);
 
         const formattedData = data.transactions.map(transaction => {
           let transactionText = "";
           let transactionDescription = "";
-            console.log('transactions dans le map', transaction)
-            console.log('transactions dans le map du name', transaction.name)
-          if (transaction.type === "refund") {
-            transactionText = `Remboursement +${transaction.name}`;
-            transactionDescription = "Remboursement clôture événement";
-          } else if (transaction.type === "reload") {
-            transactionText = "Rechargement de mon compte";
-            transactionDescription = "Rechargement de mon compte";
-          } else if (transaction.type === "payment") {
-            transactionText = `Paiement pour l'évènement ${transaction.name}`;
-            transactionDescription = "Participation";
-            
+          let amountSign = "";
+
+          switch (transaction.type) {
+            case "refund":
+              transactionText = `Remboursement +${transaction.name}`;
+              transactionDescription = "Remboursement clôture événement";
+              amountSign = "+";
+              break;
+            case "reload":
+              transactionText = "Rechargement de mon compte";
+              transactionDescription = "Rechargement de mon compte";
+              amountSign = "+";
+              break;
+            case "payment":
+              transactionText = `Paiement pour l'évènement ${transaction.name}`;
+              transactionDescription = "Participation";
+              amountSign = "-";
+              break;
+            case "expense":
+              transactionText = `Dépense pour ${transaction.name}`;
+              transactionDescription = "Dépense";
+              amountSign = "-";
+              break;
+            default:
+              console.log(`Unknown transaction type: ${transaction.type}`);
           }
 
           return {
             ...transaction,
             transactionText,
             transactionDescription,
+            amountSign,
           };
         });
 
@@ -80,27 +89,26 @@ const LastTransactions = () => {
     };
 
     fetchTransactions();
-  }, []); // Utilisation du token pour la récupération des transactions ???
-console.log('transaction formaté', transactions)
+  }, [token]);
+
+  console.log("transaction formaté", transactions);
   return (
     <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size="large" color="#4E3CBB" />
       ) : (
         <FlatList
-          data={transactions.slice(0,2)}
-          renderItem={({ item }) => {
-          
-              return (
-                <Transaction
-                  name={item.name}
-                  transactionText={item.transactionText}
-                  transactionDescription={item.transactionDescription}
-                  amount={item.amount}
-                />
-              );
-           
-          }}
+          data={transactions.slice(0, 2)}
+          renderItem={({ item }) => (
+            <Transaction
+              name={item.name}
+              transactionText={item.transactionText}
+              transactionDescription={item.transactionDescription}
+              amount={item.amount}
+              amountSign={item.amountSign}
+            />
+          )}
+          keyExtractor={(item, index) => index.toString()} // Utilisation de l'index comme clé
         />
       )}
     </View>
@@ -109,20 +117,16 @@ console.log('transaction formaté', transactions)
 
 const styles = StyleSheet.create({
   container: {
- 
-  },
-  header: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#f0f0f0",
   },
   transactionContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems:'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
-    height : 60,
+    height: 80,
     padding: 15,
     marginBottom: 10,
     borderRadius: 10,
