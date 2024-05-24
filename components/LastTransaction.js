@@ -39,11 +39,11 @@ const LastTransactions = () => {
         const response = await fetch(
           `${PATH_lastTransaction}/transactions/userTransactions/${token}`
         );
-    
+
         if (!response.ok) {
           throw new Error(`Erreur HTTP ! Statut : ${response.status}`);
         }
-    
+
         const data = await response.json();
         console.log('data des transactions', data);
 
