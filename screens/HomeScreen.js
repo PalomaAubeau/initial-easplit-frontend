@@ -50,6 +50,7 @@ export default function HomeScreen({ navigation }) {
       <Text style={styles.titleList2}>MES DERNIERES TRANSACTIONS</Text>
       <LastTransactions/>
       
+      
     
       <Text style={styles.titleList2}>MES DERNIERS EVENTS</Text>
 

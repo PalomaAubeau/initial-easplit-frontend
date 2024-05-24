@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useSelector } from "react-redux";
+import { PATH_lastTransaction } from "../utils/path";
 
 // Composant Transaction
 const Transaction = ({ name, transactionText, transactionDescription, amount }) => {
@@ -36,7 +37,7 @@ const LastTransactions = () => {
     const fetchTransactions = async () => {
       try {
         const response = await fetch(
-          `http://192.168.1.63:3000/transactions/userTransactions/${token}`
+          `${PATH_lastTransaction}/transactions/userTransactions/${token}`
         );
     
         if (!response.ok) {
