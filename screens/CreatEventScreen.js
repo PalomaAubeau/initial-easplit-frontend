@@ -21,6 +21,7 @@ import GuestInput from '../components/GuestInput';
 import GuestCard from '../components/GuestCard';
 import MaskedView from '@react-native-masked-view/masked-view';
 import globalStyles from '../styles/globalStyles';
+import { PATH } from '../utils/path.js';
 
 // const PATH = "http://192.168.1.92:3000"
 // const PATH = "http://localhost:3000";
