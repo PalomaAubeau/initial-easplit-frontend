@@ -6,9 +6,12 @@ const GuestInput = ({ onAddGuest }) => {
   const [email, setEmail] = useState('');
 
   const handleAddGuest = () => {
-    if (email) {
-      onAddGuest({ email, parts: 1 }); // Add parts property
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && emailRegex.test(email)) {
+      onAddGuest({ email, parts: 1 });
       setEmail('');
+    } else {
+      console.log('Invalid email');
     }
   };
 
@@ -21,6 +24,7 @@ const GuestInput = ({ onAddGuest }) => {
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
+          keyboardType='email-address'
         />
       </View>
       <TouchableOpacity onPress={handleAddGuest}>
