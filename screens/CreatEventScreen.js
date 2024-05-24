@@ -22,7 +22,7 @@ import GuestCard from '../components/GuestCard';
 import MaskedView from '@react-native-masked-view/masked-view';
 import globalStyles from '../styles/globalStyles';
 
-const PATH = "http://192.168.1.92:3000"
+const PATH = "http://192.168.0.12:3000"
 // const PATH = "http://localhost:3000";
 // const PATH = "https://easplit-backend.vercel.app";
 
@@ -59,7 +59,6 @@ export default function CreateEventScreen({ navigation }) {
   useEffect(() => {
     if (user) {
       handleAddParticipant({
-        name: user.firstName,
         email: user.email,
         parts: 1,
       });
@@ -67,7 +66,7 @@ export default function CreateEventScreen({ navigation }) {
   }, [user]);
 
   const handleAddParticipant = (participant) => {
-    setParticipants([...participants, { ...participant, parts: 1 }]);
+    setParticipants([...participants, participant]);
   };
 
   const handleRemoveParticipant = (participantToRemove) => {
@@ -92,28 +91,34 @@ export default function CreateEventScreen({ navigation }) {
   //Fonction en cours :) 
   const createEvent = async () => {
     try {
-      // 1. Envoyer les données de l'événement au backend pour enregistrer l'événement dans la base de données
-      const eventResponse = await fetch(`${PATH}/events/create-event/${user.token}`, { // Faut bien mettre le token, on est d'accord ?
+      const requestBody = {
+        name: eventName,
+        eventDate,
+        paymentDate: deadLine,
+        description: eventDesc,
+        guests: participants.map((participant) => ({
+          email: participant.email,
+          parts: participant.parts,
+          hasPaid: false,
+        })),
+        totalSum: parseFloat(totalAmount),
+        shareAmount: parseFloat(amountPerPart),
+      };
+  
+      console.log('Request body:', requestBody);
+  
+      const eventResponse = await fetch(`${PATH}/events/create-event/${user.token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: eventName,
-          eventDate,
-          paymentDate: deadLine,
-          description: eventDesc,
-          guests: participants.map((participant) => ({ 
-            userId: participant._id || null,// Si y a l'ID de l'utilisateur, sinon null
-            email: participant.email,
-            share: participant.parts, // Le nombre de parts qu'ils prennent
-            hasPaid: false, // false car ils n'ont pas encore payé
-          })),
-          totalSum: parseFloat(totalAmount),//J'arrondis la somme
-          shareAmount: parseFloat(amountPerPart),//J'arrondis la somme
-        }),
+        body: JSON.stringify(requestBody),
       });
-      // 2. Récupérer l'ID de l'événement créé à partir de la réponse du serveur
+  
+      if (!eventResponse.ok) {
+        throw new Error('Failed to create event');
+      }
+  
       const data = await eventResponse.json();
       console.log(data)
 
@@ -121,36 +126,31 @@ export default function CreateEventScreen({ navigation }) {
 
       // 4. Rediriger vers une autre page, afficher un message de succès, etc.
 
-      navigation.navigate('Page avec des confettis, Hourra');
+      navigation.navigate('Success');
   
+      console.log(participants)
+  
+      navigation.navigate('Page avec des confettis, Hourra');
     } catch (error) {
       console.error('Erreur lors de la création de l\'événement :', error);
     }
   };
-
-  //Bouton handleSubmit
-  // const handleSubmitEvent = () => {
-  //   // Vérifiez que toutes les données requises sont remplies avant de créer l'événement
-  //   if (eventName && eventDate && deadLine && eventDesc && participants.length > 0 && totalAmount && amountPerPart) {
-  //     // Appelez la fonction pour créer l'événement
-  //     createEvent();
-  //   } else {
-  //     // Affichez un message d'erreur ou effectuez d'autres actions en fonction de vos besoins
-  //     console.error('Veuillez remplir tous les champs avant de créer l\'événement');
-  //   }
-  // };
-
-  const handleSubmitEvent = () => {
-    // console.log('Event Name:', eventName);
-    // console.log('Event Date:', eventDate);
-    // console.log('Dead Line:', deadLine);
-    // console.log('Event Description:', eventDesc);
-    // console.log('Participants:', participants.length);
-    // console.log('Total Amount:', totalAmount);
-    // console.log('Amount Per Part:', amountPerPart);
   
-    createEvent();
-  };
+    const handleSubmitEvent = () => {
+      if (!eventName || !eventDate || !deadLine || !eventDesc || participants.length === 0 || !totalAmount || !amountPerPart) {
+        console.error('Veuillez remplir tous les champs avant de créer l\'événement');
+        return;
+      }
+    
+      for (let participant of participants) {
+        if (isNaN(Number(participant.parts))) {
+          console.error('Invalid share amount for participant');
+          return;
+        }
+      }
+    
+      createEvent();
+    };
 
   return (
     <LinearGradient

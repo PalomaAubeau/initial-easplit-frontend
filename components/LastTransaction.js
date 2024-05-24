@@ -7,20 +7,18 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useSelector } from "react-redux";
+import { PATH_lastTransaction } from "../utils/path";
 
 // Composant Transaction
-const Transaction = ({
-  name,
-  transactionText,
-  transactionDescription,
-  amount,
-}) => {
+const Transaction = ({ name, transactionText, transactionDescription, amount }) => {
   return (
     <View style={styles.transactionContainer}>
+      <View> 
       <Text style={styles.transactionName}>{name}</Text>
       <Text style={styles.transactionDescription}>
         {transactionDescription}
       </Text>
+      </View>
       <Text style={styles.transactionAmount}>{amount} €</Text>
     </View>
   );
@@ -33,13 +31,13 @@ const LastTransactions = () => {
 
   const user = useSelector((state) => state.user.value);
   const token = user.token;
-  console.log("dans le composant token trouvé", token);
+  console.log('dans le composant token trouvé', token);
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
         const response = await fetch(
-          `http://192.168.42.130:3000/transactions/userTransactions/${token}`
+          `${PATH_lastTransaction}/transactions/userTransactions/${token}`
         );
 
         if (!response.ok) {
@@ -47,28 +45,29 @@ const LastTransactions = () => {
         }
 
         const data = await response.json();
-        console.log("data des transactions", data);
+        console.log('data des transactions', data);
 
-        const formattedData = data.transactions.map((transaction) => {
+        const formattedData = data.transactions.map(transaction => {
           let transactionText = "";
           let transactionDescription = "";
-
+            console.log('transactions dans le map', transaction)
+            console.log('transactions dans le map du name', transaction.name)
           if (transaction.type === "refund") {
-            transactionText = `Remboursement +${transactions.name}`;
+            transactionText = `Remboursement +${transaction.name}`;
             transactionDescription = "Remboursement clôture événement";
           } else if (transaction.type === "reload") {
             transactionText = "Rechargement de mon compte";
             transactionDescription = "Rechargement de mon compte";
           } else if (transaction.type === "payment") {
-            transactionText = `Paiement pour l'évènement ${transactions.name}`;
+            transactionText = `Paiement pour l'évènement ${transaction.name}`;
             transactionDescription = "Participation";
+            
           }
 
           return {
             ...transaction,
             transactionText,
             transactionDescription,
-
           };
         });
 
@@ -81,28 +80,26 @@ const LastTransactions = () => {
     };
 
     fetchTransactions();
-  }, [token]); // Utilisation du token pour la récupération des transactions
-
+  }, []); // Utilisation du token pour la récupération des transactions ???
+console.log('transaction formaté', transactions)
   return (
     <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size="large" color="#4E3CBB" />
       ) : (
         <FlatList
-          data={transactions}
+          data={transactions.slice(0,2)}
           renderItem={({ item }) => {
-            if (item && item.eventId) {
+          
               return (
                 <Transaction
-                  name={item.eventId.name}
+                  name={item.name}
                   transactionText={item.transactionText}
                   transactionDescription={item.transactionDescription}
                   amount={item.amount}
                 />
               );
-            } else {
-              return null; // ou une autre indication d'erreur
-            }
+           
           }}
         />
       )}
@@ -112,7 +109,7 @@ const LastTransactions = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+ 
   },
   header: {
     fontSize: 18,
@@ -120,14 +117,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   transactionContainer: {
-    backgroundColor: "#f9f9f9",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems:'center',
+    justifyContent: 'space-between',
+    backgroundColor: "#FFFFFF",
+    height : 60,
     padding: 15,
     marginBottom: 10,
-    borderRadius: 5,
+    borderRadius: 10,
   },
   transactionName: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#4E3CBB",
   },
   transactionDescription: {
     fontSize: 14,
