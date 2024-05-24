@@ -13,8 +13,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view"; //pour nom en gradient
 import LastTransactions from "../components/LastTransaction";
-// import LastTransactions from "../components/LastTransaction"; //import du composant
-
+import globalStyles from "../styles/globalStyles"; //Appel des styles globaux
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   //console.log('reducerUser' + user)
@@ -58,13 +57,32 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.balanceContainer}>
           <Text style={styles.textBalanceContainer}>{user.balance.toFixed(2)}€</Text>
         </View>
-        <View style={styles.buttonReloadView}>
-          <TouchableOpacity style={styles.buttonReload} activeOpacity={0.8}>
-          
-            <Text style={styles.buttonReload2}>RECHARGER</Text>
-          </TouchableOpacity>
-        </View>
+        
       </View>
+       
+      <TouchableOpacity
+            onPress={() => handleSubmit()}
+            style={globalStyles.buttonContainer}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={["#EB1194", "#4E3CBB"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={globalStyles.gradientBackground}
+            >
+              <View style={globalStyles.textContainer}>
+                <Text style={globalStyles.buttonText}>Recharger</Text>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+             // navigation.navigate("Signin");
+            }}
+          ></TouchableOpacity>
+
+
 
       <Text style={styles.titleList2}>MES DERNIERES TRANSACTIONS</Text>
       <LastTransactions/>
