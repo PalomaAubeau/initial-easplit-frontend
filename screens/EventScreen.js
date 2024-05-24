@@ -106,6 +106,11 @@ export default function EventScreen({ route, navigation }) {
       });
   }, [isFocused]);
 
+  const submitExpense = () => {
+    setExpenseName("");
+    setExpenseAmount("");
+  };
+
   //3. RETURN FINAL
   return (
     <LinearGradient
@@ -187,7 +192,7 @@ export default function EventScreen({ route, navigation }) {
             }}
           />
           <Text style={{ ...styles.textAddingCard, marginRight: 30 }}>€</Text>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={submitExpense}>
             <Icon name="add-circle" size={30} color="#EB1194"></Icon>
           </TouchableOpacity>
         </View>
