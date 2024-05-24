@@ -32,7 +32,7 @@ const LastTransactions = () => {
   const user = useSelector((state) => state.user.value);
   const token = user.token;
   console.log('dans le composant token trouvé', token);
-
+  console.log('controle du path', PATH_lastTransaction)
   useEffect(() => {
     const fetchTransactions = async () => {
       try {

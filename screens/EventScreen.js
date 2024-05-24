@@ -18,104 +18,27 @@ import { useIsFocused } from "@react-navigation/native";
 //import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
 
-//mockUp de ce que renvoie le back pour avancer en attendant
-const mockUp = {
-  guests: [
-    {
-      _id: "664cb0e666f7e725eb4e882f",
-      email: "test@gmail.com",
-      hasPaid: false,
-      share: 1,
-      userId: [Object],
-    },
-    {
-      _id: "664d063d0cd79e6c9c674d35",
-      email: "yanis1@outlook.fr",
-      hasPaid: false,
-      share: 0,
-      userId: [Object],
-    },
-  ],
-  name: "Soirée fin de batch",
-  organizer: {
-    __v: 0,
-    _id: "664c520b26f4a54baf6d1fa4",
-    balance: 0,
-    email: "sinda-gouret@hotmail.fr",
-    events: [],
-    firstName: "Sinda",
-    lastName: "G",
-    password: "$2b$10$fDIP0j7WXuQ1.aG8H9j.2eL/Y4sD2gFuatsNJmYuufyWeBqC1QsxO",
-    token: "8Gq7VcKrijR2DmhMhqQXD6XJnnveLuu0",
-    transactions: [],
-  },
-  transactions: [
-    {
-      __v: 0,
-      _id: "664dbc65b1c88b66886675df",
-      amount: 3.3,
-      date: "2024-05-30T00:00:00.000Z",
-      emitter: "664cac4ea1ac241f7accda7b",
-      eventId: "664caee366f7e725eb4e8820",
-      recipient: "664caee366f7e725eb4e8820",
-      type: "payment",
-    },
-    {
-      __v: 0,
-      _id: "664f31c3427d3403ba8fb3a8",
-      amount: 48,
-      category: "deco",
-      date: "2024-05-23T00:00:00.000Z",
-      emitter: "664c492570f310fadd276320",
-      eventId: "664e40b04588780c66b6de17",
-      name: "ballons",
-      recipient: "664e40b04588780c66b6de17",
-      type: "payment",
-    },
-    {
-      __v: 0,
-      _id: "664f36cf65bd8775cc73b54c",
-      amount: 312,
-      category: "nourriture",
-      date: "2024-05-23T00:00:00.000Z",
-      emitter: "664c500526f4a54baf6d1f9d",
-      eventId: "664e40b04588780c66b6de17",
-      name: "gateaux",
-      recipient: "664e40b04588780c66b6de17",
-      type: "payment",
-    },
-    {
-      __v: 0,
-      _id: "664f36e265bd8775cc73b555",
-      amount: 24,
-      category: "instru",
-      date: "2024-05-23T00:00:00.000Z",
-      emitter: "664c500526f4a54baf6d1f9d",
-      eventId: "664e40b04588780c66b6de17",
-      name: "guitar",
-      recipient: "664e40b04588780c66b6de17",
-      type: "payment",
-    },
-  ],
-};
+//mockUp
 
 export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const { eventId } = route.params; // Récupération de l'_id de l'Event (props du screen précédent via la fonction de la navigation)
-  //console.log(eventId);
+  //console.log("test recup eventId", eventId);
   const isFocused = useIsFocused();
   const [event, setEvent] = useState({});
+  const [isSelected, setIsSelected] = useState(false);
+  const toggle = () => setIsSelected((previousState) => !previousState);
 
   //2. Comportements
   useEffect(() => {
-    (async () => {
-      const res = await fetch(`${PATH}/events/event/${eventId}`);
-      const data = await res.json();
-      if (data.result) {
-        // attention certains champs n'existe pas encore,
-        setEvent(data.event);
-      }
-    })();
+    fetch(`${PATH}/events/event/${eventId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          // attention certains champs n'existe pas encore,
+          setEvent(data.event);
+        }
+      });
   }, [isFocused]);
 
   //3. RETURN FINAL
@@ -141,6 +64,11 @@ export default function EventScreen({ route, navigation }) {
         <Icon name="arrow-back" size={35} color="#4E3CBB"></Icon>
         <Text style={styles.textGoBack}>{event.name}</Text>
       </TouchableOpacity>
+      <View
+        onValueChange={toggle}
+        value={isSelected}
+        style={{ ...styles.toggle, backgroundColor: "red" }}
+      ></View>
 
       <ScrollView
         style={styles.scrollView}
