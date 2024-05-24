@@ -9,38 +9,17 @@ import {
 import { useSelector } from "react-redux";
 
 // Composant Transaction
-const Transaction = ({ name, type, amount }) => {
-  const getTransactionText = () => {
-    switch (type) {
-      case "refund":
-        return `Remboursement +${name}`;
-      case "reload":
-        return "Rechargement de mon compte";
-      case "payment":
-        return `Paiement pour l'évènement ${name}`;
-      default:
-        return "";
-    }
-  };
-
-  const getTransactionDescription = () => {
-    switch (type) {
-      case "refund":
-        return "Remboursement clôture événement";
-      case "reload":
-        return "Rechargement de mon compte";
-      case "payment":
-        return `Participation`;
-      default:
-        return "";
-    }
-  };
-
+const Transaction = ({
+  name,
+  transactionText,
+  transactionDescription,
+  amount,
+}) => {
   return (
     <View style={styles.transactionContainer}>
       <Text style={styles.transactionName}>{name}</Text>
       <Text style={styles.transactionDescription}>
-        {getTransactionDescription()}
+        {transactionDescription}
       </Text>
       <Text style={styles.transactionAmount}>{amount} €</Text>
     </View>
@@ -53,59 +32,61 @@ const LastTransactions = () => {
   const [loading, setLoading] = useState(true);
 
   const user = useSelector((state) => state.user.value);
-  const userId = user.userId;
-  console.log('dans le composant', userId)
-
+  const token = user.token;
+  console.log("dans le composant token trouvé", token);
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
         const response = await fetch(
-          `https://easplit-backend.vercel.app/transactions/userTransactions/${userId}`
+          `http://192.168.42.130:3000/transactions/userTransactions/${token}`
         );
-    
+
         if (!response.ok) {
           throw new Error(`Erreur HTTP ! Statut : ${response.status}`);
         }
-    
+
         const data = await response.json();
-    
-        if (data.response) {
-          const transactionDetails = await Promise.all(
-            data.transactions.map(async (transaction) => {
-              const res = await fetch(
-                `https://easplit-backend.vercel.app/transactions/${transaction._id}`
-              );
-    
-              if (!res.ok) {
-                throw new Error(`Erreur HTTP ! Statut : ${res.status}`);
-              }
-    
-              const transactionData = await res.json();
-              return transactionData.response
-                ? transactionData.transaction
-                : null;
-            })
-          );
-          setTransactions(transactionDetails.filter(Boolean)); // Filtre les valeurs nulles
-        } else {
-          console.error(data.error);
-        }
+        console.log("data des transactions", data);
+
+        const formattedData = data.transactions.map((transaction) => {
+          let transactionText = "";
+          let transactionDescription = "";
+
+          if (transaction.type === "refund") {
+            transactionText = `Remboursement +${transactions.name}`;
+            transactionDescription = "Remboursement clôture événement";
+          } else if (transaction.type === "reload") {
+            transactionText = "Rechargement de mon compte";
+            transactionDescription = "Rechargement de mon compte";
+          } else if (transaction.type === "payment") {
+            transactionText = `Paiement pour l'évènement ${transactions.name}`;
+            transactionDescription = "Participation";
+          }
+
+          return {
+            ...transaction,
+            transactionText,
+            transactionDescription,
+
+          };
+        });
+
+        setTransactions(formattedData);
         setLoading(false);
       } catch (error) {
         console.error("Échec de la récupération des transactions", error);
         setLoading(false);
       }
     };
-    
 
     fetchTransactions();
-  }, [userId]);
+  }, [token]); // Utilisation du token pour la récupération des transactions
 
   return (
     <View style={styles.container}>
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#4E3CBB" />
       ) : (
         <FlatList
           data={transactions}
@@ -114,7 +95,8 @@ const LastTransactions = () => {
               return (
                 <Transaction
                   name={item.eventId.name}
-                  type={item.type}
+                  transactionText={item.transactionText}
+                  transactionDescription={item.transactionDescription}
                   amount={item.amount}
                 />
               );
@@ -126,7 +108,7 @@ const LastTransactions = () => {
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
