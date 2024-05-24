@@ -9,12 +9,8 @@ import {
 } from "react-native";
 import { StyleSheet } from "react-native";
 import globalStyles from "../styles/globalStyles"; //Appel des styles globaux
-import { useDispatch } from "react-redux";
 import React, { useState } from "react";
-import { login } from "../reducers/user";
-import { PATH } from "../utils/path";
 import MaskedView from "@react-native-masked-view/masked-view";
-import globalStyles from "../styles/globalStyles";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
 
