@@ -13,9 +13,9 @@ import React, { useState } from "react";
 import MaskedView from "@react-native-masked-view/masked-view";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
-import LottieView from "lottie-react-native";
-
-import Confettis from '../assets/Confettis.json';
+//Lottie Filles mais ne marche pas
+// import LottieView from "lottie-react-native";
+// import Confettis from '../assets/Confettis.json';
 
 export default function SuccessScreen({ navigation }) {
   //3.RETURN FINAL
@@ -45,12 +45,10 @@ export default function SuccessScreen({ navigation }) {
           <Text style={[styles.succesText, globalStyles.violet]}>
             Votre évènement a bien été créé :D
           </Text>
-          <LottieView
-            source={Confettis}
-            autoPlay
-            loop
-            style={styles.animation}
-          />
+          <Image
+                  source={require('../assets/confettis-gif.gif')}
+                  style={styles.animation}
+                />
           <TouchableOpacity
             onPress={() => navigation.navigate("EventsList")}
             style={styles.buttonContainer}
@@ -155,7 +153,7 @@ const styles = StyleSheet.create({
   },
   animation: {
     position:"absolute",
-    width: 500,
-    height: 500,
+    width: 200,
+    height: 200,
   },
 });
