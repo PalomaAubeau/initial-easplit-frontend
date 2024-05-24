@@ -21,8 +21,9 @@ import GuestInput from '../components/GuestInput';
 import GuestCard from '../components/GuestCard';
 import MaskedView from '@react-native-masked-view/masked-view';
 import globalStyles from '../styles/globalStyles';
+import { PATH } from '../utils/path.js';
 
-const PATH = "http://192.168.1.92:3000"
+// const PATH = "http://192.168.1.92:3000"
 // const PATH = "http://localhost:3000";
 // const PATH = "https://easplit-backend.vercel.app";
 
@@ -38,10 +39,6 @@ export default function CreateEventScreen({ navigation }) {
   const [participants, setParticipants] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [amountPerPart, setAmountPerPart] = useState(0);
-
-  const [localTotalAmount, setLocalTotalAmount] = useState('');
-
-  
 
   // Le UseEffect permet de mettre à jour en temps réel les montants à chaque changement
   useEffect(() => {
@@ -71,9 +68,7 @@ export default function CreateEventScreen({ navigation }) {
   }, [user]);
 
   const handleAddParticipant = (participant) => {
-    if (!participants.some(p => p.email === participant.email)) {
-      setParticipants([...participants, participant]);
-    }
+    setParticipants([...participants, participant]);
   };
 
   const handleRemoveParticipant = (participantToRemove) => {
@@ -279,45 +274,38 @@ export default function CreateEventScreen({ navigation }) {
                     onUpdateParts={handleUpdateParts}
                   />
                 ))}
+                <Text
+                  style={[
+                    globalStyles.inputLabel,
+                    globalStyles.capital,
+                    styles.margin,
+                  ]}
+                >
+                  Montant Total (en €)
+                </Text>
                 <TextInput
-  style={[styles.input, styles.amount]}
-  placeholder="Montant Total"
-  keyboardType="numeric"
-  value={localTotalAmount}
-  onChangeText={(text) => {
-    if (text === '') {
-      setLocalTotalAmount('');
-      setTotalAmount('');
-      setAmountPerPart('');
-      return;
-    }
-    if (text.includes('.') && text.split('.')[1].length > 2) {
-      return;
-    }
-    if (!isNaN(text)) {
-      setLocalTotalAmount(text);
-      setTotalAmount(parseFloat(text));
-    }
-  }}
-/>
-<TextInput
-  style={[styles.input, styles.amount]}
-  placeholder="Montant Par Part"
-  keyboardType="numeric"
-  value={amountPerPart}
-  onChangeText={(text) => {
-    if (text === '') {
-      setAmountPerPart('');
-      return;
-    }
-    if (text.includes('.') && text.split('.')[1].length > 2) {
-      return;
-    }
-    if (!isNaN(text)) {
-      setAmountPerPart(text);
-    }
-  }}
-/>
+                  style={[styles.input, styles.amount]}
+                  // placeholder="Montant Total"
+                  keyboardType="numeric"
+                  value={totalAmount}
+                  onChangeText={setTotalAmount}
+                />
+                <Text
+                  style={[
+                    globalStyles.inputLabel,
+                    globalStyles.capital,
+                    styles.margin,
+                  ]}
+                >
+                  Montant Par Part (en €)
+                </Text>
+                <TextInput
+                  style={[styles.input, styles.amount]}
+                  // placeholder="Montant Par Part"
+                  keyboardType="numeric"
+                  value={amountPerPart}
+                  onChangeText={setAmountPerPart}
+                />
                 <TouchableOpacity
                   style={styles.buttonContainer}
                   activeOpacity={0.8}

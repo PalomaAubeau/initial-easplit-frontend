@@ -12,10 +12,5 @@ web-build/
 
 # macOS
 .DS_Store
-<<<<<<< HEAD
-
-path.js
-=======
 path.js 
 # //fichier des links de connections
->>>>>>> 11e23fe29c863368b71a000524e3711d116f805d
