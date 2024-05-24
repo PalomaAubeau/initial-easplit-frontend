@@ -122,15 +122,12 @@ export default function CreateEventScreen({ navigation }) {
   
       const data = await eventResponse.json();
       console.log(data)
-<<<<<<< HEAD
-=======
 
         console.log(participants)
 
       // 4. Rediriger vers une autre page, afficher un message de succès, etc.
 
       navigation.navigate('Success');
->>>>>>> 29c5f0ed331d4a4740e4b9da6e5ead8d6990a289
   
       console.log(participants)
   
