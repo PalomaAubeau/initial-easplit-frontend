@@ -121,7 +121,7 @@ export default function CreateEventScreen({ navigation }) {
 
       // 4. Rediriger vers une autre page, afficher un message de succès, etc.
 
-      navigation.navigate('Page avec des confettis, Hourra');
+      navigation.navigate('Success');
   
     } catch (error) {
       console.error('Erreur lors de la création de l\'événement :', error);
