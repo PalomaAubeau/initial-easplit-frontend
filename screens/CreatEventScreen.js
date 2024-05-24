@@ -59,7 +59,6 @@ export default function CreateEventScreen({ navigation }) {
   useEffect(() => {
     if (user) {
       handleAddParticipant({
-        name: user.firstName,
         email: user.email,
         parts: 1,
       });

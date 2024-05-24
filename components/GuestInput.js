@@ -3,13 +3,11 @@ import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const GuestInput = ({ onAddGuest }) => {
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
   const handleAddGuest = () => {
-    if (name && email) {
-      onAddGuest({ name, email, parts: 1 }); // Add parts property
-      setName('');
+    if (email) {
+      onAddGuest({ email, parts: 1 }); // Add parts property
       setEmail('');
     }
   };
@@ -17,12 +15,7 @@ const GuestInput = ({ onAddGuest }) => {
   return (
     <View style={[styles.inputWrapper, styles.shadowAndroid]}>
       <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.inputField}
-          placeholder="Nom"
-          value={name}
-          onChangeText={setName}
-        />
+      
         <TextInput
           style={styles.inputField}
           placeholder="Email"
