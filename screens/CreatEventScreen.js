@@ -165,10 +165,10 @@ export default function CreateEventScreen({ navigation }) {
         keyboardVerticalOffset={Platform.select({ ios: 80, android: 60 })}
       >
         <View behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView
               contentContainerStyle={styles.scrollView}
               showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
             >
               <View style={styles.headerContainer}>
                 <Image
@@ -323,7 +323,6 @@ export default function CreateEventScreen({ navigation }) {
                 </TouchableOpacity>
               </View>
             </ScrollView>
-          </TouchableWithoutFeedback>
         </View>
       </KeyboardAvoidingView>
     </LinearGradient>
