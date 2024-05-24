@@ -14,7 +14,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
 import LottieView from "lottie-react-native";
-import Confettis from "../assets/confetti.json";
+import Confettis from "../assets/Confettis.json";
 
 export default function SuccessScreen({ navigation }) {
   //3.RETURN FINAL
