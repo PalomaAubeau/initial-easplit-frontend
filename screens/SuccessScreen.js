@@ -13,6 +13,8 @@ import React, { useState } from "react";
 import MaskedView from "@react-native-masked-view/masked-view";
 //Import de Linear-Gradient pour le dégradé
 import { LinearGradient } from "expo-linear-gradient";
+import LottieView from "lottie-react-native";
+import Confettis from "../assets/confetti.json";
 
 export default function SuccessScreen({ navigation }) {
   //3.RETURN FINAL
@@ -27,42 +29,11 @@ export default function SuccessScreen({ navigation }) {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
-        <Image
-          source={require("../assets/EASPLIT-NOIR.png")}
-          style={globalStyles.logo}
-        />
-        <View style={globalStyles.inputContainer}>
-          <TextInput
-            placeholder="prénom"
-            onChangeText={(value) => setFirstName(value)}
-            value={firstName}
-            style={globalStyles.input}
-          />
+        <View style={styles.successContainer}>
           <MaskedView
             style={{ flexDirection: "row" }}
             maskElement={<Text style={styles.titleText}>Félicitation !</Text>}
           >
-            <Text style={styles.buttonText}>
-              Votre évènement a bien été créé
-            </Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("EventsListScreen")}
-              style={styles.buttonContainer}
-              activeOpacity={0.8}
-            >
-              <LinearGradient
-                colors={["#EB1194", "#4E3CBB"]} //Gradient rose vers violet
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.gradientBackground}
-              >
-                <View style={styles.textContainer}>
-                  <Text style={styles.buttonText}>
-                    Voir la liste de mes évènements
-                  </Text>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
             <LinearGradient
               colors={["#EB1194", "#4E3CBB"]}
               start={{ x: 0, y: 0 }}
@@ -70,6 +41,34 @@ export default function SuccessScreen({ navigation }) {
               style={styles.linearGradient}
             />
           </MaskedView>
+          <Text style={[styles.succesText, globalStyles.violet]}>
+            Votre évènement a bien été créé :D
+          </Text>
+          <LottieView
+            source={Confettis}
+            autoPlay
+            count={1}
+            style={styles.animation}
+          />
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("EventsList")}
+            style={styles.buttonContainer}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={["#EB1194", "#4E3CBB"]} //Gradient rose vers violet
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.gradientBackground}
+            >
+              <View style={styles.textContainer}>
+                <Text style={styles.buttonText}>
+                  La liste de mes évènements
+                </Text>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </LinearGradient>
@@ -82,45 +81,80 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  title: {
-    fontSize: 40,
-    fontWeight: "600",
-    fontFamily: "CodecPro-Regular",
-    marginBottom: 20,
-  },
-  inputContainer: {
-    width: "85%",
-    backgroundColor: "#ffffff",
-    padding: 30,
-    borderRadius: 1,
-  },
-  input: {
-    width: "100%",
-    borderBottomColor: "#000000",
-    borderBottomWidth: 1,
-    fontSize: 16,
-  },
+
   button: {
     alignItems: "center",
+    height: 100,
     paddingTop: 8,
     width: "100%",
     marginTop: 30,
     backgroundColor: "#fbe29c",
     borderRadius: 1,
   },
-  textButton: {
-    fontFamily: "CodecPro-Regular",
-    height: 30,
-    fontWeight: "600",
-    fontSize: 16,
+
+  buttonContainer: {
+    minHeight: 40,
+    width: "100%",
+    display: "flex",
+    backgroundColor: "transparent",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  error: {
-    marginTop: 10,
-    color: "red",
+
+  gradientBackground: {
+    flex: 1,
+    borderRadius: 10,
+    width: 250,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
-  existingAccount: {
+  successContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textContainer: {
+    height: 100,
+    width: 300,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 14,
+    fontFamily: "CodecPro-ExtraBold",
+    lineHeight: 28,
+    letterSpacing: 0.15,
+  },
+  linearGradient: {
+    height: 50,
+    width: "100%",
+  },
+  titleText: {
+    fontSize: 28,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: "white",
+    marginTop: 0,
+  },
+  succesText: {
+    color: "",
+    fontSize: 18,
+    width: 250,
+    textAlign: "center",
     fontFamily: "CodecPro-Regular",
-    fontSize: 16,
-    paddingTop: 30,
+    opacity: 0.7,
+    lineHeight: 28,
+    letterSpacing: 0.15,
+    marginTop: 15,
+    marginBottom: 60,
+  },
+  animation: {
+    width: 300,
+    height: 300,
   },
 });
