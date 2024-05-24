@@ -33,6 +33,7 @@ import HomeScreen from "./screens/HomeScreen";
 import EventsListScreen from "./screens/EventsListScreen.js";
 import EventScreen from "./screens/EventScreen";
 import CreatEventScreen from "./screens/CreatEventScreen.js";
+import SuccessScreen from "./screens/SuccessScreen.js";
 
 // const persistConfig = {
 //   key: "easplit",
@@ -100,6 +101,7 @@ export default function App() {
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="Event" component={EventScreen} />
           <Stack.Screen name="CreateEvent" component={CreatEventScreen} />
+          <Stack.Screen name="Success" component={SuccessScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
