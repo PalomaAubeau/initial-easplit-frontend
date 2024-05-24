@@ -17,6 +17,7 @@ import { loadEvents } from "../reducers/user";
 import React, { useState, useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import { getUserEvents } from "../utils/getUserEvents"; // import fonction pour le fetch
+import EventCard from "../components/EventCard";
 
 //mockUp:
 const mockUp = [
@@ -121,27 +122,27 @@ export default function EventsListScreen({ navigation }) {
       const events = await getUserEvents(user.token);
       dispatch(loadEvents(events));
       setEvents(events);
-      //console.log(events);
     })();
   }, [isFocused]);
 
   //.map sur la BDD pour faire une copie du tableau d'objets récupéré et afficher un composant
   //Au moment d'appeler la fonction navigate on ajoute en paramètre l'id créé de l'event pour pouvoir le récupérer ailleurs
   const userEvents = events.map((data) => {
-    return (
-      <TouchableOpacity
-        style={[
-          { ...styles.listCard, justifyContent: "center" },
-          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-        ]}
-        key={data._id}
-        onPress={() => navigation.navigate("Event", { eventId: data._id })}
-      >
-        <Text style={{ ...styles.textEventCard, color: "#4E3CBB" }}>
-          {data.name}
-        </Text>
-      </TouchableOpacity>
-    );
+    return <EventCard key={data.id} event={data} />;
+    // return (
+    //   <TouchableOpacity
+    //     style={[
+    //       { ...styles.listCard, justifyContent: "center" },
+    //       Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+    //     ]}
+    //     key={data._id}
+    //     onPress={() => navigation.navigate("Event", { eventId: data._id })}
+    //   >
+    //     <Text style={{ ...styles.textEventCard, color: "#4E3CBB" }}>
+    //       {data.name}
+    //     </Text>
+    //   </TouchableOpacity>
+    // );
   });
 
   //3. RETURN FINAL
@@ -274,7 +275,6 @@ const styles = StyleSheet.create({
   },
   textEventCard: {
     fontFamily: "CodecPro-ExtraBold",
-    color: "#4E3CBB",
     fontSize: 16,
   },
   message: {
