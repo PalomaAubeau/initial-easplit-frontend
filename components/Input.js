@@ -15,7 +15,11 @@ const Input = (props) => {
     setShow(Platform.OS === 'ios');
     if (selectedDate) {
       setDate(selectedDate);
-      onChangeText(selectedDate.toLocaleDateString('fr-FR'));//A changer pour format YYYY-MM-DD
+      onChangeText(selectedDate.toLocaleDateString('fr-FR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).split('/').reverse().join('-'));//A changer pour format YYYY-MM-DD
     }
   };
 

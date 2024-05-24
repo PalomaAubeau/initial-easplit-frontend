@@ -12,8 +12,9 @@ import {
   Image,
   Platform,
 } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 //import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
 
@@ -102,20 +103,21 @@ export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const { eventId } = route.params; // Récupération de l'_id de l'Event (props du screen précédent via la fonction de la navigation)
   //console.log(eventId);
+  const isFocused = useIsFocused();
   const [event, setEvent] = useState({});
 
   //2. Comportements
-  // Récupération des informations de l'évènement
-  useFocusEffect(
-    useCallback(() => {
-      fetch(`${PATH}/events/event/${eventId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          data.result && setEvent(data.event);
-          //console.log(data.event); // attention certains champs n'existe pas encore,
-        });
-    }, [])
-  );
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(`${PATH}/events/event/${eventId}`);
+      const data = await res.json();
+      if (data.result) {
+        // attention certains champs n'existe pas encore,
+        setEvent(data.event);
+      }
+    })();
+  }, [isFocused]);
+
   //3. RETURN FINAL
   return (
     <LinearGradient
@@ -146,41 +148,40 @@ export default function EventScreen({ route, navigation }) {
       >
         <View
           style={[
-            styles.currentListContainer,
+            styles.listCard,
             Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
           ]}
         >
-          <Text style={styles.textCurrentListContainer}>Nom dépense </Text>
-          <View style={styles.leftPartInsideContainer}>
-            <View style={styles.leftPartText}>
-              <Text style={styles.textCurrentListContainer}>XX€</Text>
-            </View>
+          <Text style={styles.textCurrentListCard}>Nom dépense </Text>
+          <View style={styles.leftPartInsideCard}>
+            <Text style={{ ...styles.textCurrentListCard, marginRight: 30 }}>
+              XX€
+            </Text>
+
             <Icon name="document-text-sharp" size={25} color="#4E3CBB"></Icon>
           </View>
         </View>
       </ScrollView>
       <View
         style={[
-          styles.newEventContainer,
+          { ...styles.listCard, marginBottom: 30 },
           Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
         ]}
       >
-        <Text style={styles.textAddingContainer}>Ajouter une dépense </Text>
-        <View style={styles.leftPartInsideContainer}>
-          <View style={styles.leftPartText}>
-            <Text style={styles.textAddingContainer}>XX€</Text>
-          </View>
+        <Text style={styles.textAddingCard}>Ajouter une dépense </Text>
+        <View style={styles.leftPartInsideCard}>
+          <Text style={{ ...styles.textAddingCard, marginRight: 30 }}>XX€</Text>
           <Icon name="add-circle" size={30} color="#EB1194"></Icon>
         </View>
       </View>
 
       <View
         style={[
-          styles.recapContainer,
+          styles.recapCard,
           Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
         ]}
       >
-        <View style={styles.recapContainerRow}>
+        <View style={styles.recapCardRow}>
           <View style={styles.amount}>
             <Text style={styles.textRecapAmount}>XX€</Text>
             <Text style={styles.textRecap}>Budget initial</Text>
@@ -200,14 +201,9 @@ export default function EventScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  margin: {
-    marginHorizontal: 10,
-  },
   //MAINS CONTAINERS
   container: {
     flex: 1,
-    //alignItems: "center",
-    //justifyContent: "center",
     paddingLeft: 30,
     paddingRight: 30,
   },
@@ -219,9 +215,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   scrollView: {
-    //flex: 0.1,
-    //height: 60,
-    //backgroundColor: "#4E3CBB",
     marginTop: 20,
     marginBottom: 20,
   },
@@ -238,25 +231,14 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   // EVENTS CONTAINER
-  currentListContainer: {
+  listCard: {
     backgroundColor: "#FFFFFF",
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "space-between",
     padding: 15,
     borderRadius: 10,
-    color: "#4E3CBB",
     marginBottom: 15,
-    height: 60,
-  },
-  newEventContainer: {
-    backgroundColor: "#FFFFFF",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 50,
     height: 60,
   },
   shadowAndroid: {
@@ -271,18 +253,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
   },
-  leftPartInsideContainer: {
+  leftPartInsideCard: {
     flexDirection: "row",
     alignItems: "center",
   },
-  recapContainer: {
+  recapCard: {
     backgroundColor: "#FFFFFF",
     padding: 15,
     borderRadius: 10,
     marginBottom: 50,
     height: 200,
   },
-  recapContainerRow: {
+  recapCardRow: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -291,32 +273,18 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   // TEXTES
-  linearGradient: {
-    borderRadius: 0,
-    height: 40,
-    marginTop: 30,
-    width: "100%",
-  },
-  titleText: {
-    fontWeight: "bold",
-    fontSize: 28,
-    textAlign: "center",
-    color: "white",
-    marginTop: 30,
-    //marginBottom: 40,
-  },
-  listText: {
+  textGoBack: {
     fontFamily: "CodecPro-ExtraBold",
     color: "#4E3CBB",
-    fontSize: 16,
-    marginTop: 30,
+    fontSize: 20,
+    marginLeft: 20,
   },
-  textCurrentListContainer: {
+  textCurrentListCard: {
     fontFamily: "CodecPro-Regular",
     color: "#4E3CBB",
     fontSize: 16,
   },
-  textAddingContainer: {
+  textAddingCard: {
     fontFamily: "CodecPro-Heavy",
     color: "#EB1194",
     fontSize: 16,
@@ -327,12 +295,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     fontSize: 16,
-  },
-  textGoBack: {
-    fontFamily: "CodecPro-ExtraBold",
-    color: "#4E3CBB",
-    fontSize: 20,
-    marginLeft: 20,
   },
   textRecap: {
     fontFamily: "CodecPro-Regular",
@@ -349,9 +311,5 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-ExtraBold",
     color: "#EB1194",
     fontSize: 25,
-  },
-  //AUTRES
-  leftPartText: {
-    marginRight: 30,
   },
 });
