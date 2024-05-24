@@ -55,6 +55,17 @@ export default function CreateEventScreen({ navigation }) {
     }
   }, [totalAmount, amountPerPart, participants,]);
 
+  //useEffect qui ajoute automatiquement l'organisateur dans les participants :
+  useEffect(() => {
+    if (user) {
+      handleAddParticipant({
+        name: user.firstName,
+        email: user.email,
+        parts: 1,
+      });
+    }
+  }, [user]);
+
   const handleAddParticipant = (participant) => {
     setParticipants([...participants, { ...participant, parts: 1 }]);
   };
@@ -93,7 +104,7 @@ export default function CreateEventScreen({ navigation }) {
           paymentDate: deadLine,
           description: eventDesc,
           guests: participants.map((participant) => ({ 
-            userId: participant._id || null, // Si y a l'ID de l'utilisateur, sinon null
+            userId: participant._id || null,// Si y a l'ID de l'utilisateur, sinon null
             email: participant.email,
             share: participant.parts, // Le nombre de parts qu'ils prennent
             hasPaid: false, // false car ils n'ont pas encore payé
