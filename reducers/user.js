@@ -7,7 +7,6 @@ const initialState = {
     events: [],
     balance: null,
     transactions: [],
-    userId: null
   },
 };
 
@@ -21,7 +20,7 @@ export const userSlice = createSlice({
       state.value.firstName = action.payload.firstName;
       state.value.balance = action.payload.balance;
       state.value.transactions = action.payload.transactions
-      state.value.userId = action.payload.userId
+      
     },
     logout: (state) => {
       state.value.token = null;
@@ -29,7 +28,7 @@ export const userSlice = createSlice({
       state.value.firstName = null;
       state.value.balance = null; //bien réinitialiser au logout pour éviter les bugs et conflits (et bien reset à zero le champs)
       state.value.transactions = null;
-      state.value.userId = null;
+      
     },
     addEvent: (state, action) => {
       state.value.events.unshift(action.payload);
