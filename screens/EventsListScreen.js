@@ -129,20 +129,6 @@ export default function EventsListScreen({ navigation }) {
   //Au moment d'appeler la fonction navigate on ajoute en paramètre l'id créé de l'event pour pouvoir le récupérer ailleurs
   const userEvents = events.map((data) => {
     return <EventCard key={data._id} event={data} />;
-    // return (
-    //   <TouchableOpacity
-    //     style={[
-    //       { ...styles.listCard, justifyContent: "center" },
-    //       Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-    //     ]}
-    //     key={data._id}
-    //     onPress={() => navigation.navigate("Event", { eventId: data._id })}
-    //   >
-    //     <Text style={{ ...styles.textEventCard, color: "#4E3CBB" }}>
-    //       {data.name}
-    //     </Text>
-    //   </TouchableOpacity>
-    // );
   });
 
   //3. RETURN FINAL
@@ -196,19 +182,13 @@ export default function EventsListScreen({ navigation }) {
       </ScrollView>
       <TouchableOpacity
         style={[
-          {
-            ...styles.listCard,
-            justifyContent: "space-between",
-            marginBottom: 50,
-          },
+          styles.listCard,
           Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
         ]}
         activeOpacity={0.8}
         onPress={() => navigation.navigate("CreateEvent")}
       >
-        <Text style={{ ...styles.textEventCard, color: "#EB1194" }}>
-          Ajouter un évènement
-        </Text>
+        <Text style={styles.textEventCard}>Ajouter un évènement</Text>
         <Icon name="add-circle" size={30} color="#EB1194"></Icon>
       </TouchableOpacity>
     </LinearGradient>
@@ -244,8 +224,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 15,
     borderRadius: 10,
-    marginBottom: 15,
     height: 60,
+    justifyContent: "space-between",
+    marginBottom: 50,
   },
   shadowAndroid: {
     elevation: 6,
@@ -276,6 +257,7 @@ const styles = StyleSheet.create({
   textEventCard: {
     fontFamily: "CodecPro-ExtraBold",
     fontSize: 16,
+    color: "#EB1194",
   },
   message: {
     fontFamily: "CodecPro-Regular",
@@ -305,4 +287,20 @@ const styles = StyleSheet.create({
 //         }
 //       });
 //   }, [])
+// );
+
+//
+// return (
+//   <TouchableOpacity
+//     style={[
+//       { ...styles.listCard, justifyContent: "center" },
+//       Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+//     ]}
+//     key={data._id}
+//     onPress={() => navigation.navigate("Event", { eventId: data._id })}
+//   >
+//     <Text style={{ ...styles.textEventCard, color: "#4E3CBB" }}>
+//       {data.name}
+//     </Text>
+//   </TouchableOpacity>
 // );
