@@ -18,6 +18,96 @@ import React, { useState, useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import { getUserEvents } from "../utils/getUserEvents"; // import fonction pour le fetch
 
+//mockUp:
+const mockUp = [
+  {
+    __v: 18,
+    _id: "664e40b04588780c66b6de17",
+    description: "On fête la fin de notre projet",
+    eventDate: "2024-05-30T00:00:00.000Z",
+    guests: [[Object], [Object]],
+    name: "Soirée fin de batch",
+    organizer: "664c520b26f4a54baf6d1fa4",
+    paymentDate: "2024-05-29T00:00:00.000Z",
+    shareAmount: 5,
+    totalSum: 884,
+    transactions: [
+      "664dbc65b1c88b66886675df",
+      "664f31c3427d3403ba8fb3a8",
+      "664f36cf65bd8775cc73b54c",
+      "664f36e265bd8775cc73b555",
+    ],
+  },
+  {
+    __v: 15,
+    _id: "664dbd2d8b033d29513ec935",
+    description: "Anniversaire 4 ans",
+    eventDate: "2024-05-30T00:00:00.000Z",
+    guests: [[Object], [Object]],
+    name: "Anniversaire Charlie",
+    organizer: "664cb32590817b04a47bd457",
+    paymentDate: "2024-05-29T00:00:00.000Z",
+    shareAmount: 5,
+    totalSum: 500,
+    transactions: ["664dbc65b1c88b66886675df"],
+  },
+  {
+    __v: 15,
+    _id: "664e412f4588780c66b6de1a",
+    description: "Y'a pas d'age pour se marier",
+    eventDate: "2024-05-30T00:00:00.000Z",
+    guests: [[Object]],
+    name: "EVJF Germaine",
+    organizer: "664b53a049051d1b0151c14f",
+    paymentDate: "2024-05-29T00:00:00.000Z",
+    shareAmount: 5,
+    totalSum: 500,
+    transactions: ["664dbc65b1c88b66886675df"],
+  },
+  {
+    __v: 0,
+    _id: "66506ec42bb6c4b190bf229f",
+    description: "40 ans",
+    eventDate: "2024-05-30T00:00:00.000Z",
+    eventUniqueId: "Ixu7xRSIBFu1wccuLJjl5LtLXia7o3o7",
+    guests: [[Object], [Object]],
+    name: "Anniversaire Claire",
+    organizer: "664de90300c4cf782939b7f3",
+    paymentDate: "2024-05-29T00:00:00.000Z",
+    shareAmount: 4,
+    totalSum: 459,
+    transactions: [],
+  },
+  {
+    __v: 0,
+    _id: "665070f02bb6c4b190bf22a9",
+    description: "40 ans",
+    eventDate: "2024-05-30T00:00:00.000Z",
+    eventUniqueId: "TcF46Fp2RPgpoeACtzy756nSvaWl6O5y",
+    guests: [[Object], [Object]],
+    name: "Anniv Claire",
+    organizer: "664de90300c4cf782939b7f3",
+    paymentDate: "2024-05-29T00:00:00.000Z",
+    shareAmount: 4,
+    totalSum: 459,
+    transactions: [],
+  },
+  {
+    __v: 0,
+    _id: "665084c25b8edd087301f5ab",
+    description: "JB",
+    eventDate: "2024-05-30T00:00:00.000Z",
+    eventUniqueId: "wPwTLl8Fbve_W14LUhNwmtQ9MDjUyPmB",
+    guests: [[Object], [Object], [Object]],
+    name: "Anniv JB",
+    organizer: "664de90300c4cf782939b7f3",
+    paymentDate: "2024-05-23T00:00:00.000Z",
+    shareAmount: 3,
+    totalSum: 8889,
+    transactions: [],
+  },
+];
+
 export default function EventsListScreen({ navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const [events, setEvents] = useState([]);
@@ -31,6 +121,7 @@ export default function EventsListScreen({ navigation }) {
       const events = await getUserEvents(user.token);
       dispatch(loadEvents(events));
       setEvents(events);
+      //console.log(events);
     })();
   }, [isFocused]);
 
