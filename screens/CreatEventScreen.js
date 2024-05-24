@@ -284,7 +284,7 @@ export default function CreateEventScreen({ navigation }) {
                 </Text>
                 <TextInput
                   style={[styles.input, styles.amount]}
-                  placeholder="Montant Total"
+                  // placeholder="Montant Total"
                   keyboardType="numeric"
                   value={totalAmount}
                   onChangeText={setTotalAmount}
@@ -300,7 +300,7 @@ export default function CreateEventScreen({ navigation }) {
                 </Text>
                 <TextInput
                   style={[styles.input, styles.amount]}
-                  placeholder="Montant Par Part"
+                  // placeholder="Montant Par Part"
                   keyboardType="numeric"
                   value={amountPerPart}
                   onChangeText={setAmountPerPart}
