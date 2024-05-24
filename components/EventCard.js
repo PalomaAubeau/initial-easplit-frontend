@@ -11,7 +11,7 @@ export default function EventCard({ event }) {
         styles.listCard,
         Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
       ]}
-      onPress={() => navigation.navigate("Event", { event })}
+      onPress={() => navigation.navigate("Event", { eventId: event._id })}
     >
       <Text style={styles.textEventCard}>{event.name}</Text>
     </TouchableOpacity>

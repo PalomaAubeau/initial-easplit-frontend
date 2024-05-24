@@ -128,7 +128,7 @@ export default function EventsListScreen({ navigation }) {
   //.map sur la BDD pour faire une copie du tableau d'objets récupéré et afficher un composant
   //Au moment d'appeler la fonction navigate on ajoute en paramètre l'id créé de l'event pour pouvoir le récupérer ailleurs
   const userEvents = events.map((data) => {
-    return <EventCard key={data.id} event={data} />;
+    return <EventCard key={data._id} event={data} />;
     // return (
     //   <TouchableOpacity
     //     style={[
