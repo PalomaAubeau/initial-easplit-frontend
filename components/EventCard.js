@@ -1,4 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
+import { Text, TouchableOpacity, Platform } from "react-native";
+import { StyleSheet } from "react-native";
 
 export default function EventCard({ event }) {
   const navigation = useNavigation();
