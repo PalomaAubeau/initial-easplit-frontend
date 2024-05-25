@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-//import globalStyles from "../styles/globalStyles";
+import globalStyles from "../styles/globalStyles";
 import { LinearGradient } from "expo-linear-gradient";
 //import MaskedView from "@react-native-masked-view/masked-view";
 import DropdownMenu from "../components/DropdownMenu";
@@ -191,7 +191,52 @@ export default function EventScreen({ route, navigation }) {
   };
 
   const EventPayment = () => {
-    return <Text>Test affichage</Text>;
+    return (
+      <View>
+        <Text
+          style={[
+            globalStyles.titleList,
+            globalStyles.violet,
+            globalStyles.capital,
+            { marginTop: 20 },
+          ]}
+        >
+          RÉCAPITULATIF DES FONDS
+        </Text>
+
+        <View
+          style={[
+            styles.RecapEventCard,
+            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+          ]}
+        >
+          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+            <Text style={styles.textCurrentListCard}>Budget initial</Text>
+            <Text>{event.totalSum}€</Text>
+          </View>
+          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+            <Text style={styles.textCurrentListCard}>
+              Nombre de participants
+            </Text>
+            <Text>{event.guests.length}</Text>
+          </View>
+          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+            <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
+            <Text>XX€</Text>
+          </View>
+        </View>
+
+        <Text
+          style={[
+            globalStyles.titleList,
+            globalStyles.violet,
+            globalStyles.capital,
+          ]}
+        >
+          STATUT DES RÉGLEMENTS
+        </Text>
+      </View>
+    );
   };
 
   const submitExpense = () => {
@@ -344,6 +389,14 @@ const styles = StyleSheet.create({
   amount: {
     alignItems: "center",
     margin: 20,
+  },
+  RecapEventCard: {
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    height: 120,
   },
   // TEXTES
   textGoBack: {
