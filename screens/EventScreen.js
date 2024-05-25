@@ -109,7 +109,9 @@ export default function EventScreen({ route, navigation }) {
 
   const EventExpense = () => {
     return (
-      <View>
+      <View
+      // style={{ flex: 0.5 }}
+      >
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
