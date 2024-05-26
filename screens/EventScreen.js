@@ -190,7 +190,7 @@ export default function EventScreen({ route, navigation }) {
 
   const EventPayment = () => {
     const guestsList = event.guests.map((guest, i) => {
-      //console.log(guest.userId);
+      console.log(guest.userId);
       return (
         <View
           key={i}
@@ -431,6 +431,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontFamily: "CodecPro-ExtraBold",
     fontSize: 16,
+    textAlign: "center",
   },
   textCurrentListCard: {
     fontFamily: "CodecPro-Regular",
