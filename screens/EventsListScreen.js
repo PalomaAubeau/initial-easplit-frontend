@@ -76,7 +76,7 @@ export default function EventsListScreen({ navigation }) {
   useEffect(() => {
     (async () => {
       const events = await getUserEvents(user.token);
-      console.log("vérif dans EventsListScreen:", events);
+      //console.log("vérif dans EventsListScreen:", events);
       dispatch(loadEvents(events));
       setEvents(events);
     })();

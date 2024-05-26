@@ -100,8 +100,6 @@ export default function EventScreen({ route, navigation }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          // attention certains champs n'existe pas encore,
-          //console.log(data.event);
           setEvent(data.event);
         }
       });
@@ -113,7 +111,7 @@ export default function EventScreen({ route, navigation }) {
       // style={{ flex: 0.5 }}
       >
         <ScrollView
-          style={styles.scrollView}
+          style={{ ...styles.scrollView, marginTop: 30 }}
           showsVerticalScrollIndicator={false}
         >
           <View
@@ -191,6 +189,24 @@ export default function EventScreen({ route, navigation }) {
   };
 
   const EventPayment = () => {
+    const guestsList = event.guests.map((guest, i) => {
+      //console.log(guest.userId);
+      return (
+        <View
+          key={i}
+          style={[
+            styles.listCard,
+            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+          ]}
+        >
+          <Text style={styles.textCurrentListCard}>
+            {guest.userId.firstName}
+          </Text>
+          {guest.userId.hasPaid ? <Text>OK</Text> : <Text>Not yet</Text>}
+        </View>
+      );
+    });
+
     return (
       <View>
         <Text
@@ -235,6 +251,12 @@ export default function EventScreen({ route, navigation }) {
         >
           STATUT DES RÉGLEMENTS
         </Text>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          <View>{guestsList}</View>
+        </ScrollView>
       </View>
     );
   };
@@ -316,7 +338,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   scrollView: {
-    marginTop: 30,
     marginBottom: 20,
     // backgroundColor: "white",
   },
@@ -337,15 +358,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor: "#4E3CBB33",
+    borderRadius: 5,
   },
   button: {
     padding: 10,
-    backgroundColor: "#4E3CBB33",
-    borderRadius: 5,
     width: "50%",
   },
   selectedButton: {
     backgroundColor: "#4E3CBB",
+    borderRadius: 5,
   },
 
   // EVENTS CONTAINER
