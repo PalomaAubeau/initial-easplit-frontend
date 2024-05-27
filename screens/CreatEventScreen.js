@@ -42,7 +42,8 @@ export default function CreateEventScreen({ navigation }) {
 
   const [localTotalAmount, setLocalTotalAmount] = useState('');
 
-  
+  const [errors, setErrors] = useState({});
+
 
   // Le UseEffect permet de mettre à jour en temps réel les montants à chaque changement
   useEffect(() => {
@@ -95,6 +96,53 @@ export default function CreateEventScreen({ navigation }) {
       return participant;
     });
     setParticipants(updatedParticipants);
+  };
+
+  const validateDates = () => {
+    const newErrors = {};
+    const today = new Date();
+    const eventDateObj = new Date(eventDate);
+    const deadLineObj = new Date(deadLine);
+
+    if (eventDateObj < today) {
+      newErrors.eventDate = "La date de l'événement ne peut pas être antérieure à la date du jour.";
+    }
+
+    if (deadLineObj < today) {
+      newErrors.deadLine = "La date limite de paiement ne peut pas être antérieure à la date du jour.";
+    }
+
+    if (eventDateObj <= deadLineObj) {
+      newErrors.deadLine = "La date limite de paiement doit être antérieure à la date de l'événement.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleEventDateChange = (value) => {
+    setEventDate(value);
+    const today = new Date();
+    const eventDateObj = new Date(value);
+    if (eventDateObj < today) {
+      setErrors((prev) => ({ ...prev, eventDate: "La date de l'événement ne peut pas être antérieure à la date du jour." }));
+    } else {
+      setErrors((prev) => ({ ...prev, eventDate: null }));
+    }
+  };
+
+  const handleDeadLineChange = (value) => {
+    setDeadLine(value);
+    const today = new Date();
+    const deadLineObj = new Date(value);
+    const eventDateObj = new Date(eventDate);
+    if (deadLineObj < today) {
+      setErrors((prev) => ({ ...prev, deadLine: "La date limite de paiement ne peut pas être antérieure à la date du jour." }));
+    } else if (eventDateObj <= deadLineObj) {
+      setErrors((prev) => ({ ...prev, deadLine: "La date limite de paiement doit être antérieure à la date de l'événement." }));
+    } else {
+      setErrors((prev) => ({ ...prev, deadLine: null }));
+    }
   };
 
   //Mécanique pour créer l'évènement :
@@ -246,12 +294,13 @@ export default function CreateEventScreen({ navigation }) {
                 >
                   Date de l'évènement
                 </Text>
-                <Input 
+                <Input
                 value={eventDate}
-                onChangeText={(value) => setEventDate(value)}
-                placeholder="Date de l'évènement" 
-                isDate={true} />
-                 {errors.eventDate && <Text style={styles.errorText}>{errors.eventDate}</Text>}
+                onChangeText={handleEventDateChange}
+                placeholder="Date de l'évènement"
+                isDate={true}
+              />
+              {errors.eventDate && <Text style={styles.errorText}>{errors.eventDate}</Text>}
                 <Text
                   style={[
                     globalStyles.inputLabel,
@@ -262,11 +311,12 @@ export default function CreateEventScreen({ navigation }) {
                 >
                   Date de limite de paiement
                 </Text>
-                <Input placeholder="Date limite de paiement" 
+                <Input
+                placeholder="Date limite de paiement"
                 value={deadLine}
-                onChangeText={(value) => setDeadLine(value)}
-                isDate={true} 
-                />
+                onChangeText={handleDeadLineChange}
+                isDate={true}
+              />
                  {errors.deadLine && <Text style={styles.errorText}>{errors.deadLine}</Text>}
                 <Text
                   style={[
