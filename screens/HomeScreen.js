@@ -48,21 +48,23 @@ export default function HomeScreen({ navigation }) {
   // };
 
   return (
+    <ScrollView> 
+      
     <LinearGradient
       style={styles.container}
       colors={["white", "#CAD1E0"]}
       start={[0.2, 0.2]}
       end={[0.8, 0.8]}
-    > 
+      > 
     <View
       //behavior={Platform.OS === "ios" ? "padding" : "height"}
       // style={styles.container}
-    >
+      >
       <View style={styles.headerContainer}>
         <Image
           source={require("../assets/EASPLIT-NOIR.png")}
           style={styles.logo}
-        />
+          />
         <Icon name="menu" size={35} color="#4E3CBB" />
       </View>
 
@@ -71,13 +73,13 @@ export default function HomeScreen({ navigation }) {
         maskElement={
           <Text style={styles.titleText}>Bonjour {user.firstName}</Text>
         }
-      >
+        >
         <LinearGradient
           colors={["#EB1194", "#4E3CBB"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.linearGradient}
-        />
+          />
       </MaskedView>
 
       <Text style={styles.titleList}>MON SOLDE</Text>
@@ -96,13 +98,13 @@ export default function HomeScreen({ navigation }) {
             onPress={() => handleSubmit()}
             style={globalStyles.buttonContainer}
             activeOpacity={0.8}
-          >
+            >
             <LinearGradient
               colors={["#EB1194", "#4E3CBB"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={globalStyles.gradientBackground}
-            >
+              >
               <View style={globalStyles.textContainer}>
                 <Text style={styles.reloadbuttonText}>Recharger</Text>
               </View>
@@ -110,9 +112,9 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-             // navigation.navigate("Signin");
+              // navigation.navigate("Signin");
             }}
-          ></TouchableOpacity>
+            ></TouchableOpacity>
        </View>
 
     
@@ -122,10 +124,10 @@ export default function HomeScreen({ navigation }) {
 <Text style={styles.titleList2}>MES DERNIERS EVENTS</Text>
 {eventsList && eventsList.length > 0 && [...eventsList].reverse().map((event, index) => (
   <TouchableOpacity
-    key={index}
-    style={styles.newEventContainer}
-    activeOpacity={0.8}
-    onPress={() => navigation.navigate("Event", { eventId: event._id })}
+  key={index}
+  style={styles.newEventContainer}
+  activeOpacity={0.8}
+  onPress={() => navigation.navigate("Event", { eventId: event._id })}
   >
     <Text style={styles.eventName}>{event.name}</Text>
   </TouchableOpacity>
@@ -140,6 +142,7 @@ export default function HomeScreen({ navigation }) {
 </TouchableOpacity>
 </View>
 </LinearGradient>
+</ScrollView>
   );
 }
 
