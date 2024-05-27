@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
+import { useDispatch } from "react-redux";
+import { logout } from '../reducers/user';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const DropdownMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const handleLogOut = () => {
+    dispatch(logout());
+    navigation.navigate("Signin");
+  }
 
   return (
     <View style={styles.container}>
@@ -19,7 +30,9 @@ const DropdownMenu = () => {
           <Text style={styles.menuItem}>Profil</Text>
           <Text style={styles.menuItem}>Paramètres</Text>
           <Text style={styles.menuItem}>Mentions légales</Text>
+          <TouchableOpacity onPress={handleLogOut}>  
           <Text style={[styles.menuItem,styles.logout]}>Se déconnecter</Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>
