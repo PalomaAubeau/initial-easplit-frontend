@@ -190,7 +190,7 @@ export default function EventScreen({ route, navigation }) {
 
   const EventPayment = () => {
     const guestsList = event.guests.map((guest, i) => {
-      //console.log("EventPayment:", guest.email);
+      console.log("EventPayment:", guest);
       return (
         <View
           key={i}
