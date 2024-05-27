@@ -98,27 +98,7 @@ export default function CreateEventScreen({ navigation }) {
     setParticipants(updatedParticipants);
   };
 
-  const validateDates = () => {
-    const newErrors = {};
-    const today = new Date();
-    const eventDateObj = new Date(eventDate);
-    const deadLineObj = new Date(deadLine);
-
-    if (eventDateObj < today) {
-      newErrors.eventDate = "La date de l'événement ne peut pas être antérieure à la date du jour.";
-    }
-
-    if (deadLineObj < today) {
-      newErrors.deadLine = "La date limite de paiement ne peut pas être antérieure à la date du jour.";
-    }
-
-    if (eventDateObj <= deadLineObj) {
-      newErrors.deadLine = "La date limite de paiement doit être antérieure à la date de l'événement.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  // Gestion des erreurs et des dates 
 
   const handleEventDateChange = (value) => {
     setEventDate(value);
@@ -147,7 +127,7 @@ export default function CreateEventScreen({ navigation }) {
 
   //Mécanique pour créer l'évènement :
 
-  //Fonction en cours :) 
+  //Fonction Créer un évènement :
   const createEvent = async () => {
     try {
       const requestBody = {
