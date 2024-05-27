@@ -202,7 +202,12 @@ export default function EventScreen({ route, navigation }) {
           <Text style={styles.textCurrentListCard}>
             {guest.userId.firstName}
           </Text>
-          {guest.userId.hasPaid ? <Text>OK</Text> : <Text>Not yet</Text>}
+          {guest.userId.hasPaid ? (
+            <Icon name="checkmark-circle" size={25} color="#EB1194" />
+          ) : (
+            <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
+          )}
+          <View></View>
         </View>
       );
     });
