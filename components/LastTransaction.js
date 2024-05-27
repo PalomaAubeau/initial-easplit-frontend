@@ -59,7 +59,7 @@ const LastTransactions = () => {
           if (transaction.type === "refund") {
             transactionText = `Remboursement +${transaction.name}`;
             transactionDescription = "Remboursement clôture événement";
-            displayAmount = `+${transaction.amount} €`;
+            displayAmount = `+ ${transaction.amount} €`;
           } else if (transaction.type === "reload") {
             transactionText = "Rechargement de mon compte";
             transactionDescription = "Rechargement de mon compte";
