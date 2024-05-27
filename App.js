@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import user from "./reducers/user.js";
+import event from "./reducers/event.js";
 
 //Librairie Ionicons :
 import Icon from "react-native-vector-icons/Ionicons";
@@ -42,7 +43,7 @@ import SuccessScreen from "./screens/SuccessScreen.js";
 
 // const reducers = combineReducers({ user });
 
-const store = configureStore({ reducer: { user } });
+const store = configureStore({ reducer: { user, event } });
 
 //const persistor = persistStore(store);
 

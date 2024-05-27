@@ -22,50 +22,6 @@ import EventCard from "../components/EventCard";
 //mockUp:
 const mockUp = [
   {
-    __v: 18,
-    _id: "664e40b04588780c66b6de17",
-    description: "On fête la fin de notre projet",
-    eventDate: "2024-05-30T00:00:00.000Z",
-    guests: [[Object], [Object]],
-    name: "Soirée fin de batch",
-    organizer: "664c520b26f4a54baf6d1fa4",
-    paymentDate: "2024-05-29T00:00:00.000Z",
-    shareAmount: 5,
-    totalSum: 884,
-    transactions: [
-      "664dbc65b1c88b66886675df",
-      "664f31c3427d3403ba8fb3a8",
-      "664f36cf65bd8775cc73b54c",
-      "664f36e265bd8775cc73b555",
-    ],
-  },
-  {
-    __v: 15,
-    _id: "664dbd2d8b033d29513ec935",
-    description: "Anniversaire 4 ans",
-    eventDate: "2024-05-30T00:00:00.000Z",
-    guests: [[Object], [Object]],
-    name: "Anniversaire Charlie",
-    organizer: "664cb32590817b04a47bd457",
-    paymentDate: "2024-05-29T00:00:00.000Z",
-    shareAmount: 5,
-    totalSum: 500,
-    transactions: ["664dbc65b1c88b66886675df"],
-  },
-  {
-    __v: 15,
-    _id: "664e412f4588780c66b6de1a",
-    description: "Y'a pas d'age pour se marier",
-    eventDate: "2024-05-30T00:00:00.000Z",
-    guests: [[Object]],
-    name: "EVJF Germaine",
-    organizer: "664b53a049051d1b0151c14f",
-    paymentDate: "2024-05-29T00:00:00.000Z",
-    shareAmount: 5,
-    totalSum: 500,
-    transactions: ["664dbc65b1c88b66886675df"],
-  },
-  {
     __v: 0,
     _id: "66506ec42bb6c4b190bf229f",
     description: "40 ans",
@@ -120,6 +76,7 @@ export default function EventsListScreen({ navigation }) {
   useEffect(() => {
     (async () => {
       const events = await getUserEvents(user.token);
+      //console.log("vérif dans EventsListScreen:", events);
       dispatch(loadEvents(events));
       setEvents(events);
     })();
@@ -169,17 +126,17 @@ export default function EventsListScreen({ navigation }) {
         MES ÉVÈNEMENTS
       </Text>
       <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        {user.events.length === 0 ? (
-          <Text style={styles.message}>
-            Aucun évènement à afficher pour le moment
-          </Text>
-        ) : (
-          <>{userEvents}</>
-        )}
-      </ScrollView>
+  style={styles.scrollView}
+  showsVerticalScrollIndicator={false}
+>
+  {user.events && user.events.length === 0 ? (
+    <Text style={styles.message}>
+      Aucun évènement à afficher pour le moment
+    </Text>
+  ) : (
+    <>{userEvents}</>
+  )}
+</ScrollView>
       <TouchableOpacity
         style={[
           styles.listCard,

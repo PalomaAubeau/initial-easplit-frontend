@@ -71,9 +71,11 @@ export default function CreateEventScreen({ navigation }) {
     }
   }, [user]);
 
+  // handleAddParticipant permet d'ajouter un participant à la liste des participants
   const handleAddParticipant = (participant) => {
-    if (!participants.some(p => p.email === participant.email)) {
-      setParticipants([...participants, participant]);
+    const participantEmailLowercase = participant.email.toLowerCase();
+    if (!participants.some(p => p.email.toLowerCase() === participantEmailLowercase)) {
+      setParticipants([...participants, { ...participant, email: participantEmailLowercase }]);
     }
   };
 
