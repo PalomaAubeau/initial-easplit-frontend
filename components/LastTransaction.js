@@ -14,7 +14,7 @@ const Transaction = ({
   name,
   transactionText,
   transactionDescription,
-  amount,
+  displayAmount
 }) => {
   return (
     <View style={styles.transactionContainer}>
@@ -24,7 +24,7 @@ const Transaction = ({
           {transactionDescription}
         </Text>
       </View>
-      <Text style={styles.transactionAmount}>{amount} €</Text>
+      <Text style={styles.transactionAmount}>{displayAmount}</Text>
     </View>
   );
 };
@@ -36,8 +36,7 @@ const LastTransactions = () => {
 
   const user = useSelector((state) => state.user.value);
   const token = user.token;
-  //console.log('dans le composant token trouvé', token);
-  //console.log('controle du path', PATH_lastTransaction)
+
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -55,23 +54,27 @@ const LastTransactions = () => {
         const formattedData = data.transactions.map((transaction) => {
           let transactionText = "";
           let transactionDescription = "";
-          // console.log('transactions dans le map', transaction)
-          //console.log('transactions dans le map du name', transaction.name)
+          let displayAmount = "";
+
           if (transaction.type === "refund") {
             transactionText = `Remboursement +${transaction.name}`;
             transactionDescription = "Remboursement clôture événement";
+            displayAmount = `+ ${transaction.amount} €`;
           } else if (transaction.type === "reload") {
             transactionText = "Rechargement de mon compte";
             transactionDescription = "Rechargement de mon compte";
+            displayAmount = `+ ${transaction.amount} €`;
           } else if (transaction.type === "payment") {
             transactionText = `Paiement pour l'évènement ${transaction.name}`;
             transactionDescription = "Participation";
+            displayAmount = `- ${transaction.amount} €`;
           }
 
           return {
             ...transaction,
             transactionText,
             transactionDescription,
+            displayAmount,
           };
         });
 
@@ -83,28 +86,24 @@ const LastTransactions = () => {
       }
     };
     fetchTransactions();
-  }, []); // Utilisation du token pour la récupération des transactions ???
-  //console.log('transaction formaté', transactions)
+  }, [token]);
+
   return (
     <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#4E3CBB" />
-      ) : (
-        <FlatList
-          data={transactions.slice(0, 2)}
-          renderItem={({ item }) => {
-            return (
-              <Transaction
-                name={item.name}
-                transactionText={item.transactionText}
-                transactionDescription={item.transactionDescription}
-                amount={item.amount}
-              />
-            );
-          }}
+    {loading ? (
+      <ActivityIndicator size="large" color="#4E3CBB" />
+    ) : (
+      transactions.slice(0, 2).map((item, index) => (
+        <Transaction
+          key={index}
+          name={item.name}
+          transactionText={item.transactionText}
+          transactionDescription={item.transactionDescription}
+          displayAmount={item.displayAmount}
         />
-      )}
-    </View>
+      ))
+    )}
+  </View>
   );
 };
 
@@ -144,3 +143,4 @@ const styles = StyleSheet.create({
 });
 
 export default LastTransactions;
+
