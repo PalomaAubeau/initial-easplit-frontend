@@ -199,7 +199,7 @@ export default function EventScreen({ route, navigation }) {
             Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
           ]}
         >
-          <Text style={styles.textCurrentListCard}>{guest.email}</Text>
+          <Text style={styles.textCurrentListCard}>{guest.userId.firstName}</Text>
           {guest.hasPaid ? (
             <Icon name="checkmark-circle" size={25} color="#EB1194" />
           ) : (
