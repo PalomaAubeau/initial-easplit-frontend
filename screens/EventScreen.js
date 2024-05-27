@@ -95,15 +95,22 @@ export default function EventScreen({ route, navigation }) {
   const [expenseName, setExpenseName] = useState("");
 
   //2. Comportements
+  // Fetch de récupérartion des informations de l'évènement. Attention: Pour les guests, pas de champs firstName - ce champs n'hexiste pas à la création du compte
   useEffect(() => {
     fetch(`${PATH}/events/event/${eventId}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
+          console.log(
+            "EventScreen, récupération de la data du fetch:",
+            data.event
+          );
           setEvent(data.event);
         }
       });
   }, [isFocused]);
+
+  // Fetch de récupération des informations des
 
   const EventExpense = () => {
     return (
@@ -190,7 +197,7 @@ export default function EventScreen({ route, navigation }) {
 
   const EventPayment = () => {
     const guestsList = event.guests.map((guest, i) => {
-      console.log("EventPayment:", guest);
+      //console.log("EventPayment data récupérée:", guest.userId.firstName);
       return (
         <View
           key={i}
@@ -199,7 +206,9 @@ export default function EventScreen({ route, navigation }) {
             Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
           ]}
         >
-          <Text style={styles.textCurrentListCard}>{guest.email}</Text>
+          <Text style={styles.textCurrentListCard}>
+            {guest.userId.firstName}
+          </Text>
           {guest.hasPaid ? (
             <Icon name="checkmark-circle" size={25} color="#EB1194" />
           ) : (
