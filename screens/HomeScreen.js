@@ -30,7 +30,7 @@ export default function HomeScreen({ navigation }) {
   //ajout du state de la modal
   const [modalVisible, setModalVisible] = useState(false);
   //ajout du setter pour la balance lors de la modal
-  const [balance, setBalance] = useState(null);
+  const [balance, setBalance] = useState("");
 
   // Déclaration de la liste des événements de l'utilisateur connecté
   const [eventsList, setEventsList] = useState([]);
@@ -52,14 +52,20 @@ export default function HomeScreen({ navigation }) {
     }, [])
   );
 
+  const handleModalClose = () => {
+    setModalVisible(false);
+    setBalance(""); // Réinitialise le placeholder à chaque validation
+  };
+
   return (
-    <ScrollView>
-      <LinearGradient
-        style={styles.container}
-        colors={["white", "#CAD1E0"]}
-        start={[0.2, 0.2]}
-        end={[0.8, 0.8]}
-      >
+    <LinearGradient
+    style={styles.container}
+    colors={["white", "#CAD1E0"]}
+    start={[0.2, 0.2]}
+    end={[0.8, 0.8]}
+    >
+        <ScrollView keyboardShouldPersistTaps="handled">
+          {/* // garder le click sans devoir fermer le keyboard */}
         <View>
           <View style={styles.headerContainer}>
             <Image
@@ -115,25 +121,26 @@ export default function HomeScreen({ navigation }) {
                       setModalVisible(!modalVisible);
                     }}
                   >
-                    <BlurView intensity={80} style={styles.absolute}>
+                    <BlurView intensity={60} style={styles.absolute}>
                       <View style={styles.centeredView}>
                         <View style={styles.modalView}>
                           <Text style={styles.modalText}>
                             Montant du rechargement
                           </Text>
                           <TextInput
-                            placeholder="€"
+                            placeholder="Montant €"
                             autoCapitalize="none"
                             keyboardType="number"
                             textContentType="number"
                             onChangeText={(value) => setBalance(value)}
                             value={balance}
                             style={styles.input}
+                            placeholderTextColor="#b5b5b5"
                           />
                           <TouchableOpacity
                             style={globalStyles.buttonContainer}
                             activeOpacity={0.8}
-                            onPress={() => setModalVisible(!modalVisible)}
+                            onPress={handleModalClose}
                           >
                             <LinearGradient
                               colors={["#EB1194", "#4E3CBB"]}
@@ -147,6 +154,18 @@ export default function HomeScreen({ navigation }) {
                                 </Text>
                               </View>
                             </LinearGradient>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={styles.buttonContainer}
+                            activeOpacity={0.8}
+                            onPress={handleModalClose}
+                          >
+
+                                <Text style={styles.closeButtonText}>
+                                  Fermer
+                                </Text>
+                             
+                            
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -192,8 +211,8 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.textAddingContainer}>voir plus</Text>
           </TouchableOpacity>
         </View>
-      </LinearGradient>
     </ScrollView>
+      </LinearGradient>
   );
 }
 
@@ -202,6 +221,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 30,
     paddingRight: 30,
+    height: '100vh',
   },
   logo: {
     width: 100,
@@ -246,6 +266,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     paddingHorizontal: 10,
+    
   },
   reloadbuttonText: {
     fontFamily: "CodecPro-ExtraBold",
@@ -326,7 +347,7 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 35,
+    padding: 30,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -338,8 +359,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    marginBottom: 15,
+    marginBottom: 0,
     fontFamily: "CodecPro-ExtraBold",
+    color :'#4E3CBB',
     fontSize: 20,
     textAlign: "center",
   },
@@ -356,15 +378,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
   },
-  input: {
+  closeButtonText: {
     fontFamily: "CodecPro-Regular",
-    width: 180,
-    borderBottomColor: "#b5B5B5",
-    textAlign: "center",//fontionne pas
-    borderBottomWidth: 1,
-    marginBottom: 20,
     fontSize: 16,
-     
+    marginTop: 5,
+    height:32, // container dans react native ne s'adapte pas toujours au contenu 
+  },
+  input: {
+    fontFamily: "CodecPro-ExtraBold",
+    width: 180,
+    borderBottomColor: "#4E3CBB",
+    alignItems: "center", // fonctionne maintenant
+    justifyContent: "center", // fonctionne maintenant
+    borderBottomWidth: 1,
+    marginBottom: 40,
+    marginTop: 30,
+    fontSize: 20,
+    color: '#4E3CBB',
+    textAlign: "center",
   },
   absolute: {
     position: "absolute",
@@ -373,5 +404,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
   },
+  buttonContainer: {
+    display: "flex",
+    width: 180,
+    marginTop: 8,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
 });
-// 

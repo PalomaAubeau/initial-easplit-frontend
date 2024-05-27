@@ -90,22 +90,20 @@ const LastTransactions = () => {
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#4E3CBB" />
-      ) : (
-        <FlatList
-          data={transactions.slice(0, 2)}
-          renderItem={({ item }) => (
-            <Transaction
-              name={item.name}
-              transactionText={item.transactionText}
-              transactionDescription={item.transactionDescription}
-              displayAmount={item.displayAmount} // Passer displayAmount ici
-            />
-          )}
+    {loading ? (
+      <ActivityIndicator size="large" color="#4E3CBB" />
+    ) : (
+      transactions.slice(0, 2).map((item, index) => (
+        <Transaction
+          key={index}
+          name={item.name}
+          transactionText={item.transactionText}
+          transactionDescription={item.transactionDescription}
+          displayAmount={item.displayAmount}
         />
-      )}
-    </View>
+      ))
+    )}
+  </View>
   );
 };
 
