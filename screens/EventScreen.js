@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-//import globalStyles from "../styles/globalStyles";
+import globalStyles from "../styles/globalStyles";
 import { LinearGradient } from "expo-linear-gradient";
 //import MaskedView from "@react-native-masked-view/masked-view";
 import DropdownMenu from "../components/DropdownMenu";
@@ -12,7 +12,9 @@ import {
   Image,
   Platform,
   TextInput,
+  Pressable,
 } from "react-native";
+import Input from "../components/Input";
 import React, { useState, useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
 //import { useSelector, useDispatch } from "react-redux";
@@ -88,8 +90,7 @@ export default function EventScreen({ route, navigation }) {
   //console.log("test recup eventId", eventId);
   const isFocused = useIsFocused();
   const [event, setEvent] = useState({});
-  //const [isSelected, setIsSelected] = useState(false);
-  //const toggle = () => setIsSelected((previousState) => !previousState);
+  const [selectedComponent, setSelectedComponent] = useState("expenses");
   const [expenseAmount, setExpenseAmount] = useState("");
   const [expenseName, setExpenseName] = useState("");
 
@@ -99,16 +100,183 @@ export default function EventScreen({ route, navigation }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          // attention certains champs n'existe pas encore,
-          //console.log(data.event);
           setEvent(data.event);
         }
       });
   }, [isFocused]);
 
+  const EventExpense = () => {
+    return (
+      <View
+      // style={{ flex: 0.5 }}
+      >
+        <ScrollView
+          style={{ ...styles.scrollView, marginTop: 30 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <View
+            style={[
+              styles.listCard,
+              Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+            ]}
+          >
+            <Text style={styles.textCurrentListCard}>Nom dépense </Text>
+            <View style={styles.leftPartInsideCard}>
+              <Text style={{ ...styles.textCurrentListCard, marginRight: 30 }}>
+                XX€
+              </Text>
+
+              <Icon name="document-text-sharp" size={25} color="#4E3CBB"></Icon>
+            </View>
+          </View>
+        </ScrollView>
+        <View
+          style={[
+            { ...styles.listCard, marginBottom: 30 },
+            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+          ]}
+        >
+          <TextInput
+            style={styles.textAddingCard}
+            placeholder="Ajouter une dépense"
+            value={expenseName}
+            onChangeText={(value) => setExpenseName(value)}
+          />
+          <View style={styles.leftPartInsideCard}>
+            <TextInput
+              style={{ ...styles.textAddingCard, marginRight: 30 }}
+              placeholder="XX€"
+              keyboardType="numeric"
+              value={expenseAmount}
+              onChangeText={(text) => {
+                if (text.includes(".") && text.split(".")[1].length > 2) {
+                  return;
+                }
+                if (!isNaN(text)) {
+                  setExpenseAmount(text);
+                }
+              }}
+            />
+            <TouchableOpacity onPress={submitExpense}>
+              <Icon name="add-circle" size={30} color="#EB1194"></Icon>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View
+          style={[
+            styles.recapCard,
+            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+          ]}
+        >
+          <View style={styles.recapCardRow}>
+            <View style={styles.amount}>
+              <Text style={styles.textRecapAmount}>{event.totalSum}€</Text>
+              <Text style={styles.textRecap}>Budget initial</Text>
+            </View>
+            <View style={styles.amount}>
+              <Text style={styles.textRecapAmount}>XX€</Text>
+              <Text style={styles.textRecap}>Total des dépenses</Text>
+            </View>
+          </View>
+          <View style={styles.amount}>
+            <Text style={styles.textRecapBalance}>XX€</Text>
+            <Text style={styles.textRecap}>Solde restant</Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const EventPayment = () => {
+    const guestsList = event.guests.map((guest, i) => {
+      console.log(guest.userId);
+      return (
+        <View
+          key={i}
+          style={[
+            styles.listCard,
+            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+          ]}
+        >
+          <Text style={styles.textCurrentListCard}>
+            {guest.userId.firstName}
+          </Text>
+          {guest.userId.hasPaid ? (
+            <Icon name="checkmark-circle" size={25} color="#EB1194" />
+          ) : (
+            <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
+          )}
+          <View></View>
+        </View>
+      );
+    });
+
+    return (
+      <View>
+        <Text
+          style={[
+            globalStyles.titleList,
+            globalStyles.violet,
+            globalStyles.capital,
+            { marginTop: 20 },
+          ]}
+        >
+          RÉCAPITULATIF DES FONDS
+        </Text>
+
+        <View
+          style={[
+            styles.RecapEventCard,
+            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+          ]}
+        >
+          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+            <Text style={styles.textCurrentListCard}>Budget initial</Text>
+            <Text>{event.totalSum}€</Text>
+          </View>
+          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+            <Text style={styles.textCurrentListCard}>
+              Nombre de participants
+            </Text>
+            <Text>{event.guests.length}</Text>
+          </View>
+          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+            <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
+            <Text>XX€</Text>
+          </View>
+        </View>
+
+        <Text
+          style={[
+            globalStyles.titleList,
+            globalStyles.violet,
+            globalStyles.capital,
+          ]}
+        >
+          STATUT DES RÉGLEMENTS
+        </Text>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          <View>{guestsList}</View>
+        </ScrollView>
+      </View>
+    );
+  };
+
   const submitExpense = () => {
     setExpenseName("");
     setExpenseAmount("");
+  };
+
+  const renderSelectedComponent = () => {
+    if (selectedComponent === "expenses") {
+      return <EventExpense />;
+    } else {
+      return <EventPayment />;
+    }
   };
 
   //3. RETURN FINAL
@@ -136,89 +304,26 @@ export default function EventScreen({ route, navigation }) {
       </TouchableOpacity>
 
       <View style={styles.toggleSelection}>
-        <TouchableOpacity>
-          <Text style={styles.textAddingCard}>Toutes les dépenses</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.textAddingCard}>Tous les paiements</Text>
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        <View
+        <Pressable
           style={[
-            styles.listCard,
-            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+            styles.button,
+            selectedComponent === "expenses" && styles.selectedButton,
           ]}
+          onPress={() => setSelectedComponent("expenses")}
         >
-          <Text style={styles.textCurrentListCard}>Nom dépense </Text>
-          <View style={styles.leftPartInsideCard}>
-            <Text style={{ ...styles.textCurrentListCard, marginRight: 30 }}>
-              XX€
-            </Text>
-
-            <Icon name="document-text-sharp" size={25} color="#4E3CBB"></Icon>
-          </View>
-        </View>
-      </ScrollView>
-      <View
-        style={[
-          { ...styles.listCard, marginBottom: 30 },
-          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-        ]}
-      >
-        <TextInput
-          style={styles.textAddingCard}
-          placeholder="Ajouter une dépense"
-          value={expenseName}
-          onChangeText={(value) => setExpenseName(value)}
-        />
-        <View style={styles.leftPartInsideCard}>
-          <TextInput
-            style={styles.textAddingCard}
-            placeholder="XX"
-            keyboardType="numeric"
-            value={expenseAmount}
-            onChangeText={(text) => {
-              if (text.includes(".") && text.split(".")[1].length > 2) {
-                return;
-              }
-              if (!isNaN(text)) {
-                setExpenseAmount(text);
-              }
-            }}
-          />
-          <Text style={{ ...styles.textAddingCard, marginRight: 30 }}>€</Text>
-          <TouchableOpacity onPress={submitExpense}>
-            <Icon name="add-circle" size={30} color="#EB1194"></Icon>
-          </TouchableOpacity>
-        </View>
+          <Text style={styles.textButton}>Toutes les dépenses</Text>
+        </Pressable>
+        <Pressable
+          style={[
+            styles.button,
+            selectedComponent === "payments" && styles.selectedButton,
+          ]}
+          onPress={() => setSelectedComponent("payments")}
+        >
+          <Text style={styles.textButton}>Tous les paiements</Text>
+        </Pressable>
       </View>
-
-      <View
-        style={[
-          styles.recapCard,
-          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-        ]}
-      >
-        <View style={styles.recapCardRow}>
-          <View style={styles.amount}>
-            <Text style={styles.textRecapAmount}>{event.totalSum}€</Text>
-            <Text style={styles.textRecap}>Budget initial</Text>
-          </View>
-          <View style={styles.amount}>
-            <Text style={styles.textRecapAmount}>XX€</Text>
-            <Text style={styles.textRecap}>Total des dépenses</Text>
-          </View>
-        </View>
-        <View style={styles.amount}>
-          <Text style={styles.textRecapBalance}>XX€</Text>
-          <Text style={styles.textRecap}>Solde restant</Text>
-        </View>
-      </View>
+      <View>{renderSelectedComponent()}</View>
     </LinearGradient>
   );
 }
@@ -238,8 +343,8 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   scrollView: {
-    marginTop: 20,
     marginBottom: 20,
+    // backgroundColor: "white",
   },
   headerContainer: {
     flexDirection: "row",
@@ -253,6 +358,23 @@ const styles = StyleSheet.create({
     height: 100,
     resizeMode: "contain",
   },
+  // TOOGLE SELECTION
+  toggleSelection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#4E3CBB33",
+    borderRadius: 5,
+  },
+  button: {
+    padding: 10,
+    width: "50%",
+  },
+  selectedButton: {
+    backgroundColor: "#4E3CBB",
+    borderRadius: 5,
+  },
+
   // EVENTS CONTAINER
   listCard: {
     backgroundColor: "#FFFFFF",
@@ -295,6 +417,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 20,
   },
+  RecapEventCard: {
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    height: 120,
+  },
   // TEXTES
   textGoBack: {
     fontFamily: "CodecPro-ExtraBold",
@@ -302,13 +432,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 20,
   },
+  textButton: {
+    color: "#FFFFFF",
+    fontFamily: "CodecPro-ExtraBold",
+    fontSize: 16,
+    textAlign: "center",
+  },
   textCurrentListCard: {
     fontFamily: "CodecPro-Regular",
     color: "#4E3CBB",
     fontSize: 16,
   },
   textAddingCard: {
-    fontFamily: "CodecPro-Heavy",
+    fontFamily: "CodecPro-ExtraBold",
     color: "#EB1194",
     fontSize: 16,
   },
@@ -334,11 +470,5 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-ExtraBold",
     color: "#EB1194",
     fontSize: 25,
-  },
-  toggleSelection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
   },
 });
