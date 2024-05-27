@@ -91,7 +91,7 @@ export default function HomeScreen({ navigation }) {
         </View>
         
       </View>
-       
+      <View style={styles.reloadButton}> 
       <TouchableOpacity
             onPress={() => handleSubmit()}
             style={globalStyles.buttonContainer}
@@ -113,6 +113,7 @@ export default function HomeScreen({ navigation }) {
              // navigation.navigate("Signin");
             }}
           ></TouchableOpacity>
+       </View>
 
     
       <Text style={styles.titleList2}>MES DERNIERES TRANSACTIONS</Text>
@@ -188,23 +189,14 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 
-  buttonReload: {
+  reloadButton: {
     //content du boutton
-    flexDirection: "row",
-    backgroundColor: "#FFFFFF",
-    width: "40%",
-    height: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 5,
+   display: 'flex',
+   flexDirection: 'row',
+   justifyContent: 'flex-end',
+   paddingHorizontal: 10,
   },
-  buttonReloadView: {
-    //pour glisser a droite le button
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginTop: 10,
-    marginBottom: 15,
-  },
+ 
   buttonReload2: {
     color: "#EB1194",
   },
