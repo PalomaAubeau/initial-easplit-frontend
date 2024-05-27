@@ -22,6 +22,7 @@ import { useIsFocused } from "@react-navigation/native";
 //import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
 
+
 //mockUp
 const mock = {
   guests: [
@@ -97,7 +98,7 @@ export default function EventScreen({ route, navigation }) {
   const [expenses, setExpenses] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [expenseAmount, setExpenseAmount] = useState("");
-  const [expenseName, setExpenseName] = useState("");
+
   const [imageName, setImageName] = useState("");
 
   useEffect(() => {
@@ -127,9 +128,9 @@ export default function EventScreen({ route, navigation }) {
     fetchExpenses();
   }, []);
 
-  const onChangeText = (value) => {
-    setExpenseName(value);
-  };
+  // const onNameChange = (value) => {
+  //   setExpenseName(value);
+  // };
 
   const onAmountChange = (text) => {
     if (text.includes(".") && text.split(".")[1].length > 2) {
@@ -145,6 +146,8 @@ export default function EventScreen({ route, navigation }) {
   };
 
   const submitExpense = async () => {
+ 
+    
     try {
       if (imageName.trim() === "") {
         alert("Please add an invoice name");
@@ -180,6 +183,8 @@ export default function EventScreen({ route, navigation }) {
   };
 
   const EventExpense = () => {
+    const [expenseName, setExpenseName] = useState("");
+
     const totalExpenses = expenses.reduce(
       (total, expense) => total + Number(expense.amount),
       0
@@ -226,7 +231,7 @@ export default function EventScreen({ route, navigation }) {
             style={styles.textAddingCard}
             placeholder="Ajouter une dépense"
             value={expenseName}
-            onChangeText={onChangeText}
+            onChangeText={(value) => setExpenseName(value)}
           />
           <View style={styles.leftPartInsideCard}>
             <TextInput
