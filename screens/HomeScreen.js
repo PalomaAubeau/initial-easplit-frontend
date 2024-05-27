@@ -120,7 +120,7 @@ export default function HomeScreen({ navigation }) {
 <LastTransactions/>
 
 <Text style={styles.titleList2}>MES DERNIERS EVENTS</Text>
-{eventsList && eventsList.length > 0 && [...eventsList].reverse().map((event, index) => (
+{eventsList && eventsList.length > 0 && [...eventsList].reverse().slice(0, 2).map((event, index) => (
   <TouchableOpacity
     key={index}
     style={styles.newEventContainer}
