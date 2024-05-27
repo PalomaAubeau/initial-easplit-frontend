@@ -72,7 +72,7 @@ export default function HomeScreen({ navigation }) {
               style={globalStyles.gradientBackground}
             >
               <View style={globalStyles.textContainer}>
-                <Text style={globalStyles.buttonText}>Recharger</Text>
+                <Text style={styles.reloadbuttonText}>Recharger</Text>
               </View>
             </LinearGradient>
           </TouchableOpacity>
@@ -173,7 +173,11 @@ const styles = StyleSheet.create({
    justifyContent: 'flex-end',
    paddingHorizontal: 10,
   },
- 
+  reloadbuttonText:{
+    fontFamily: "CodecPro-ExtraBold",
+    fontSize:20,
+    color:'#FFFFFF'
+  },
   buttonReload2: {
     color: "#EB1194",
   },
