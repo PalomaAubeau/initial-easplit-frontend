@@ -17,77 +17,14 @@ import {
 import Input from "../components/Input";
 import React, { useState, useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
-//import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
-
-//mockUp
-const mock = {
-  guests: [
-    {
-      _id: "665084c25b8edd087301f5ac",
-      email: "marwane@test.test",
-      hasPaid: false,
-      userId: [Object],
-    },
-    {
-      _id: "665084c25b8edd087301f5ad",
-      email: "test@test.fr",
-      hasPaid: false,
-      share: 1,
-      userId: [Object],
-    },
-    {
-      _id: "665084c25b8edd087301f5ae",
-      email: "test@gmail.com",
-      hasPaid: false,
-      share: 1,
-      userId: [Object],
-    },
-  ],
-  name: "Anniv JB",
-  organizer: {
-    __v: 20,
-    _id: "664de90300c4cf782939b7f3",
-    balance: 100,
-    email: "marwane@test.test",
-    events: [
-      "664f211fb7c5e5fd2563dee9",
-      "664f2160b7c5e5fd2563deee",
-      "665062dbffb5f60711559149",
-      "665062dbffb5f60711559149",
-      "665062dbffb5f60711559149",
-      "665063f5ecfa46b745e89eb0",
-      "6650649cdd8d1e2d127c0eb2",
-      "6650689d2d30bcfb0e0f211b",
-      "665069152d30bcfb0e0f2125",
-      "665069302d30bcfb0e0f212f",
-      "665069662d30bcfb0e0f2139",
-      "66506ec42bb6c4b190bf229f",
-      "665070f02bb6c4b190bf22a9",
-      "665084c25b8edd087301f5ab",
-      "665085415b8edd087301f5b8",
-      "665085fd0334608c567e9e1f",
-      "665087f98e91cde065abcbe3",
-      "66508b6e141b88d8c645bcd9",
-      "66508d1ce5d9565fadc85172",
-      "66508f0abb7443a72a9c99e6",
-      "6650a6d74da6a558df29006a",
-    ],
-    firstName: "Marwanetest",
-    lastName: "Test",
-    password: "$2b$10$DiEweMDLk1vhI2.F6MJD8OmxNHPQ3jcu9p/zfljow/LEy.SSO1a5S",
-    token: "tYfSRuWFBWWOLJaiYrDRkWPDcoGI76nt",
-    transactions: ["664f6169f69f20d7b4f7bbc8"],
-  },
-  shareAmount: 3,
-  totalSum: 8889,
-  transactions: [],
-};
 
 export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const { eventId } = route.params; // Récupération de l'_id de l'Event (props du screen précédent via la fonction de la navigation)
   //console.log("test recup eventId", eventId);
+  const user = useSelector((state) => state.user.value);
   const isFocused = useIsFocused();
   const [event, setEvent] = useState({});
   const [selectedComponent, setSelectedComponent] = useState("expenses");
@@ -101,16 +38,37 @@ export default function EventScreen({ route, navigation }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          console.log(
-            "EventScreen, récupération de la data du fetch:",
-            data.event
-          );
+          // console.log(
+          //   "EventScreen, récupération de la data du fetch:",
+          //   data.event
+          // );
           setEvent(data.event);
         }
       });
   }, [isFocused]);
 
-  // Fetch de récupération des informations des
+  // Fetch de récupération des informations des paiments
+  const handlePayment = (guestId) => {
+    fetch(
+      `${PATH}/transactions/create/payment/${user.token}/${event.eventUniqueId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "payment",
+          eventId: event._id,
+          emitter: user.token,
+          recipient: event.eventUniqueId,
+          name: event.name,
+          amount: event.shareAmount,
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        data.result && console.log("test ligne 69");
+      });
+  };
 
   const EventExpense = () => {
     return (
@@ -212,9 +170,10 @@ export default function EventScreen({ route, navigation }) {
           {guest.hasPaid ? (
             <Icon name="checkmark-circle" size={25} color="#EB1194" />
           ) : (
-            <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
+            <TouchableOpacity onPress={() => handlePayment(guest.userId)}>
+              <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
+            </TouchableOpacity>
           )}
-          <View></View>
         </View>
       );
     });
@@ -238,19 +197,21 @@ export default function EventScreen({ route, navigation }) {
             Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
           ]}
         >
-          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>Budget initial</Text>
-            <Text>{event.totalSum}€</Text>
+            <Text style={styles.textPaymentRecapLeft}>{event.totalSum}€</Text>
           </View>
-          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>
               Nombre de participants
             </Text>
-            <Text>{event.guests.length}</Text>
+            <Text style={styles.textPaymentRecapLeft}>
+              {event.guests.length}
+            </Text>
           </View>
-          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
-            <Text>XX€</Text>
+            <Text style={styles.textPaymentRecapLeft}>XX€</Text>
           </View>
         </View>
 
@@ -477,5 +438,10 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-ExtraBold",
     color: "#EB1194",
     fontSize: 25,
+  },
+  textPaymentRecapLeft: {
+    fontFamily: "CodecPro-ExtraBold",
+    color: "#4E3CBB",
+    fontSize: 16,
   },
 });
