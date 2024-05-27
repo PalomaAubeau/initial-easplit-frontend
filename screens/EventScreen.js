@@ -190,7 +190,7 @@ export default function EventScreen({ route, navigation }) {
 
   const EventPayment = () => {
     const guestsList = event.guests.map((guest, i) => {
-      console.log(guest.userId);
+      //console.log("EventPayment:", guest.email);
       return (
         <View
           key={i}
@@ -199,10 +199,8 @@ export default function EventScreen({ route, navigation }) {
             Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
           ]}
         >
-          <Text style={styles.textCurrentListCard}>
-            {guest.userId.firstName}
-          </Text>
-          {guest.userId.hasPaid ? (
+          <Text style={styles.textCurrentListCard}>{guest.email}</Text>
+          {guest.hasPaid ? (
             <Icon name="checkmark-circle" size={25} color="#EB1194" />
           ) : (
             <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
