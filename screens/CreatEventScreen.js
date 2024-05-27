@@ -98,7 +98,7 @@ export default function CreateEventScreen({ navigation }) {
     setParticipants(updatedParticipants);
   };
 
-  // Gestion des erreurs et des dates 
+  // Gestion des erreurs et des dates :
 
   const handleEventDateChange = (value) => {
     setEventDate(value);
@@ -124,6 +124,7 @@ export default function CreateEventScreen({ navigation }) {
       setErrors((prev) => ({ ...prev, deadLine: null }));
     }
   };
+  // FIN : Gestion des erreurs et des dates :
 
   //Mécanique pour créer l'évènement :
 
