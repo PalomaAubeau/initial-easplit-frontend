@@ -151,6 +151,20 @@ export default function CreateEventScreen({ navigation }) {
         console.error('Veuillez remplir tous les champs avant de créer l\'événement');
         return;
       }
+
+      if (!eventDate) {
+        if (new Date(eventDate) < today) {
+        errorsTemp.eventDate = 'La date de l\'événement ne peut pas être antérieure à la date du jour';
+      }
+    }
+
+      if (!deadLine) {
+        if (new Date(deadLine) < today) {
+        errorsTemp.deadLine = 'La date limite de paiement ne peut pas être antérieure à la date du jour';
+      } else if (new Date(deadLine) >= new Date(eventDate)) {
+        errorsTemp.deadLine = 'La date limite de paiement doit être antérieure à la date de l\'événement';
+      }
+    }
     
       for (let participant of participants) {
         if (isNaN(Number(participant.parts))) {
@@ -237,6 +251,7 @@ export default function CreateEventScreen({ navigation }) {
                 onChangeText={(value) => setEventDate(value)}
                 placeholder="Date de l'évènement" 
                 isDate={true} />
+                 {errors.eventDate && <Text style={styles.errorText}>{errors.eventDate}</Text>}
                 <Text
                   style={[
                     globalStyles.inputLabel,
@@ -252,6 +267,7 @@ export default function CreateEventScreen({ navigation }) {
                 onChangeText={(value) => setDeadLine(value)}
                 isDate={true} 
                 />
+                 {errors.deadLine && <Text style={styles.errorText}>{errors.deadLine}</Text>}
                 <Text
                   style={[
                     globalStyles.inputLabel,
@@ -425,5 +441,12 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontFamily: "CodecPro-ExtraBold",
     textAlign:"right",
+  },
+  errorText: {
+    color: 'red',
+    marginHorizontal: 10,
+    marginTop: -10,
+    marginBottom: 10,
+    fontFamily: "CodecPro-Regular",
   },
 });
