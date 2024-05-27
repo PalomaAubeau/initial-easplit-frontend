@@ -39,18 +39,20 @@ export default function SignUpScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          console.log("signUP result:", data);
           if (!data.result) {
             setLoginErrorMessage(data.error);
           } else {
+            const signUpUser = data.data;
+            console.log(signUpUser);
             dispatch(
               login({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                balance: data.balance,
-                token: data.token,
-                userId: data.userId,
+                firstName: signUpUser.firstName,
+                lastName: signUpUser.lastName,
+                email: signUpUser.email,
+                balance: signUpUser.balance,
+                token: signUpUser.token,
+                userId: signUpUser.userId,
               })
             );
             navigation.navigate("TabNavigator", { screen: "EventsListScreen" });
