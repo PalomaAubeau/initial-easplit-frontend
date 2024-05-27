@@ -14,9 +14,39 @@ import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view"; //pour nom en gradient
 import LastTransactions from "../components/LastTransaction";
 import globalStyles from "../styles/globalStyles"; //Appel des styles globaux
+import { getUserEvents } from "../utils/getUserEvents";
+import React, { useState, useEffect } from "react";
+import { PATH } from "../utils/path";
+import { useFocusEffect } from '@react-navigation/native'; //useFocusEffect permet de recharger les événements de l'utilisateur connecté à chaque fois que l'utilisateur revient sur la page
+
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   //console.log('reducerUser' + user)
+  
+  // Déclaration de la liste des événements de l'utilisateur connecté 
+  const [eventsList, setEventsList] = useState([]); 
+//  fetch des événements de l'utilisateur connecté 
+  const fetchEvents = () => {
+    fetch(`${PATH}/events/user-events/${user.token}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          setEventsList(data.events);
+        }
+      });
+  };
+
+  // FocusEffect permet de recharger les événements de l'utilisateur connecté à chaque fois que l'utilisateur revient sur la page
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchEvents();
+    }, [])
+  );
+
+  // const navigateToCreateEvent = () => {
+  //   navigation.navigate('CreateEvent');
+  // };
+
   return (
     <LinearGradient
       style={styles.container}
@@ -55,7 +85,9 @@ export default function HomeScreen({ navigation }) {
 
       <View style={styles.View}>
         <View style={styles.balanceContainer}>
-          <Text style={styles.textBalanceContainer}>{user.balance.toFixed(2)}€</Text>
+        <Text style={styles.textBalanceContainer}>
+  {user && user.balance ? user.balance.toFixed(2) : '0.00'}€
+</Text>
         </View>
         
       </View>
@@ -82,40 +114,31 @@ export default function HomeScreen({ navigation }) {
             }}
           ></TouchableOpacity>
 
-
-
-      <Text style={styles.titleList2}>MES DERNIERES TRANSACTIONS</Text>
-      <LastTransactions/>
-      
-      
     
-      <Text style={styles.titleList2}>MES DERNIERS EVENTS</Text>
+      <Text style={styles.titleList2}>MES DERNIERES TRANSACTIONS</Text>
+<LastTransactions/>
 
-      <TouchableOpacity
-        style={styles.newEventContainer}
-        activeOpacity={0.8}
-        onPress={() => navigation.navigate("Event")}
-      >
-        <Text style={styles.textAddingContainer}>COMPOSANT 1</Text>
-      </TouchableOpacity>
+<Text style={styles.titleList2}>MES DERNIERS EVENTS</Text>
+{eventsList && eventsList.length > 0 && [...eventsList].reverse().map((event, index) => (
+  <TouchableOpacity
+    key={index}
+    style={styles.newEventContainer}
+    activeOpacity={0.8}
+    onPress={() => navigation.navigate("Event", { eventId: event._id })}
+  >
+    <Text style={styles.eventName}>{event.name}</Text>
+  </TouchableOpacity>
+))}
 
-      <TouchableOpacity
-        style={styles.newEventContainer}
-        activeOpacity={0.8}
-        onPress={() => navigation.navigate("Event")}
-      >
-        <Text style={styles.textAddingContainer}>COMPOSANT 2</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.newEventContainer}
-        activeOpacity={0.8}
-        onPress={() => navigation.navigate("Event")}
-      >
-        <Text style={styles.textAddingContainer}>voir plus</Text>
-      </TouchableOpacity>
-    </View>
-    </LinearGradient>
+<TouchableOpacity
+  style={styles.newEventContainer}
+  activeOpacity={0.8}
+  onPress={() => navigation.navigate("EventsList")}
+>
+  <Text style={styles.textAddingContainer}>voir plus</Text>
+</TouchableOpacity>
+</View>
+</LinearGradient>
   );
 }
 
@@ -237,6 +260,10 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-ExtraBold",
     textAlign: 'center',
     fontSize: 28,
+  },
+  eventName: {
+    color: '#4E3CBB',
+    fontWeight: "bold", 
   },
   textAddingContainer: {
     color: "#EB1194",

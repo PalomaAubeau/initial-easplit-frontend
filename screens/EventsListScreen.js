@@ -169,17 +169,17 @@ export default function EventsListScreen({ navigation }) {
         MES ÉVÈNEMENTS
       </Text>
       <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        {user.events.length === 0 ? (
-          <Text style={styles.message}>
-            Aucun évènement à afficher pour le moment
-          </Text>
-        ) : (
-          <>{userEvents}</>
-        )}
-      </ScrollView>
+  style={styles.scrollView}
+  showsVerticalScrollIndicator={false}
+>
+  {user.events && user.events.length === 0 ? (
+    <Text style={styles.message}>
+      Aucun évènement à afficher pour le moment
+    </Text>
+  ) : (
+    <>{userEvents}</>
+  )}
+</ScrollView>
       <TouchableOpacity
         style={[
           styles.listCard,

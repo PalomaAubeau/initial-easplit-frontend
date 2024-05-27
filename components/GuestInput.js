@@ -8,7 +8,8 @@ const GuestInput = ({ onAddGuest }) => {
   const handleAddGuest = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (email && emailRegex.test(email)) {
-      onAddGuest({ email, parts: 1 });
+      const emailLowercase = email.toLowerCase();
+      onAddGuest({ email: emailLowercase, parts: 1 });
       setEmail('');
     } else {
       console.log('Invalid email');
