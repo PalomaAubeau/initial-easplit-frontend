@@ -13,9 +13,11 @@ import {
   Platform,
   TextInput,
   Pressable,
+  Modal,
+  Button,
 } from "react-native";
 import Input from "../components/Input";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useIsFocused } from "@react-navigation/native";
 //import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
@@ -88,13 +90,16 @@ export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const { eventId } = route.params; // Récupération de l'_id de l'Event (props du screen précédent via la fonction de la navigation)
   //console.log("test recup eventId", eventId);
+
   const isFocused = useIsFocused();
   const [event, setEvent] = useState({});
   const [selectedComponent, setSelectedComponent] = useState("expenses");
+  const [expenses, setExpenses] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
   const [expenseAmount, setExpenseAmount] = useState("");
   const [expenseName, setExpenseName] = useState("");
+  const [imageName, setImageName] = useState("");
 
-  //2. Comportements
   useEffect(() => {
     fetch(`${PATH}/events/event/${eventId}`)
       .then((response) => response.json())
@@ -105,30 +110,111 @@ export default function EventScreen({ route, navigation }) {
       });
   }, [isFocused]);
 
-  const EventExpense = () => {
-    return (
-      <View
-      // style={{ flex: 0.5 }}
-      >
-        <ScrollView
-          style={{ ...styles.scrollView, marginTop: 30 }}
-          showsVerticalScrollIndicator={false}
-        >
-          <View
-            style={[
-              styles.listCard,
-              Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-            ]}
-          >
-            <Text style={styles.textCurrentListCard}>Nom dépense </Text>
-            <View style={styles.leftPartInsideCard}>
-              <Text style={{ ...styles.textCurrentListCard, marginRight: 30 }}>
-                XX€
-              </Text>
+  const fetchExpenses = async () => {
+    try {
+      const response = await fetch(`${PATH}/transactions/expenses/${eventId}`);
+      const data = await response.json();
 
-              <Icon name="document-text-sharp" size={25} color="#4E3CBB"></Icon>
+      if (data.response) {
+        setExpenses(data.expenses);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
+
+  const onChangeText = (value) => {
+    setExpenseName(value);
+  };
+
+  const onAmountChange = (text) => {
+    if (text.includes(".") && text.split(".")[1].length > 2) {
+      return;
+    }
+    if (!isNaN(text)) {
+      setExpenseAmount(text);
+    }
+  };
+
+  const onImageNameChange = (text) => {
+    setImageName(text);
+  };
+
+  const submitExpense = async () => {
+    try {
+      if (imageName.trim() === "") {
+        alert("Please add an invoice name");
+      } else {
+        const response = await fetch(`${PATH}/transactions/create/expense`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            emitter: eventId,
+            amount: Number(expenseAmount),
+            type: "expense",
+            name: expenseName,
+            invoice: imageName,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to create expense");
+        }
+
+        const data = await response.json();
+        setExpenses((prevExpenses) => [...prevExpenses, data.transaction]);
+
+        setExpenseName("");
+        setExpenseAmount("");
+        setImageName("");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const EventExpense = () => {
+    const totalExpenses = expenses.reduce(
+      (total, expense) => total + Number(expense.amount),
+      0
+    );
+    const remainingBalance = event.totalSum - totalExpenses;
+
+    return (
+      <View>
+        <ScrollView
+          style={{ ...styles.scrollView, marginTop: 30, maxHeight: 220 }}
+          showsVerticalScrollIndicator={true}
+        >
+          {expenses.map((expense, index) => (
+            <View
+              key={index}
+              style={[
+                styles.listCard,
+                Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+              ]}
+            >
+              <Text style={styles.textCurrentListCard}>{expense.name}</Text>
+              <View style={styles.leftPartInsideCard}>
+                <Text
+                  style={{ ...styles.textCurrentListCard, marginRight: 30 }}
+                >
+                  {expense.amount}€
+                </Text>
+                <Icon
+                  name="document-text-sharp"
+                  size={25}
+                  color="#4E3CBB"
+                ></Icon>
+              </View>
             </View>
-          </View>
+          ))}
         </ScrollView>
         <View
           style={[
@@ -140,7 +226,7 @@ export default function EventScreen({ route, navigation }) {
             style={styles.textAddingCard}
             placeholder="Ajouter une dépense"
             value={expenseName}
-            onChangeText={(value) => setExpenseName(value)}
+            onChangeText={onChangeText}
           />
           <View style={styles.leftPartInsideCard}>
             <TextInput
@@ -148,15 +234,48 @@ export default function EventScreen({ route, navigation }) {
               placeholder="XX€"
               keyboardType="numeric"
               value={expenseAmount}
-              onChangeText={(text) => {
-                if (text.includes(".") && text.split(".")[1].length > 2) {
-                  return;
-                }
-                if (!isNaN(text)) {
-                  setExpenseAmount(text);
-                }
-              }}
+              onChangeText={onAmountChange}
             />
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Icon name="document-text-sharp" size={25} color="#EB1194" />
+            </TouchableOpacity>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Entrer le nom de l'image"
+                    value={imageName}
+                    onChangeText={onImageNameChange}
+                  />
+                  <Button
+                    title="Ajouter l'image"
+                    onPress={() => {
+                      if (imageName.trim() === "") {
+                        alert("Merci de renseigner un nom pour l'image");
+                      } else {
+                        alert(`Image ${imageName} ajouté!`);
+                        setModalVisible(false); // Close the modal
+                      }
+                    }}
+                  />
+                  <TouchableOpacity
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => setModalVisible(!modalVisible)}
+                  >
+                    <Text style={styles.textStyle}>Fermer</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
             <TouchableOpacity onPress={submitExpense}>
               <Icon name="add-circle" size={30} color="#EB1194"></Icon>
             </TouchableOpacity>
@@ -175,12 +294,12 @@ export default function EventScreen({ route, navigation }) {
               <Text style={styles.textRecap}>Budget initial</Text>
             </View>
             <View style={styles.amount}>
-              <Text style={styles.textRecapAmount}>XX€</Text>
+              <Text style={styles.textRecapAmount}>{totalExpenses}€</Text>
               <Text style={styles.textRecap}>Total des dépenses</Text>
             </View>
           </View>
           <View style={styles.amount}>
-            <Text style={styles.textRecapBalance}>XX€</Text>
+            <Text style={styles.textRecapBalance}>{remainingBalance}€</Text>
             <Text style={styles.textRecap}>Solde restant</Text>
           </View>
         </View>
@@ -189,26 +308,22 @@ export default function EventScreen({ route, navigation }) {
   };
 
   const EventPayment = () => {
-    const guestsList = event.guests.map((guest, i) => {
-      console.log("EventPayment:", guest);
-      return (
-        <View
-          key={i}
-          style={[
-            styles.listCard,
-            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-          ]}
-        >
-          <Text style={styles.textCurrentListCard}>{guest.userId.firstName}</Text>
-          {guest.hasPaid ? (
-            <Icon name="checkmark-circle" size={25} color="#EB1194" />
-          ) : (
-            <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
-          )}
-          <View></View>
-        </View>
-      );
-    });
+    const guestsList = event.guests.map((guest, i) => (
+      <View
+        key={i}
+        style={[
+          styles.listCard,
+          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+        ]}
+      >
+        <Text style={styles.textCurrentListCard}>{guest.firstName}</Text>
+        {guest.hasPaid ? (
+          <Icon name="checkmark-circle" size={25} color="#EB1194" />
+        ) : (
+          <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
+        )}
+      </View>
+    ));
 
     return (
       <View>
@@ -264,11 +379,6 @@ export default function EventScreen({ route, navigation }) {
     );
   };
 
-  const submitExpense = () => {
-    setExpenseName("");
-    setExpenseAmount("");
-  };
-
   const renderSelectedComponent = () => {
     if (selectedComponent === "expenses") {
       return <EventExpense />;
@@ -277,7 +387,6 @@ export default function EventScreen({ route, navigation }) {
     }
   };
 
-  //3. RETURN FINAL
   return (
     <LinearGradient
       style={styles.container}
@@ -468,5 +577,33 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-ExtraBold",
     color: "#EB1194",
     fontSize: 25,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    width: "80%", // You can adjust this value as needed
   },
 });
