@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 15,
     borderRadius: 10,
-    marginBottom: 15,
+    marginVertical: 5,
+    marginHorizontal:10,
     height: 60,
   },
   shadowAndroid: {
