@@ -19,7 +19,7 @@ const Transaction = ({
   return (
     <View style={styles.transactionContainer}>
       <View>
-        <Text style={styles.transactionName}>{name}</Text>
+        <Text style={styles.transactionName}>{transactionText}</Text>
         <Text style={styles.transactionDescription}>
           {transactionDescription}
         </Text>
@@ -61,7 +61,7 @@ const LastTransactions = () => {
             transactionDescription = "Remboursement clôture événement";
             displayAmount = `+ ${transaction.amount} €`;
           } else if (transaction.type === "reload") {
-            transactionText = "Rechargement de mon compte";
+            transactionText = "Rechargement";
             transactionDescription = "Rechargement de mon compte";
             displayAmount = `+ ${transaction.amount} €`;
           } else if (transaction.type === "payment") {
