@@ -22,7 +22,6 @@ import { useIsFocused } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
 
-
 //mockUp
 const mock = {
   guests: [
@@ -96,7 +95,7 @@ export default function EventScreen({ route, navigation }) {
   const [event, setEvent] = useState({});
   const [selectedComponent, setSelectedComponent] = useState("expenses");
   const [expenses, setExpenses] = useState([]);
-  
+
   const handlePayment = () => {
     fetch(
       `${PATH}/transactions/create/payment/${user.token}/${event.eventUniqueId}`,
@@ -171,7 +170,7 @@ export default function EventScreen({ route, navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [expenseAmount, setExpenseAmount] = useState("");
     const [imageName, setImageName] = useState("");
-  
+
     const submitExpense = async () => {
       try {
         if (imageName.trim() === "") {
@@ -184,9 +183,9 @@ export default function EventScreen({ route, navigation }) {
             name: expenseName,
             invoice: imageName,
           };
-    
-          console.log('Request body:', requestBody);
-    
+
+          console.log("Request body:", requestBody);
+
           const response = await fetch(`${PATH}/transactions/create/expense`, {
             method: "POST",
             headers: {
@@ -194,14 +193,14 @@ export default function EventScreen({ route, navigation }) {
             },
             body: JSON.stringify(requestBody),
           });
-    
-          console.log('Response:', response);
+
+          console.log("Response:", response);
           setExpenseName("");
-      setExpenseAmount("");
-      setImageName("");
+          setExpenseAmount("");
+          setImageName("");
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
 
@@ -217,29 +216,34 @@ export default function EventScreen({ route, navigation }) {
           style={{ ...styles.scrollView, marginTop: 30, maxHeight: 220 }}
           showsVerticalScrollIndicator={true}
         >
-          {expenses.slice().reverse().map((expense, index) => (
-            <View
-              key={index}
-              style={[
-                styles.listCard,
-                Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-              ]}
-            >
-              <Text style={styles.textCurrentListCard}>{expense.name}</Text>
-              <View style={styles.leftPartInsideCard}>
-                <Text
-                  style={{ ...styles.textCurrentListCard, marginRight: 30 }}
-                >
-                  {expense.amount}€
-                </Text>
-                <Icon
-                  name="document-text-sharp"
-                  size={25}
-                  color="#4E3CBB"
-                ></Icon>
+          {expenses
+            .slice()
+            .reverse()
+            .map((expense, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.listCard,
+                  Platform.OS === "ios"
+                    ? styles.shadowIOS
+                    : styles.shadowAndroid,
+                ]}
+              >
+                <Text style={styles.textCurrentListCard}>{expense.name}</Text>
+                <View style={styles.leftPartInsideCard}>
+                  <Text
+                    style={{ ...styles.textCurrentListCard, marginRight: 30 }}
+                  >
+                    {expense.amount}€
+                  </Text>
+                  <Icon
+                    name="document-text-sharp"
+                    size={25}
+                    color="#4E3CBB"
+                  ></Icon>
+                </View>
               </View>
-            </View>
-          ))}
+            ))}
         </ScrollView>
         <View
           style={[
@@ -254,20 +258,23 @@ export default function EventScreen({ route, navigation }) {
             onChangeText={(value) => setExpenseName(value)}
           />
           <View style={styles.leftPartInsideCard}>
-          <TextInput
-  style={{ ...styles.textAddingCard, marginRight: 30 }}
-  placeholder="XX€"
-  keyboardType="numeric"
-  value={expenseAmount}
-  onChangeText={(text) => {
-    if (text.includes(".") && text.split(".")[1].length > 2) {
-      const truncatedText = text.substring(0, text.indexOf(".") + 3);
-      setExpenseAmount(truncatedText);
-    } else if (!isNaN(text)) {
-      setExpenseAmount(text);
-    }
-  }}
-/>
+            <TextInput
+              style={{ ...styles.textAddingCard, marginRight: 30 }}
+              placeholder="XX€"
+              keyboardType="numeric"
+              value={expenseAmount}
+              onChangeText={(text) => {
+                if (text.includes(".") && text.split(".")[1].length > 2) {
+                  const truncatedText = text.substring(
+                    0,
+                    text.indexOf(".") + 3
+                  );
+                  setExpenseAmount(truncatedText);
+                } else if (!isNaN(text)) {
+                  setExpenseAmount(text);
+                }
+              }}
+            />
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Icon name="document-text-sharp" size={25} color="#EB1194" />
             </TouchableOpacity>
@@ -282,14 +289,14 @@ export default function EventScreen({ route, navigation }) {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                <TextInput
-  style={styles.input}
-  placeholder="Nom de l'image"
-  value={imageName}
-  onChangeText={(text) => setImageName(text)}
-/>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Nom de l'image"
+                    value={imageName}
+                    onChangeText={(text) => setImageName(text)}
+                  />
                   <Button
-                  color="#4E3CBB"
+                    color="#4E3CBB"
                     title="Ajouter l'image"
                     onPress={() => {
                       if (imageName.trim() === "") {
@@ -370,8 +377,8 @@ export default function EventScreen({ route, navigation }) {
         <Text
           style={[
             globalStyles.titleList,
-                        globalStyles.violet,
-                        globalStyles.capital,
+            globalStyles.violet,
+            globalStyles.capital,
             { marginTop: 20 },
           ]}
         >
@@ -398,15 +405,15 @@ export default function EventScreen({ route, navigation }) {
           </View>
           <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
-            <Text>XX€</Text>
+            <Text style={styles.textPaymentRecapLeft}>XX€</Text>
           </View>
         </View>
 
         <Text
           style={[
             globalStyles.titleList,
-                        globalStyles.violet,
-                        globalStyles.capital,
+            globalStyles.violet,
+            globalStyles.capital,
           ]}
         >
           STATUT DES RÉGLEMENTS
@@ -420,7 +427,6 @@ export default function EventScreen({ route, navigation }) {
       </View>
     );
   };
-
 
   const renderSelectedComponent = () => {
     if (selectedComponent === "expenses") {
@@ -622,47 +628,52 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   //CSS de la modal
-    centeredView: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: 22,
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 30,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    modalView: {
-      margin: 20,
-      backgroundColor: "white",
-      borderRadius: 20,
-      padding: 30,
-      alignItems: "center",
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
-    },
-    input: {
-      fontFamily: "CodecPro-ExtraBold",
-      width: 180,
-      borderBottomColor: "#4E3CBB",
-      alignItems: "center",
-      justifyContent: "center",
-      borderBottomWidth: 1,
-      marginBottom: 40,
-      marginTop: 30,
-      fontSize: 20,
-      color: '#4E3CBB',
-      textAlign: "center",
-    },
-    buttonClose: {
-      backgroundColor: "#EB1194",
-      marginTop:20,
-    },
-    textStyle: {
-      color: "white",
-      fontWeight: "bold",
-      textAlign: "center",
-    },
-  });
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  input: {
+    fontFamily: "CodecPro-ExtraBold",
+    width: 180,
+    borderBottomColor: "#4E3CBB",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    marginBottom: 40,
+    marginTop: 30,
+    fontSize: 20,
+    color: "#4E3CBB",
+    textAlign: "center",
+  },
+  buttonClose: {
+    backgroundColor: "#EB1194",
+    marginTop: 20,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  textPaymentRecapLeft: {
+    fontFamily: "CodecPro-ExtraBold",
+    fontSize: 16,
+    color: "#4E3CBB",
+  },
+});
