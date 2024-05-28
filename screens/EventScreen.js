@@ -348,29 +348,17 @@ export default function EventScreen({ route, navigation }) {
   };
 
   const EventPayment = () => {
-    const guestsList = event.guests.map((guest, i) => {
-      //console.log("EventPayment data récupérée:", guest.userId.firstName);
-      return (
-        <View
-          key={i}
-          style={[
-            styles.listCard,
-            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-          ]}
-        >
-          <Text style={styles.textCurrentListCard}>
-            {guest.userId.firstName}
-          </Text>
-          {guest.hasPaid ? (
-            <Icon name="checkmark-circle" size={25} color="#EB1194" />
-          ) : (
-            <TouchableOpacity onPress={() => handlePayment()}>
-              <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
-            </TouchableOpacity>
-          )}
-        </View>
-      );
-    });
+    const currentUser = event.guests.find(
+      (guest) =>
+        guest.userId.email === user.email &&
+        guest.userId.firstName === user.firstName
+    );
+
+    const otherGuests = event.guests.filter(
+      (guest) =>
+        guest.userId.email !== user.email &&
+        guest.userId.firstName !== user.firstName
+    );
 
     return (
       <View>
@@ -422,7 +410,76 @@ export default function EventScreen({ route, navigation }) {
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
         >
-          <View>{guestsList}</View>
+          <View>
+            {currentUser && (
+              <View
+                style={[
+                  styles.listCard,
+                  Platform.OS === "ios"
+                    ? styles.shadowIOS
+                    : styles.shadowAndroid,
+                  styles.currentUserCard,
+                ]}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View style={styles.personIconContainer}>
+                    <Icon name="person" size={20} color="#4E3CBB"></Icon>
+                  </View>
+                  <Text
+                    style={[styles.textCurrentListCard, styles.currentUserText]}
+                  >
+                    MOI
+                  </Text>
+                </View>
+
+                {currentUser.hasPaid ? (
+                  <Icon name="checkmark-circle" size={25} color="#EB1194" />
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => handlePayment()}
+                    style={styles.PaymentCTAContainer}
+                    activeOpacity={0.8}
+                  >
+                    <View>
+                      <Text style={globalStyles.buttonText}>Participer</Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
+
+            {otherGuests.map((guest, i) => (
+              <View
+                key={i}
+                style={[
+                  styles.listCard,
+                  Platform.OS === "ios"
+                    ? styles.shadowIOS
+                    : styles.shadowAndroid,
+                ]}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View style={styles.personIconContainer}>
+                    <Icon name="person" size={20} color="#4E3CBB"></Icon>
+                  </View>
+                  <View>
+                    <Text style={styles.textCurrentListCard}>
+                      {guest.userId.firstName}
+                    </Text>
+                    <Text style={styles.textSmallCurrentListCard}>
+                      {guest.userId.email}
+                    </Text>
+                  </View>
+                </View>
+
+                {guest.hasPaid ? (
+                  <Icon name="checkmark-circle" size={25} color="#EB1194" />
+                ) : (
+                  <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
+                )}
+              </View>
+            ))}
+          </View>
         </ScrollView>
       </View>
     );
@@ -627,6 +684,21 @@ const styles = StyleSheet.create({
     color: "#EB1194",
     fontSize: 25,
   },
+  currentUserText: {
+    fontFamily: "CodecPro-ExtraBold",
+    color: "#4E3CBB",
+    fontSize: 20,
+  },
+  textPaymentRecapLeft: {
+    fontFamily: "CodecPro-ExtraBold",
+    fontSize: 16,
+    color: "#4E3CBB",
+  },
+  textSmallCurrentListCard: {
+    fontFamily: "CodecPro-Regular",
+    color: "#4E3CBB",
+    fontSize: 12,
+  },
   //CSS de la modal
   centeredView: {
     flex: 1,
@@ -671,9 +743,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  textPaymentRecapLeft: {
-    fontFamily: "CodecPro-ExtraBold",
-    fontSize: 16,
-    color: "#4E3CBB",
+
+  personIconContainer: {
+    backgroundColor: "#4E3CBB33",
+    padding: 5,
+    borderRadius: 50,
+    marginRight: 10,
+  },
+  // AUTRES
+  PaymentCTAContainer: {
+    backgroundColor: "#EB1194",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
