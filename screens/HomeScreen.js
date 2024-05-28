@@ -64,7 +64,10 @@ export default function HomeScreen({ navigation }) {
     start={[0.2, 0.2]}
     end={[0.8, 0.8]}
     >
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={true}
+        >
+
           {/* // garder le click sans devoir fermer le keyboard */}
         <View>
           <View style={styles.headerContainer}>
