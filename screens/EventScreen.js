@@ -13,18 +13,83 @@ import {
   Platform,
   TextInput,
   Pressable,
+  Modal,
+  Button,
 } from "react-native";
 import Input from "../components/Input";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
+
+//mockUp
+const mock = {
+  guests: [
+    {
+      _id: "665084c25b8edd087301f5ac",
+      email: "marwane@test.test",
+      hasPaid: false,
+      userId: [Object],
+    },
+    {
+      _id: "665084c25b8edd087301f5ad",
+      email: "test@test.fr",
+      hasPaid: false,
+      share: 1,
+      userId: [Object],
+    },
+    {
+      _id: "665084c25b8edd087301f5ae",
+      email: "test@gmail.com",
+      hasPaid: false,
+      share: 1,
+      userId: [Object],
+    },
+  ],
+  name: "Anniv JB",
+  organizer: {
+    __v: 20,
+    _id: "664de90300c4cf782939b7f3",
+    balance: 100,
+    email: "marwane@test.test",
+    events: [
+      "664f211fb7c5e5fd2563dee9",
+      "664f2160b7c5e5fd2563deee",
+      "665062dbffb5f60711559149",
+      "665062dbffb5f60711559149",
+      "665062dbffb5f60711559149",
+      "665063f5ecfa46b745e89eb0",
+      "6650649cdd8d1e2d127c0eb2",
+      "6650689d2d30bcfb0e0f211b",
+      "665069152d30bcfb0e0f2125",
+      "665069302d30bcfb0e0f212f",
+      "665069662d30bcfb0e0f2139",
+      "66506ec42bb6c4b190bf229f",
+      "665070f02bb6c4b190bf22a9",
+      "665084c25b8edd087301f5ab",
+      "665085415b8edd087301f5b8",
+      "665085fd0334608c567e9e1f",
+      "665087f98e91cde065abcbe3",
+      "66508b6e141b88d8c645bcd9",
+      "66508d1ce5d9565fadc85172",
+      "66508f0abb7443a72a9c99e6",
+      "6650a6d74da6a558df29006a",
+    ],
+    firstName: "Marwanetest",
+    lastName: "Test",
+    password: "$2b$10$DiEweMDLk1vhI2.F6MJD8OmxNHPQ3jcu9p/zfljow/LEy.SSO1a5S",
+    token: "tYfSRuWFBWWOLJaiYrDRkWPDcoGI76nt",
+    transactions: ["664f6169f69f20d7b4f7bbc8"],
+  },
+  shareAmount: 3,
+  totalSum: 8889,
+  transactions: [],
+};
 
 export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const { eventId } = route.params; // Récupération de l'_id de l'Event (props du screen précédent via la fonction de la navigation)
   //console.log("test recup eventId", eventId);
-  const user = useSelector((state) => state.user.value);
   const isFocused = useIsFocused();
   const [event, setEvent] = useState({});
   const [selectedComponent, setSelectedComponent] = useState("expenses");
@@ -32,7 +97,6 @@ export default function EventScreen({ route, navigation }) {
   const [expenseName, setExpenseName] = useState("");
 
   //2. Comportements
-  // Fetch de récupérartion des informations de l'évènement. Attention: Pour les guests, pas de champs firstName - ce champs n'hexiste pas à la création du compte
   useEffect(() => {
     fetch(`${PATH}/events/event/${eventId}`)
       .then((response) => response.json())
@@ -43,56 +107,85 @@ export default function EventScreen({ route, navigation }) {
       });
   }, [isFocused]);
 
-  // Fetch de récupération des informations des paiments
-  const handlePayment = () => {
-    fetch(
-      `${PATH}/transactions/create/payment/${user.token}/${event.eventUniqueId}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "payment",
-        }),
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result) {
-          fetch(`${PATH}/events/event/${eventId}`)
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.result) {
-                setEvent(data.event);
-              }
-            });
-        }
-      });
-  };
-
   const EventExpense = () => {
-    return (
-      <View
-      // style={{ flex: 0.5 }}
-      >
-        <ScrollView
-          style={{ ...styles.scrollView, marginTop: 30 }}
-          showsVerticalScrollIndicator={false}
-        >
-          <View
-            style={[
-              styles.listCard,
-              Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-            ]}
-          >
-            <Text style={styles.textCurrentListCard}>Nom dépense </Text>
-            <View style={styles.leftPartInsideCard}>
-              <Text style={{ ...styles.textCurrentListCard, marginRight: 30 }}>
-                XX€
-              </Text>
+    const [expenseName, setExpenseName] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+    const [expenseAmount, setExpenseAmount] = useState("");
+    const [imageName, setImageName] = useState("");
 
-              <Icon name="document-text-sharp" size={25} color="#4E3CBB"></Icon>
-            </View>
-          </View>
+    const submitExpense = async () => {
+      try {
+        if (imageName.trim() === "") {
+          alert("Please add an invoice name");
+        } else {
+          const requestBody = {
+            emitter: eventId,
+            amount: Number(expenseAmount),
+            type: "expense",
+            name: expenseName,
+            invoice: imageName,
+          };
+
+          console.log("Request body:", requestBody);
+
+          const response = await fetch(`${PATH}/transactions/create/expense`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+          console.log("Response:", response);
+          setExpenseName("");
+          setExpenseAmount("");
+          setImageName("");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    const totalExpenses = expenses.reduce(
+      (total, expense) => total + Number(expense.amount),
+      0
+    );
+    const remainingBalance = event.totalSum - totalExpenses;
+
+    return (
+      <View>
+        <ScrollView
+          style={{ ...styles.scrollView, marginTop: 30, maxHeight: 220 }}
+          showsVerticalScrollIndicator={true}
+        >
+          {expenses
+            .slice()
+            .reverse()
+            .map((expense, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.listCard,
+                  Platform.OS === "ios"
+                    ? styles.shadowIOS
+                    : styles.shadowAndroid,
+                ]}
+              >
+                <Text style={styles.textCurrentListCard}>{expense.name}</Text>
+                <View style={styles.leftPartInsideCard}>
+                  <Text
+                    style={{ ...styles.textCurrentListCard, marginRight: 30 }}
+                  >
+                    {expense.amount}€
+                  </Text>
+                  <Icon
+                    name="document-text-sharp"
+                    size={25}
+                    color="#4E3CBB"
+                  ></Icon>
+                </View>
+              </View>
+            ))}
         </ScrollView>
         <View
           style={[
@@ -102,7 +195,7 @@ export default function EventScreen({ route, navigation }) {
         >
           <TextInput
             style={styles.textAddingCard}
-            placeholder="Ajouter une dépense"
+            placeholder="Nom de la dépense"
             value={expenseName}
             onChangeText={(value) => setExpenseName(value)}
           />
@@ -114,13 +207,57 @@ export default function EventScreen({ route, navigation }) {
               value={expenseAmount}
               onChangeText={(text) => {
                 if (text.includes(".") && text.split(".")[1].length > 2) {
-                  return;
-                }
-                if (!isNaN(text)) {
+                  const truncatedText = text.substring(
+                    0,
+                    text.indexOf(".") + 3
+                  );
+                  setExpenseAmount(truncatedText);
+                } else if (!isNaN(text)) {
                   setExpenseAmount(text);
                 }
               }}
             />
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Icon name="document-text-sharp" size={25} color="#EB1194" />
+            </TouchableOpacity>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Nom de l'image"
+                    value={imageName}
+                    onChangeText={(text) => setImageName(text)}
+                  />
+                  <Button
+                    color="#4E3CBB"
+                    title="Ajouter l'image"
+                    onPress={() => {
+                      if (imageName.trim() === "") {
+                        alert("Merci de renseigner un nom pour l'image");
+                      } else {
+                        alert(`Image ${imageName} ajouté!`);
+                        setModalVisible(false); // Close the modal
+                      }
+                    }}
+                  />
+                  <TouchableOpacity
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => setModalVisible(!modalVisible)}
+                  >
+                    <Text style={styles.textStyle}>Fermer</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
             <TouchableOpacity onPress={submitExpense}>
               <Icon name="add-circle" size={30} color="#EB1194"></Icon>
             </TouchableOpacity>
@@ -139,12 +276,12 @@ export default function EventScreen({ route, navigation }) {
               <Text style={styles.textRecap}>Budget initial</Text>
             </View>
             <View style={styles.amount}>
-              <Text style={styles.textRecapAmount}>XX€</Text>
+              <Text style={styles.textRecapAmount}>{totalExpenses}€</Text>
               <Text style={styles.textRecap}>Total des dépenses</Text>
             </View>
           </View>
           <View style={styles.amount}>
-            <Text style={styles.textRecapBalance}>XX€</Text>
+            <Text style={styles.textRecapBalance}>{remainingBalance}€</Text>
             <Text style={styles.textRecap}>Solde restant</Text>
           </View>
         </View>
@@ -154,7 +291,7 @@ export default function EventScreen({ route, navigation }) {
 
   const EventPayment = () => {
     const guestsList = event.guests.map((guest, i) => {
-      //console.log("EventPayment data récupérée:", guest.userId.firstName);
+      console.log("EventPayment:", guest);
       return (
         <View
           key={i}
@@ -163,16 +300,13 @@ export default function EventScreen({ route, navigation }) {
             Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
           ]}
         >
-          <Text style={styles.textCurrentListCard}>
-            {guest.userId.firstName}
-          </Text>
+          <Text style={styles.textCurrentListCard}>{guest.email}</Text>
           {guest.hasPaid ? (
             <Icon name="checkmark-circle" size={25} color="#EB1194" />
           ) : (
-            <TouchableOpacity onPress={() => handlePayment()}>
-              <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
-            </TouchableOpacity>
+            <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
           )}
+          <View></View>
         </View>
       );
     });
@@ -210,7 +344,7 @@ export default function EventScreen({ route, navigation }) {
           </View>
           <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
-            <Text style={styles.textPaymentRecapLeft}>XX€</Text>
+            <Text>XX€</Text>
           </View>
         </View>
 
@@ -233,11 +367,6 @@ export default function EventScreen({ route, navigation }) {
     );
   };
 
-  const submitExpense = () => {
-    setExpenseName("");
-    setExpenseAmount("");
-  };
-
   const renderSelectedComponent = () => {
     if (selectedComponent === "expenses") {
       return <EventExpense />;
@@ -246,7 +375,6 @@ export default function EventScreen({ route, navigation }) {
     }
   };
 
-  //3. RETURN FINAL
   return (
     <LinearGradient
       style={styles.container}
@@ -437,10 +565,5 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-ExtraBold",
     color: "#EB1194",
     fontSize: 25,
-  },
-  textPaymentRecapLeft: {
-    fontFamily: "CodecPro-ExtraBold",
-    color: "#4E3CBB",
-    fontSize: 16,
   },
 });

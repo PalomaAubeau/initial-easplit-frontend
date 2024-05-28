@@ -137,17 +137,24 @@ export default function EventsListScreen({ navigation }) {
     <>{userEvents}</>
   )}
 </ScrollView>
+
       <TouchableOpacity
-        style={[
-          styles.listCard,
-          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-        ]}
-        activeOpacity={0.8}
-        onPress={() => navigation.navigate("CreateEvent")}
-      >
-        <Text style={styles.textEventCard}>Ajouter un évènement</Text>
-        <Icon name="add-circle" size={30} color="#EB1194"></Icon>
-      </TouchableOpacity>
+                  style={[styles.listCardButton]}
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate("CreateEvent")}
+                >
+                  <LinearGradient
+                    colors={['#EB1194', '#4E3CBB']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[globalStyles.gradientBackground]}
+                  >
+                    <View>
+                      <Text style={styles.textEventCardButton}>Ajouter un évènenement</Text>
+                    </View>
+                  </LinearGradient>
+                </TouchableOpacity>
+
     </LinearGradient>
   );
 }
@@ -156,8 +163,8 @@ const styles = StyleSheet.create({
   //MAINS CONTAINERS
   container: {
     flex: 1,
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   scrollView: {
     marginBottom: 20,
@@ -179,11 +186,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     flexDirection: "row",
     alignItems: "center",
-    padding: 15,
     borderRadius: 10,
     height: 60,
     justifyContent: "space-between",
     marginBottom: 50,
+  },
+  listCardButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    justifyContent: "center",
+    marginBottom: 50,
+    marginHorizontal:10,
   },
   shadowAndroid: {
     elevation: 6,
@@ -215,6 +229,14 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-ExtraBold",
     fontSize: 16,
     color: "#EB1194",
+  },
+  textEventCardButton: {
+    fontFamily: "CodecPro-ExtraBold",
+    fontSize: 16,
+    padding:15,
+    color: "#fff",
+    width:"100%",
+    height:60,
   },
   message: {
     fontFamily: "CodecPro-Regular",

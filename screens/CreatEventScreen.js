@@ -42,7 +42,8 @@ export default function CreateEventScreen({ navigation }) {
 
   const [localTotalAmount, setLocalTotalAmount] = useState('');
 
-  
+  const [errors, setErrors] = useState({});
+
 
   // Le UseEffect permet de mettre à jour en temps réel les montants à chaque changement
   useEffect(() => {
@@ -97,9 +98,37 @@ export default function CreateEventScreen({ navigation }) {
     setParticipants(updatedParticipants);
   };
 
+  // Gestion des erreurs et des dates :
+
+  const handleEventDateChange = (value) => {
+    setEventDate(value);
+    const today = new Date();
+    const eventDateObj = new Date(value);
+    if (eventDateObj < today) {
+      setErrors((prev) => ({ ...prev, eventDate: "La date de l'événement ne peut pas être antérieure à la date du jour." }));
+    } else {
+      setErrors((prev) => ({ ...prev, eventDate: null }));
+    }
+  };
+
+  const handleDeadLineChange = (value) => {
+    setDeadLine(value);
+    const today = new Date();
+    const deadLineObj = new Date(value);
+    const eventDateObj = new Date(eventDate);
+    if (deadLineObj < today) {
+      setErrors((prev) => ({ ...prev, deadLine: "La date limite de paiement ne peut pas être antérieure à la date du jour." }));
+    } else if (eventDateObj <= deadLineObj) {
+      setErrors((prev) => ({ ...prev, deadLine: "La date limite de paiement doit être antérieure à la date de l'événement." }));
+    } else {
+      setErrors((prev) => ({ ...prev, deadLine: null }));
+    }
+  };
+  // FIN : Gestion des erreurs et des dates :
+
   //Mécanique pour créer l'évènement :
 
-  //Fonction en cours :) 
+  //Fonction Créer un évènement :
   const createEvent = async () => {
     try {
       const requestBody = {
@@ -151,6 +180,20 @@ export default function CreateEventScreen({ navigation }) {
         console.error('Veuillez remplir tous les champs avant de créer l\'événement');
         return;
       }
+
+      if (!eventDate) {
+        if (new Date(eventDate) < today) {
+        errorsTemp.eventDate = 'La date de l\'événement ne peut pas être antérieure à la date du jour';
+      }
+    }
+
+      if (!deadLine) {
+        if (new Date(deadLine) < today) {
+        errorsTemp.deadLine = 'La date limite de paiement ne peut pas être antérieure à la date du jour';
+      } else if (new Date(deadLine) >= new Date(eventDate)) {
+        errorsTemp.deadLine = 'La date limite de paiement doit être antérieure à la date de l\'événement';
+      }
+    }
     
       for (let participant of participants) {
         if (isNaN(Number(participant.parts))) {
@@ -232,11 +275,13 @@ export default function CreateEventScreen({ navigation }) {
                 >
                   Date de l'évènement
                 </Text>
-                <Input 
+                <Input
                 value={eventDate}
-                onChangeText={(value) => setEventDate(value)}
-                placeholder="Date de l'évènement" 
-                isDate={true} />
+                onChangeText={handleEventDateChange}
+                placeholder="Date de l'évènement"
+                isDate={true}
+              />
+              {errors.eventDate && <Text style={styles.errorText}>{errors.eventDate}</Text>}
                 <Text
                   style={[
                     globalStyles.inputLabel,
@@ -247,11 +292,13 @@ export default function CreateEventScreen({ navigation }) {
                 >
                   Date de limite de paiement
                 </Text>
-                <Input placeholder="Date limite de paiement" 
+                <Input
+                placeholder="Date limite de paiement"
                 value={deadLine}
-                onChangeText={(value) => setDeadLine(value)}
-                isDate={true} 
-                />
+                onChangeText={handleDeadLineChange}
+                isDate={true}
+              />
+                 {errors.deadLine && <Text style={styles.errorText}>{errors.deadLine}</Text>}
                 <Text
                   style={[
                     globalStyles.inputLabel,
@@ -425,5 +472,12 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontFamily: "CodecPro-ExtraBold",
     textAlign:"right",
+  },
+  errorText: {
+    color: 'red',
+    marginHorizontal: 10,
+    marginTop: -10,
+    marginBottom: 10,
+    fontFamily: "CodecPro-Regular",
   },
 });
