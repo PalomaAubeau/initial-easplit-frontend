@@ -19,9 +19,8 @@ import {
 import Input from "../components/Input";
 import React, { useState, useEffect, useCallback } from "react";
 import { useIsFocused } from "@react-navigation/native";
-//import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
-
 
 //mockUp
 const mock = {
@@ -91,13 +90,13 @@ export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const { eventId } = route.params; // Récupération de l'_id de l'Event (props du screen précédent via la fonction de la navigation)
   //console.log("test recup eventId", eventId);
-
   const isFocused = useIsFocused();
   const [event, setEvent] = useState({});
   const [selectedComponent, setSelectedComponent] = useState("expenses");
-  const [expenses, setExpenses] = useState([]);
-  
+  const [expenseAmount, setExpenseAmount] = useState("");
+  const [expenseName, setExpenseName] = useState("");
 
+  //2. Comportements
   useEffect(() => {
     fetch(`${PATH}/events/event/${eventId}`)
       .then((response) => response.json())
@@ -108,46 +107,37 @@ export default function EventScreen({ route, navigation }) {
       });
   }, [isFocused]);
 
-  const fetchExpenses = async () => {
-    try {
-      const response = await fetch(`${PATH}/transactions/expenses/${eventId}`);
-      const data = await response.json();
-
-      if (data.response) {
-        setExpenses(data.expenses);
+  const handlePayment = () => {
+    fetch(
+      `${PATH}/transactions/create/payment/${user.token}/${event.eventUniqueId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "payment",
+        }),
       }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          fetch(`${PATH}/events/event/${eventId}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.result) {
+                setEvent(data.event);
+              }
+            });
+        }
+      });
   };
-
-  useEffect(() => {
-    fetchExpenses();
-  }, []);
-
-  // const onNameChange = (value) => {
-  //   setExpenseName(value);
-  // };
-
-  // const onAmountChange = (text) => {
-  //   if (text.includes(".") && text.split(".")[1].length > 2) {
-  //     return;
-  //   }
-  //   if (!isNaN(text)) {
-  //     setExpenseAmount(text);
-  //   }
-  // };
-
-  // const onImageNameChange = (text) => {
-  //   setImageName(text);
-  // };
 
   const EventExpense = () => {
     const [expenseName, setExpenseName] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [expenseAmount, setExpenseAmount] = useState("");
     const [imageName, setImageName] = useState("");
-  
+
     const submitExpense = async () => {
       try {
         if (imageName.trim() === "") {
@@ -160,9 +150,9 @@ export default function EventScreen({ route, navigation }) {
             name: expenseName,
             invoice: imageName,
           };
-    
-          console.log('Request body:', requestBody);
-    
+
+          console.log("Request body:", requestBody);
+
           const response = await fetch(`${PATH}/transactions/create/expense`, {
             method: "POST",
             headers: {
@@ -170,14 +160,14 @@ export default function EventScreen({ route, navigation }) {
             },
             body: JSON.stringify(requestBody),
           });
-    
-          console.log('Response:', response);
+
+          console.log("Response:", response);
           setExpenseName("");
-      setExpenseAmount("");
-      setImageName("");
+          setExpenseAmount("");
+          setImageName("");
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
 
@@ -193,29 +183,34 @@ export default function EventScreen({ route, navigation }) {
           style={{ ...styles.scrollView, marginTop: 30, maxHeight: 220 }}
           showsVerticalScrollIndicator={true}
         >
-          {expenses.slice().reverse().map((expense, index) => (
-            <View
-              key={index}
-              style={[
-                styles.listCard,
-                Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-              ]}
-            >
-              <Text style={styles.textCurrentListCard}>{expense.name}</Text>
-              <View style={styles.leftPartInsideCard}>
-                <Text
-                  style={{ ...styles.textCurrentListCard, marginRight: 30 }}
-                >
-                  {expense.amount}€
-                </Text>
-                <Icon
-                  name="document-text-sharp"
-                  size={25}
-                  color="#4E3CBB"
-                ></Icon>
+          {expenses
+            .slice()
+            .reverse()
+            .map((expense, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.listCard,
+                  Platform.OS === "ios"
+                    ? styles.shadowIOS
+                    : styles.shadowAndroid,
+                ]}
+              >
+                <Text style={styles.textCurrentListCard}>{expense.name}</Text>
+                <View style={styles.leftPartInsideCard}>
+                  <Text
+                    style={{ ...styles.textCurrentListCard, marginRight: 30 }}
+                  >
+                    {expense.amount}€
+                  </Text>
+                  <Icon
+                    name="document-text-sharp"
+                    size={25}
+                    color="#4E3CBB"
+                  ></Icon>
+                </View>
               </View>
-            </View>
-          ))}
+            ))}
         </ScrollView>
         <View
           style={[
@@ -230,20 +225,23 @@ export default function EventScreen({ route, navigation }) {
             onChangeText={(value) => setExpenseName(value)}
           />
           <View style={styles.leftPartInsideCard}>
-          <TextInput
-  style={{ ...styles.textAddingCard, marginRight: 30 }}
-  placeholder="XX€"
-  keyboardType="numeric"
-  value={expenseAmount}
-  onChangeText={(text) => {
-    if (text.includes(".") && text.split(".")[1].length > 2) {
-      const truncatedText = text.substring(0, text.indexOf(".") + 3);
-      setExpenseAmount(truncatedText);
-    } else if (!isNaN(text)) {
-      setExpenseAmount(text);
-    }
-  }}
-/>
+            <TextInput
+              style={{ ...styles.textAddingCard, marginRight: 30 }}
+              placeholder="XX€"
+              keyboardType="numeric"
+              value={expenseAmount}
+              onChangeText={(text) => {
+                if (text.includes(".") && text.split(".")[1].length > 2) {
+                  const truncatedText = text.substring(
+                    0,
+                    text.indexOf(".") + 3
+                  );
+                  setExpenseAmount(truncatedText);
+                } else if (!isNaN(text)) {
+                  setExpenseAmount(text);
+                }
+              }}
+            />
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Icon name="document-text-sharp" size={25} color="#EB1194" />
             </TouchableOpacity>
@@ -258,14 +256,14 @@ export default function EventScreen({ route, navigation }) {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                <TextInput
-  style={styles.input}
-  placeholder="Nom de l'image"
-  value={imageName}
-  onChangeText={(text) => setImageName(text)}
-/>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Nom de l'image"
+                    value={imageName}
+                    onChangeText={(text) => setImageName(text)}
+                  />
                   <Button
-                  color="#4E3CBB"
+                    color="#4E3CBB"
                     title="Ajouter l'image"
                     onPress={() => {
                       if (imageName.trim() === "") {
@@ -317,28 +315,29 @@ export default function EventScreen({ route, navigation }) {
   };
 
   const EventPayment = () => {
-    const guestsList = event.guests.map((guest, i) => (
-      <View
-        key={i}
-        style={[
-          styles.listCard,
-          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-        ]}
-      >
-        <Text style={styles.textCurrentListCard}>{guest.firstName}</Text>
-        {guest.hasPaid ? (
-          <Icon name="checkmark-circle" size={25} color="#EB1194" />
-        ) : (
-          <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
-        )}
-      </View>
-    ));
-
-    const totalExpenses = expenses.reduce(
-      (total, expense) => total + Number(expense.amount),
-      0
-    );
-    const remainingBalance = event.totalSum - totalExpenses;
+    const guestsList = event.guests.map((guest, i) => {
+      //console.log("EventPayment data récupérée:", guest.userId.firstName);
+      return (
+        <View
+          key={i}
+          style={[
+            styles.listCard,
+            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+          ]}
+        >
+          <Text style={styles.textCurrentListCard}>
+            {guest.userId.firstName}
+          </Text>
+          {guest.hasPaid ? (
+            <Icon name="checkmark-circle" size={25} color="#EB1194" />
+          ) : (
+            <TouchableOpacity onPress={() => handlePayment()}>
+              <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
+            </TouchableOpacity>
+          )}
+        </View>
+      );
+    });
 
     return (
       <View>
@@ -359,19 +358,21 @@ export default function EventScreen({ route, navigation }) {
             Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
           ]}
         >
-          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>Budget initial</Text>
-            <Text>{event.totalSum}€</Text>
+            <Text style={styles.textPaymentRecapLeft}>{event.totalSum}€</Text>
           </View>
-          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>
               Nombre de participants
             </Text>
-            <Text>{event.guests.length}</Text>
+            <Text style={styles.textPaymentRecapLeft}>
+              {event.guests.length}
+            </Text>
           </View>
-          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
-            <Text>{totalExpenses}€</Text>
+            <Text>XX€</Text>
           </View>
         </View>
 
@@ -593,48 +594,4 @@ const styles = StyleSheet.create({
     color: "#EB1194",
     fontSize: 25,
   },
-  //CSS de la modal
-    centeredView: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: 22,
-    },
-    modalView: {
-      margin: 20,
-      backgroundColor: "white",
-      borderRadius: 20,
-      padding: 30,
-      alignItems: "center",
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
-    },
-    input: {
-      fontFamily: "CodecPro-ExtraBold",
-      width: 180,
-      borderBottomColor: "#4E3CBB",
-      alignItems: "center",
-      justifyContent: "center",
-      borderBottomWidth: 1,
-      marginBottom: 40,
-      marginTop: 30,
-      fontSize: 20,
-      color: '#4E3CBB',
-      textAlign: "center",
-    },
-    buttonClose: {
-      backgroundColor: "#EB1194",
-      marginTop:20,
-    },
-    textStyle: {
-      color: "white",
-      fontWeight: "bold",
-      textAlign: "center",
-    },
-  });
+});

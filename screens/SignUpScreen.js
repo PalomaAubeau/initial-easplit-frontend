@@ -44,7 +44,7 @@ export default function SignUpScreen({ navigation }) {
             setLoginErrorMessage(data.error);
           } else {
             const signUpUser = data.data;
-            console.log(signUpUser);
+            //console.log(signUpUser);
             dispatch(
               login({
                 firstName: signUpUser.firstName,

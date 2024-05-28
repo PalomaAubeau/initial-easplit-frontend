@@ -14,7 +14,7 @@ const Transaction = ({
   name,
   transactionText,
   transactionDescription,
-  displayAmount
+  displayAmount,
 }) => {
   return (
     <View style={styles.transactionContainer}>
@@ -49,7 +49,7 @@ const LastTransactions = () => {
         }
 
         const data = await response.json();
-        // console.log("data des transactions", data);
+        //console.log("data des transactions", data);
 
         const formattedData = data.transactions.map((transaction) => {
           let transactionText = "";
@@ -90,20 +90,22 @@ const LastTransactions = () => {
 
   return (
     <View style={styles.container}>
-    {loading ? (
-      <ActivityIndicator size="large" color="#4E3CBB" />
-    ) : (
-      transactions.slice(0, 2).map((item, index) => (
-        <Transaction
-          key={index}
-          name={item.name}
-          transactionText={item.transactionText}
-          transactionDescription={item.transactionDescription}
-          displayAmount={item.displayAmount}
-        />
-      ))
-    )}
-  </View>
+      {loading ? (
+        <ActivityIndicator size="large" color="#4E3CBB" />
+      ) : (
+        transactions
+          .slice(0, 2)
+          .map((item, index) => (
+            <Transaction
+              key={index}
+              name={item.name}
+              transactionText={item.transactionText}
+              transactionDescription={item.transactionDescription}
+              displayAmount={item.displayAmount}
+            />
+          ))
+      )}
+    </View>
   );
 };
 
@@ -143,4 +145,3 @@ const styles = StyleSheet.create({
 });
 
 export default LastTransactions;
-
