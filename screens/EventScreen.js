@@ -96,10 +96,7 @@ export default function EventScreen({ route, navigation }) {
   const [event, setEvent] = useState({});
   const [selectedComponent, setSelectedComponent] = useState("expenses");
   const [expenses, setExpenses] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [expenseAmount, setExpenseAmount] = useState("");
-
-  const [imageName, setImageName] = useState("");
+  
 
   useEffect(() => {
     fetch(`${PATH}/events/event/${eventId}`)
@@ -132,58 +129,57 @@ export default function EventScreen({ route, navigation }) {
   //   setExpenseName(value);
   // };
 
-  const onAmountChange = (text) => {
-    if (text.includes(".") && text.split(".")[1].length > 2) {
-      return;
-    }
-    if (!isNaN(text)) {
-      setExpenseAmount(text);
-    }
-  };
+  // const onAmountChange = (text) => {
+  //   if (text.includes(".") && text.split(".")[1].length > 2) {
+  //     return;
+  //   }
+  //   if (!isNaN(text)) {
+  //     setExpenseAmount(text);
+  //   }
+  // };
 
-  const onImageNameChange = (text) => {
-    setImageName(text);
-  };
+  // const onImageNameChange = (text) => {
+  //   setImageName(text);
+  // };
 
-  const submitExpense = async () => {
- 
-    
-    try {
-      if (imageName.trim() === "") {
-        alert("Please add an invoice name");
-      } else {
-        const response = await fetch(`${PATH}/transactions/create/expense`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+  const EventExpense = () => {
+    const [expenseName, setExpenseName] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+    const [expenseAmount, setExpenseAmount] = useState("");
+    const [imageName, setImageName] = useState("");
+  
+    const submitExpense = async () => {
+      try {
+        if (imageName.trim() === "") {
+          alert("Please add an invoice name");
+        } else {
+          const requestBody = {
             emitter: eventId,
             amount: Number(expenseAmount),
             type: "expense",
             name: expenseName,
             invoice: imageName,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to create expense");
+          };
+    
+          console.log('Request body:', requestBody);
+    
+          const response = await fetch(`${PATH}/transactions/create/expense`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+          });
+    
+          console.log('Response:', response);
+          setExpenseName("");
+      setExpenseAmount("");
+      setImageName("");
         }
-
-        const data = await response.json();
-        setExpenses((prevExpenses) => [...prevExpenses, data.transaction]);
-
-        setExpenseName("");
-        setExpenseAmount("");
-        setImageName("");
+      } catch (error) {
+        console.error('Error:', error);
       }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const EventExpense = () => {
-    const [expenseName, setExpenseName] = useState("");
+    };
 
     const totalExpenses = expenses.reduce(
       (total, expense) => total + Number(expense.amount),
@@ -197,7 +193,7 @@ export default function EventScreen({ route, navigation }) {
           style={{ ...styles.scrollView, marginTop: 30, maxHeight: 220 }}
           showsVerticalScrollIndicator={true}
         >
-          {expenses.map((expense, index) => (
+          {expenses.slice().reverse().map((expense, index) => (
             <View
               key={index}
               style={[
@@ -229,18 +225,25 @@ export default function EventScreen({ route, navigation }) {
         >
           <TextInput
             style={styles.textAddingCard}
-            placeholder="Ajouter une dépense"
+            placeholder="Nom de la dépense"
             value={expenseName}
             onChangeText={(value) => setExpenseName(value)}
           />
           <View style={styles.leftPartInsideCard}>
-            <TextInput
-              style={{ ...styles.textAddingCard, marginRight: 30 }}
-              placeholder="XX€"
-              keyboardType="numeric"
-              value={expenseAmount}
-              onChangeText={onAmountChange}
-            />
+          <TextInput
+  style={{ ...styles.textAddingCard, marginRight: 30 }}
+  placeholder="XX€"
+  keyboardType="numeric"
+  value={expenseAmount}
+  onChangeText={(text) => {
+    if (text.includes(".") && text.split(".")[1].length > 2) {
+      const truncatedText = text.substring(0, text.indexOf(".") + 3);
+      setExpenseAmount(truncatedText);
+    } else if (!isNaN(text)) {
+      setExpenseAmount(text);
+    }
+  }}
+/>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Icon name="document-text-sharp" size={25} color="#EB1194" />
             </TouchableOpacity>
@@ -255,13 +258,14 @@ export default function EventScreen({ route, navigation }) {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Entrer le nom de l'image"
-                    value={imageName}
-                    onChangeText={onImageNameChange}
-                  />
+                <TextInput
+  style={styles.input}
+  placeholder="Nom de l'image"
+  value={imageName}
+  onChangeText={(text) => setImageName(text)}
+/>
                   <Button
+                  color="#4E3CBB"
                     title="Ajouter l'image"
                     onPress={() => {
                       if (imageName.trim() === "") {
@@ -330,6 +334,12 @@ export default function EventScreen({ route, navigation }) {
       </View>
     ));
 
+    const totalExpenses = expenses.reduce(
+      (total, expense) => total + Number(expense.amount),
+      0
+    );
+    const remainingBalance = event.totalSum - totalExpenses;
+
     return (
       <View>
         <Text
@@ -361,7 +371,7 @@ export default function EventScreen({ route, navigation }) {
           </View>
           <View style={{ ...styles.recapCardRow, margin: 5 }}>
             <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
-            <Text>XX€</Text>
+            <Text>{totalExpenses}€</Text>
           </View>
         </View>
 
@@ -583,32 +593,48 @@ const styles = StyleSheet.create({
     color: "#EB1194",
     fontSize: 25,
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+  //CSS de la modal
+    centeredView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 22,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    width: "80%", // You can adjust this value as needed
-  },
-});
+    modalView: {
+      margin: 20,
+      backgroundColor: "white",
+      borderRadius: 20,
+      padding: 30,
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    input: {
+      fontFamily: "CodecPro-ExtraBold",
+      width: 180,
+      borderBottomColor: "#4E3CBB",
+      alignItems: "center",
+      justifyContent: "center",
+      borderBottomWidth: 1,
+      marginBottom: 40,
+      marginTop: 30,
+      fontSize: 20,
+      color: '#4E3CBB',
+      textAlign: "center",
+    },
+    buttonClose: {
+      backgroundColor: "#EB1194",
+      marginTop:20,
+    },
+    textStyle: {
+      color: "white",
+      fontWeight: "bold",
+      textAlign: "center",
+    },
+  });
