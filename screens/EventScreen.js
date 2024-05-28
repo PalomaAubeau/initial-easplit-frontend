@@ -38,17 +38,13 @@ export default function EventScreen({ route, navigation }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          // console.log(
-          //   "EventScreen, récupération de la data du fetch:",
-          //   data.event
-          // );
           setEvent(data.event);
         }
       });
   }, [isFocused]);
 
   // Fetch de récupération des informations des paiments
-  const handlePayment = (guestId) => {
+  const handlePayment = () => {
     fetch(
       `${PATH}/transactions/create/payment/${user.token}/${event.eventUniqueId}`,
       {
@@ -56,17 +52,20 @@ export default function EventScreen({ route, navigation }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "payment",
-          eventId: event._id,
-          emitter: user.token,
-          recipient: event.eventUniqueId,
-          name: event.name,
-          amount: event.shareAmount,
         }),
       }
     )
       .then((response) => response.json())
       .then((data) => {
-        data.result && console.log("test ligne 69");
+        if (data.result) {
+          fetch(`${PATH}/events/event/${eventId}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.result) {
+                setEvent(data.event);
+              }
+            });
+        }
       });
   };
 
@@ -170,7 +169,7 @@ export default function EventScreen({ route, navigation }) {
           {guest.hasPaid ? (
             <Icon name="checkmark-circle" size={25} color="#EB1194" />
           ) : (
-            <TouchableOpacity onPress={() => handlePayment(guest.userId)}>
+            <TouchableOpacity onPress={() => handlePayment()}>
               <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
             </TouchableOpacity>
           )}
