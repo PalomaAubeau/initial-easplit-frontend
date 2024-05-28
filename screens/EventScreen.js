@@ -107,6 +107,31 @@ export default function EventScreen({ route, navigation }) {
       });
   }, [isFocused]);
 
+  const handlePayment = () => {
+    fetch(
+      `${PATH}/transactions/create/payment/${user.token}/${event.eventUniqueId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "payment",
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          fetch(`${PATH}/events/event/${eventId}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.result) {
+                setEvent(data.event);
+              }
+            });
+        }
+      });
+  };
+
   const EventExpense = () => {
     const [expenseName, setExpenseName] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
@@ -291,7 +316,7 @@ export default function EventScreen({ route, navigation }) {
 
   const EventPayment = () => {
     const guestsList = event.guests.map((guest, i) => {
-      console.log("EventPayment:", guest);
+      //console.log("EventPayment data récupérée:", guest.userId.firstName);
       return (
         <View
           key={i}
@@ -300,13 +325,16 @@ export default function EventScreen({ route, navigation }) {
             Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
           ]}
         >
-          <Text style={styles.textCurrentListCard}>{guest.email}</Text>
+          <Text style={styles.textCurrentListCard}>
+            {guest.userId.firstName}
+          </Text>
           {guest.hasPaid ? (
             <Icon name="checkmark-circle" size={25} color="#EB1194" />
           ) : (
-            <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
+            <TouchableOpacity onPress={() => handlePayment()}>
+              <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
+            </TouchableOpacity>
           )}
-          <View></View>
         </View>
       );
     });
