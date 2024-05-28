@@ -49,7 +49,7 @@ const LastTransactions = () => {
         }
 
         const data = await response.json();
-        console.log("data des transactions", data);
+        // console.log("data des transactions", data);
 
         const formattedData = data.transactions.map((transaction) => {
           let transactionText = "";
