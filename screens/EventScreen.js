@@ -19,7 +19,7 @@ import {
 import Input from "../components/Input";
 import React, { useState, useEffect, useCallback } from "react";
 import { useIsFocused } from "@react-navigation/native";
-//import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
 
 
@@ -91,7 +91,7 @@ export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const { eventId } = route.params; // Récupération de l'_id de l'Event (props du screen précédent via la fonction de la navigation)
   //console.log("test recup eventId", eventId);
-
+  const user = useSelector((state) => state.user.value);
   const isFocused = useIsFocused();
   const [event, setEvent] = useState({});
   const [selectedComponent, setSelectedComponent] = useState("expenses");
@@ -121,7 +121,7 @@ export default function EventScreen({ route, navigation }) {
         }
       });
   };
-  
+
   useEffect(() => {
     fetch(`${PATH}/events/event/${eventId}`)
       .then((response) => response.json())
@@ -341,36 +341,37 @@ export default function EventScreen({ route, navigation }) {
   };
 
   const EventPayment = () => {
-    const guestsList = event.guests.map((guest, i) => (
-      <View
-        key={i}
-        style={[
-          styles.listCard,
-          Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-        ]}
-      >
-        <Text style={styles.textCurrentListCard}>{guest.firstName}</Text>
-        {guest.hasPaid ? (
-          <Icon name="checkmark-circle" size={25} color="#EB1194" />
-        ) : (
-          <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
-        )}
-      </View>
-    ));
-
-    const totalExpenses = expenses.reduce(
-      (total, expense) => total + Number(expense.amount),
-      0
-    );
-    const remainingBalance = event.totalSum - totalExpenses;
+    const guestsList = event.guests.map((guest, i) => {
+      //console.log("EventPayment data récupérée:", guest.userId.firstName);
+      return (
+        <View
+          key={i}
+          style={[
+            styles.listCard,
+            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+          ]}
+        >
+          <Text style={styles.textCurrentListCard}>
+            {guest.userId.firstName}
+          </Text>
+          {guest.hasPaid ? (
+            <Icon name="checkmark-circle" size={25} color="#EB1194" />
+          ) : (
+            <TouchableOpacity onPress={() => handlePayment()}>
+              <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
+            </TouchableOpacity>
+          )}
+        </View>
+      );
+    });
 
     return (
       <View>
         <Text
           style={[
             globalStyles.titleList,
-            globalStyles.violet,
-            globalStyles.capital,
+                        globalStyles.violet,
+                        globalStyles.capital,
             { marginTop: 20 },
           ]}
         >
@@ -383,27 +384,29 @@ export default function EventScreen({ route, navigation }) {
             Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
           ]}
         >
-          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>Budget initial</Text>
-            <Text>{event.totalSum}€</Text>
+            <Text style={styles.textPaymentRecapLeft}>{event.totalSum}€</Text>
           </View>
-          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>
               Nombre de participants
             </Text>
-            <Text>{event.guests.length}</Text>
+            <Text style={styles.textPaymentRecapLeft}>
+              {event.guests.length}
+            </Text>
           </View>
-          <View style={{ ...styles.recapCardRow, margin: 5 }}>
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
-            <Text>{totalExpenses}€</Text>
+            <Text>XX€</Text>
           </View>
         </View>
 
         <Text
           style={[
             globalStyles.titleList,
-            globalStyles.violet,
-            globalStyles.capital,
+                        globalStyles.violet,
+                        globalStyles.capital,
           ]}
         >
           STATUT DES RÉGLEMENTS
@@ -417,6 +420,7 @@ export default function EventScreen({ route, navigation }) {
       </View>
     );
   };
+
 
   const renderSelectedComponent = () => {
     if (selectedComponent === "expenses") {
