@@ -23,70 +23,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
 import GuestInput from "../components/GuestInput";
 
-//mockUp
-const mock = {
-  guests: [
-    {
-      _id: "665084c25b8edd087301f5ac",
-      email: "marwane@test.test",
-      hasPaid: false,
-      userId: [Object],
-    },
-    {
-      _id: "665084c25b8edd087301f5ad",
-      email: "test@test.fr",
-      hasPaid: false,
-      share: 1,
-      userId: [Object],
-    },
-    {
-      _id: "665084c25b8edd087301f5ae",
-      email: "test@gmail.com",
-      hasPaid: false,
-      share: 1,
-      userId: [Object],
-    },
-  ],
-  name: "Anniv JB",
-  organizer: {
-    __v: 20,
-    _id: "664de90300c4cf782939b7f3",
-    balance: 100,
-    email: "marwane@test.test",
-    events: [
-      "664f211fb7c5e5fd2563dee9",
-      "664f2160b7c5e5fd2563deee",
-      "665062dbffb5f60711559149",
-      "665062dbffb5f60711559149",
-      "665062dbffb5f60711559149",
-      "665063f5ecfa46b745e89eb0",
-      "6650649cdd8d1e2d127c0eb2",
-      "6650689d2d30bcfb0e0f211b",
-      "665069152d30bcfb0e0f2125",
-      "665069302d30bcfb0e0f212f",
-      "665069662d30bcfb0e0f2139",
-      "66506ec42bb6c4b190bf229f",
-      "665070f02bb6c4b190bf22a9",
-      "665084c25b8edd087301f5ab",
-      "665085415b8edd087301f5b8",
-      "665085fd0334608c567e9e1f",
-      "665087f98e91cde065abcbe3",
-      "66508b6e141b88d8c645bcd9",
-      "66508d1ce5d9565fadc85172",
-      "66508f0abb7443a72a9c99e6",
-      "6650a6d74da6a558df29006a",
-    ],
-    firstName: "Marwanetest",
-    lastName: "Test",
-    password: "$2b$10$DiEweMDLk1vhI2.F6MJD8OmxNHPQ3jcu9p/zfljow/LEy.SSO1a5S",
-    token: "tYfSRuWFBWWOLJaiYrDRkWPDcoGI76nt",
-    transactions: ["664f6169f69f20d7b4f7bbc8"],
-  },
-  shareAmount: 3,
-  totalSum: 8889,
-  transactions: [],
-};
-
 export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const { eventId } = route.params; // Récupération de l'_id de l'Event (props du screen précédent via la fonction de la navigation)
@@ -120,7 +56,7 @@ export default function EventScreen({ route, navigation }) {
             .then((data) => {
               if (data.result) {
                 setEvent(data.event);
-                // console.log("data du deuxième fetch:", data.event);
+                console.log("data du deuxième fetch:", data.event);
               }
             });
         }
