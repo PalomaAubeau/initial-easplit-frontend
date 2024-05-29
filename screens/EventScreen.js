@@ -95,6 +95,7 @@ export default function EventScreen({ route, navigation }) {
   const [event, setEvent] = useState({});
   const [selectedComponent, setSelectedComponent] = useState("expenses");
   const [expenses, setExpenses] = useState([]);
+  const [errorMessage, seterrorMessage] = useState(null);
 
   const handlePayment = () => {
     fetch(
@@ -109,7 +110,10 @@ export default function EventScreen({ route, navigation }) {
     )
       .then((response) => response.json())
       .then((data) => {
-        if (data.result) {
+        //console.log("data récup du premier fetch:", data);
+        if (!data.result) {
+          seterrorMessage(data.error);
+        } else {
           fetch(`${PATH}/events/event/${eventId}`)
             .then((response) => response.json())
             .then((data) => {
@@ -437,7 +441,7 @@ export default function EventScreen({ route, navigation }) {
                 ) : (
                   <TouchableOpacity
                     onPress={() => handlePayment()}
-                    style={styles.PaymentCTAContainer}
+                    style={styles.paymentCTAContainer}
                     activeOpacity={0.8}
                   >
                     <View>
@@ -751,9 +755,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   // AUTRES
-  PaymentCTAContainer: {
+  paymentCTAContainer: {
     backgroundColor: "#EB1194",
-    paddingVertical: 5,
+    // paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 20,
     justifyContent: "center",
