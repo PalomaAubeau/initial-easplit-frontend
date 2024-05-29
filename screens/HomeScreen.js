@@ -81,17 +81,19 @@ export default function HomeScreen({ navigation }) {
   
     fetchBalance();
   }, []);
- 
+
   const handleRecharge = async () => {
- 
     const rechargeAmount = Number(balance);
-  
+    
     const requestBody = {
-      balance: rechargeAmount,
+      emitter: user.token, // Utiliser le token de l'utilisateur comme émetteur
+      recipient: user.token, // Le destinataire est le même que l'émetteur dans ce cas
+      type: "reload",
+      amount: rechargeAmount,
     };
-  
+    
     try {
-      const response = await fetch(`${PATH}/users/balance/${user.token}`, {
+      const response = await fetch(`${PATH}/transactions/transaction/reload2`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -101,21 +103,55 @@ export default function HomeScreen({ navigation }) {
     
       if (response.ok) {
         const data = await response.json();
-        
-        setUserBalance(prevBalance => prevBalance + rechargeAmount);
-       
-        setBalance('');
+    
+        setUserBalance((prevBalance) => prevBalance + rechargeAmount);
+    
+        setBalance("");
       } else {
-        console.error("Failed to update balance");
+                console.error("Failed to update balance");
       }
     } catch (error) {
-      console.error("Error:", error);
+            console.error("Error:", error);
     }
     
     // Close the modal
     setModalVisible(false);
-
   };
+ 
+  // const handleRecharge = async () => {
+ 
+  //   const rechargeAmount = Number(balance);
+  
+  //   const requestBody = {
+  //     balance: rechargeAmount,
+  //   };
+  
+  //   try {
+  //     const response = await fetch(`${PATH}/users/balance/${user.token}`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(requestBody),
+  //     });
+    
+  //     if (response.ok) {
+  //       const data = await response.json();
+        
+  //       setUserBalance(prevBalance => prevBalance + rechargeAmount);
+       
+  //       setBalance('');
+  //     } else {
+  //       console.error("Failed to update balance");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+    
+  //   // Close the modal
+  //   setModalVisible(false);
+
+  // };
 
   return (
     <LinearGradient
