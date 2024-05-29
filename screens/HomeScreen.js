@@ -65,7 +65,7 @@ export default function HomeScreen({ navigation }) {
     end={[0.8, 0.8]}
     >
         <ScrollView keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={true}
+        showsVerticalScrollIndicator={false}
         >
 
           {/* // garder le click sans devoir fermer le keyboard */}
