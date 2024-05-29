@@ -97,6 +97,10 @@ export default function EventScreen({ route, navigation }) {
   const [selectedComponent, setSelectedComponent] = useState("expenses");
   const [expenses, setExpenses] = useState([]);
 
+  useEffect(() => {
+    // This function will be called whenever `expenses` changes
+  }, [expenses]);
+
   const handlePayment = () => {
     fetch(
       `${PATH}/transactions/create/payment/${user.token}/${event.eventUniqueId}`,
@@ -133,21 +137,21 @@ export default function EventScreen({ route, navigation }) {
   }, [isFocused]);
 
   const fetchExpenses = async () => {
-    try {
-      const response = await fetch(`${PATH}/transactions/expenses/${eventId}`);
-      const data = await response.json();
+  try {
+    const response = await fetch(`${PATH}/transactions/expenses/${eventId}`);
+    const data = await response.json();
 
-      if (data.response) {
-        setExpenses(data.expenses);
-      }
-    } catch (error) {
-      console.error("Error:", error);
+    if (data.response) {
+      setExpenses(data.expenses);
     }
-  };
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 
-  useEffect(() => {
-    fetchExpenses();
-  }, []);
+useEffect(() => {
+  fetchExpenses();
+}, []);
 
   // const onNameChange = (value) => {
   //   setExpenseName(value);
@@ -171,7 +175,8 @@ export default function EventScreen({ route, navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [expenseAmount, setExpenseAmount] = useState("");
     const [imageName, setImageName] = useState("");
-
+    const [update, setUpdate] = useState(false); // New state variable
+  
     const submitExpense = async () => {
       try {
         if (imageName.trim() === "") {
@@ -184,9 +189,9 @@ export default function EventScreen({ route, navigation }) {
             name: expenseName,
             invoice: imageName,
           };
-
+    
           console.log("Request body:", requestBody);
-
+    
           const response = await fetch(`${PATH}/transactions/create/expense`, {
             method: "POST",
             headers: {
@@ -194,8 +199,18 @@ export default function EventScreen({ route, navigation }) {
             },
             body: JSON.stringify(requestBody),
           });
-
+    
           console.log("Response:", response);
+          if (response.ok) {
+            // Assuming response.json() returns the newly created expense
+            const newExpense = await response.json();
+            console.log("New expense:", newExpense); // Log the new expense
+            setExpenses(prevExpenses => {
+              const updatedExpenses = [...prevExpenses, newExpense];
+              console.log("Updated expenses:", updatedExpenses); // Log the updated expenses
+              return updatedExpenses;
+            });
+          }
           setExpenseName("");
           setExpenseAmount("");
           setImageName("");
@@ -204,12 +219,16 @@ export default function EventScreen({ route, navigation }) {
         console.error("Error:", error);
       }
     };
+  
+  // useEffect(() => {
+  //   fetchExpenses();
+  // }, [update]); // Fetch expenses when the update state changes
 
-    const totalExpenses = expenses.reduce(
-      (total, expense) => total + Number(expense.amount),
-      0
-    );
-    const remainingBalance = event.totalSum - totalExpenses;
+const totalExpenses = expenses.reduce(
+  (total, expense) => total + Number(expense.amount),
+  0
+);
+const remainingBalance = event.totalSum - totalExpenses;
 
     return (
       <ScrollView
