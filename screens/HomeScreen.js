@@ -126,8 +126,11 @@ export default function HomeScreen({ navigation }) {
       start={[0.2, 0.2]}
       end={[0.8, 0.8]}
     >
-      <ScrollView keyboardShouldPersistTaps="handled">
-        {/* // garder le click sans devoir fermer le keyboard */}
+        <ScrollView keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        >
+
+          {/* // garder le click sans devoir fermer le keyboard */}
         <View>
           <View style={styles.headerContainer}>
             <Image

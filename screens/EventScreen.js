@@ -21,6 +21,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
+import GuestInput from "../components/GuestInput";
 
 //mockUp
 const mock = {
@@ -211,11 +212,12 @@ export default function EventScreen({ route, navigation }) {
     const remainingBalance = event.totalSum - totalExpenses;
 
     return (
-      <View>
-        <ScrollView
-          style={{ ...styles.scrollView, marginTop: 30, maxHeight: 220 }}
+      <ScrollView
+          style={{ ...styles.scrollView, marginTop: 30}}
           showsVerticalScrollIndicator={true}
         >
+      <View>
+        
           {expenses
             .slice()
             .reverse()
@@ -244,7 +246,7 @@ export default function EventScreen({ route, navigation }) {
                 </View>
               </View>
             ))}
-        </ScrollView>
+        
         <View
           style={[
             { ...styles.listCard, marginBottom: 30 },
@@ -344,6 +346,7 @@ export default function EventScreen({ route, navigation }) {
           </View>
         </View>
       </View>
+      </ScrollView>
     );
   };
 
@@ -361,6 +364,11 @@ export default function EventScreen({ route, navigation }) {
     );
 
     return (
+      <ScrollView
+      style={styles.scrollView} // Ajouté pour s'assurer que le ScrollView a un style
+      contentContainerStyle={{ paddingVertical: 20 }} // Ajouté pour ajouter un padding vertical
+      showsVerticalScrollIndicator={true}
+    >
       <View>
         <Text
           style={[
@@ -406,10 +414,10 @@ export default function EventScreen({ route, navigation }) {
         >
           STATUT DES RÉGLEMENTS
         </Text>
-        <ScrollView
+        {/* <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
-        >
+        > */}
           <View>
             {currentUser && (
               <View
@@ -441,7 +449,7 @@ export default function EventScreen({ route, navigation }) {
                     activeOpacity={0.8}
                   >
                     <View>
-                      <Text style={globalStyles.buttonText}>Participer</Text>
+                      <Text style={[globalStyles.buttonText, styles.participer]}>Participer</Text>
                     </View>
                   </TouchableOpacity>
                 )}
@@ -471,6 +479,7 @@ export default function EventScreen({ route, navigation }) {
                     </Text>
                   </View>
                 </View>
+                
 
                 {guest.hasPaid ? (
                   <Icon name="checkmark-circle" size={25} color="#EB1194" />
@@ -479,9 +488,11 @@ export default function EventScreen({ route, navigation }) {
                 )}
               </View>
             ))}
+            <GuestInput/>
+          </View>
           </View>
         </ScrollView>
-      </View>
+
     );
   };
 
@@ -500,6 +511,10 @@ export default function EventScreen({ route, navigation }) {
       start={[0.2, 0.2]}
       end={[0.8, 0.8]}
     >
+    <ScrollView
+    style={{ ...styles.scrollView}}
+    showsVerticalScrollIndicator={false}
+  >
       <View style={styles.headerContainer}>
         <Image
           source={require("../assets/EASPLIT-NOIR.png")}
@@ -537,6 +552,7 @@ export default function EventScreen({ route, navigation }) {
         </Pressable>
       </View>
       <View>{renderSelectedComponent()}</View>
+    </ScrollView>
     </LinearGradient>
   );
 }
@@ -556,8 +572,12 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   scrollView: {
+    // flex:1,
     marginBottom: 20,
     // backgroundColor: "white",
+  },
+  participer:{
+    height:25,
   },
   headerContainer: {
     flexDirection: "row",
@@ -631,12 +651,12 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   RecapEventCard: {
+    paddingHorizontal:20,
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    padding: 15,
     borderRadius: 10,
     marginBottom: 20,
-    height: 120,
+    height: 150,
   },
   // TEXTES
   textGoBack: {
@@ -759,4 +779,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
 });
