@@ -147,7 +147,7 @@ export default function EventScreen({ route, navigation }) {
 
   useEffect(() => {
     fetchExpenses();
-  }, []);
+  }, [balance]); // ajout de la balance dans les dépendances pour "trigger" aux changements d'état
 
   // const onNameChange = (value) => {
   //   setExpenseName(value);

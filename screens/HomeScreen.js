@@ -103,10 +103,10 @@ export default function HomeScreen({ navigation }) {
   
       if (response.ok) {
         const data = await response.json();
-  
-        setUserBalance((prevBalance) => prevBalance + rechargeAmount);
-  
-        setBalance("");
+        
+        setUserBalance(prevBalance => prevBalance + rechargeAmount);
+       
+        setBalance('');
       } else {
                 console.error("Failed to update balance");
       }
@@ -116,8 +116,8 @@ export default function HomeScreen({ navigation }) {
   
     // Close the modal
     setModalVisible(false);
+
   };
-  
 
   return (
     <LinearGradient
