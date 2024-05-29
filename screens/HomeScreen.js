@@ -57,6 +57,66 @@ export default function HomeScreen({ navigation }) {
     setBalance(""); // Réinitialise le placeholder à chaque validation
   };
 
+  const [displayBalance, setDisplayBalance] = useState(null);
+  const [userBalance, setUserBalance] = useState(null);
+
+  useEffect(() => {
+    setDisplayBalance(userBalance);
+  }, [userBalance]);
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await fetch(`${PATH}/users/getbalance/${user.token}`);
+        if (response.ok) {
+          const data = await response.json();
+          setUserBalance(data.balance);
+        } else {
+          console.error("Failed to fetch balance");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+  
+    fetchBalance();
+  }, []);
+ 
+  const handleRecharge = async () => {
+ 
+    const rechargeAmount = Number(balance);
+  
+    const requestBody = {
+      balance: rechargeAmount,
+    };
+  
+    try {
+      const response = await fetch(`${PATH}/users/balance/${user.token}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+    
+      if (response.ok) {
+        const data = await response.json();
+        
+        setUserBalance(prevBalance => prevBalance + rechargeAmount);
+       
+        setBalance('');
+      } else {
+        console.error("Failed to update balance");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    
+    // Close the modal
+    setModalVisible(false);
+
+  };
+
   return (
     <LinearGradient
     style={styles.container}
@@ -97,9 +157,9 @@ export default function HomeScreen({ navigation }) {
 
           <View style={styles.View}>
             <View style={styles.balanceContainer}>
-              <Text style={styles.textBalanceContainer}>
-                {user && user.balance ? user.balance.toFixed(2) : "0.00"}€
-              </Text>
+            <Text style={styles.textBalanceContainer}>
+  {displayBalance ? displayBalance.toFixed(2) : "0.00"}€
+</Text>
             </View>
           </View>
           <View style={styles.reloadButton}>
@@ -141,23 +201,23 @@ export default function HomeScreen({ navigation }) {
                             placeholderTextColor="#b5b5b5"
                           />
                           <TouchableOpacity
-                            style={globalStyles.buttonContainer}
-                            activeOpacity={0.8}
-                            onPress={handleModalClose}
-                          >
-                            <LinearGradient
-                              colors={["#EB1194", "#4E3CBB"]}
-                              start={{ x: 0, y: 0 }}
-                              end={{ x: 1, y: 1 }}
-                              style={globalStyles.gradientBackground}
-                            >
-                              <View style={globalStyles.textContainer}>
-                                <Text style={styles.reloadbuttonText}>
-                                  Je recharge
-                                </Text>
-                              </View>
-                            </LinearGradient>
-                          </TouchableOpacity>
+  style={globalStyles.buttonContainer}
+  activeOpacity={0.8}
+  onPress={handleRecharge}
+>
+  <LinearGradient
+    colors={["#EB1194", "#4E3CBB"]}
+    start={{ x: 0, y: 0 }}
+    end={{ x: 1, y: 1 }}
+    style={globalStyles.gradientBackground}
+  >
+    <View style={globalStyles.textContainer}>
+      <Text style={styles.reloadbuttonText}>
+        Je recharge
+      </Text>
+    </View>
+  </LinearGradient>
+</TouchableOpacity>
                           <TouchableOpacity
                             style={styles.buttonContainer}
                             activeOpacity={0.8}
