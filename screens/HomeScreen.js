@@ -78,54 +78,56 @@ export default function HomeScreen({ navigation }) {
         console.error("Error:", error);
       }
     };
-  
+
     fetchBalance();
   }, []);
- 
+
   const handleRecharge = async () => {
- 
     const rechargeAmount = Number(balance);
   
     const requestBody = {
-      balance: rechargeAmount,
+      emitter: user.token, // Utiliser le token de l'utilisateur comme émetteur
+      recipient: user.token, // Le destinataire est le même que l'émetteur dans ce cas
+      type: "reload",
+      amount: rechargeAmount,
     };
   
     try {
-      const response = await fetch(`${PATH}/users/balance/${user.token}`, {
+      const response = await fetch(`${PATH}/transactions/reload/${user.token}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(requestBody),
       });
-    
+  
       if (response.ok) {
         const data = await response.json();
-        
-        setUserBalance(prevBalance => prevBalance + rechargeAmount);
-       
-        setBalance('');
+  
+        setUserBalance((prevBalance) => prevBalance + rechargeAmount);
+  
+        setBalance("");
       } else {
         console.error("Failed to update balance");
       }
     } catch (error) {
       console.error("Error:", error);
     }
-    
+  
     // Close the modal
     setModalVisible(false);
-
   };
+  
 
   return (
     <LinearGradient
-    style={styles.container}
-    colors={["white", "#CAD1E0"]}
-    start={[0.2, 0.2]}
-    end={[0.8, 0.8]}
+      style={styles.container}
+      colors={["white", "#CAD1E0"]}
+      start={[0.2, 0.2]}
+      end={[0.8, 0.8]}
     >
-        <ScrollView keyboardShouldPersistTaps="handled">
-          {/* // garder le click sans devoir fermer le keyboard */}
+      <ScrollView keyboardShouldPersistTaps="handled">
+        {/* // garder le click sans devoir fermer le keyboard */}
         <View>
           <View style={styles.headerContainer}>
             <Image
@@ -154,9 +156,9 @@ export default function HomeScreen({ navigation }) {
 
           <View style={styles.View}>
             <View style={styles.balanceContainer}>
-            <Text style={styles.textBalanceContainer}>
-  {displayBalance ? displayBalance.toFixed(2) : "0.00"}€
-</Text>
+              <Text style={styles.textBalanceContainer}>
+                {displayBalance ? displayBalance.toFixed(2) : "0.00"}€
+              </Text>
             </View>
           </View>
           <View style={styles.reloadButton}>
@@ -198,34 +200,29 @@ export default function HomeScreen({ navigation }) {
                             placeholderTextColor="#b5b5b5"
                           />
                           <TouchableOpacity
-  style={globalStyles.buttonContainer}
-  activeOpacity={0.8}
-  onPress={handleRecharge}
->
-  <LinearGradient
-    colors={["#EB1194", "#4E3CBB"]}
-    start={{ x: 0, y: 0 }}
-    end={{ x: 1, y: 1 }}
-    style={globalStyles.gradientBackground}
-  >
-    <View style={globalStyles.textContainer}>
-      <Text style={styles.reloadbuttonText}>
-        Je recharge
-      </Text>
-    </View>
-  </LinearGradient>
-</TouchableOpacity>
+                            style={globalStyles.buttonContainer}
+                            activeOpacity={0.8}
+                            onPress={handleRecharge}
+                          >
+                            <LinearGradient
+                              colors={["#EB1194", "#4E3CBB"]}
+                              start={{ x: 0, y: 0 }}
+                              end={{ x: 1, y: 1 }}
+                              style={globalStyles.gradientBackground}
+                            >
+                              <View style={globalStyles.textContainer}>
+                                <Text style={styles.reloadbuttonText}>
+                                  Je recharge
+                                </Text>
+                              </View>
+                            </LinearGradient>
+                          </TouchableOpacity>
                           <TouchableOpacity
                             style={styles.buttonContainer}
                             activeOpacity={0.8}
                             onPress={handleModalClose}
                           >
-
-                                <Text style={styles.closeButtonText}>
-                                  Fermer
-                                </Text>
-                             
-                            
+                            <Text style={styles.closeButtonText}>Fermer</Text>
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -271,8 +268,8 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.textAddingContainer}>voir plus</Text>
           </TouchableOpacity>
         </View>
-    </ScrollView>
-      </LinearGradient>
+      </ScrollView>
+    </LinearGradient>
   );
 }
 
@@ -281,7 +278,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 30,
     paddingRight: 30,
-    height: '100vh',
+    height: "100vh",
   },
   logo: {
     width: 100,
@@ -326,7 +323,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     paddingHorizontal: 10,
-    
   },
   reloadbuttonText: {
     fontFamily: "CodecPro-ExtraBold",
@@ -421,7 +417,7 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 0,
     fontFamily: "CodecPro-ExtraBold",
-    color :'#4E3CBB',
+    color: "#4E3CBB",
     fontSize: 20,
     textAlign: "center",
   },
@@ -442,7 +438,7 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-Regular",
     fontSize: 16,
     marginTop: 5,
-    height:32, // container dans react native ne s'adapte pas toujours au contenu 
+    height: 32, // container dans react native ne s'adapte pas toujours au contenu
   },
   input: {
     fontFamily: "CodecPro-ExtraBold",
@@ -454,7 +450,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     marginTop: 30,
     fontSize: 20,
-    color: '#4E3CBB',
+    color: "#4E3CBB",
     textAlign: "center",
   },
   absolute: {
@@ -472,5 +468,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
 });
