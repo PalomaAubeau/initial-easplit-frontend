@@ -36,6 +36,7 @@ const LastTransactions = () => {
 
   const user = useSelector((state) => state.user.value);
   const token = user.token;
+  const balance = user.balance;
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -86,7 +87,7 @@ const LastTransactions = () => {
       }
     };
     fetchTransactions();
-  }, [token]);
+  }, [token, balance]);
 
   return (
     <View style={styles.container}>

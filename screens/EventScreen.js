@@ -22,71 +22,6 @@ import { useIsFocused } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
 import GuestInput from "../components/GuestInput";
-//import { addExpense } from "../reducers/events";
-
-//mockUp
-const mock = {
-  guests: [
-    {
-      _id: "665084c25b8edd087301f5ac",
-      email: "marwane@test.test",
-      hasPaid: false,
-      userId: [Object],
-    },
-    {
-      _id: "665084c25b8edd087301f5ad",
-      email: "test@test.fr",
-      hasPaid: false,
-      share: 1,
-      userId: [Object],
-    },
-    {
-      _id: "665084c25b8edd087301f5ae",
-      email: "test@gmail.com",
-      hasPaid: false,
-      share: 1,
-      userId: [Object],
-    },
-  ],
-  name: "Anniv JB",
-  organizer: {
-    __v: 20,
-    _id: "664de90300c4cf782939b7f3",
-    balance: 100,
-    email: "marwane@test.test",
-    events: [
-      "664f211fb7c5e5fd2563dee9",
-      "664f2160b7c5e5fd2563deee",
-      "665062dbffb5f60711559149",
-      "665062dbffb5f60711559149",
-      "665062dbffb5f60711559149",
-      "665063f5ecfa46b745e89eb0",
-      "6650649cdd8d1e2d127c0eb2",
-      "6650689d2d30bcfb0e0f211b",
-      "665069152d30bcfb0e0f2125",
-      "665069302d30bcfb0e0f212f",
-      "665069662d30bcfb0e0f2139",
-      "66506ec42bb6c4b190bf229f",
-      "665070f02bb6c4b190bf22a9",
-      "665084c25b8edd087301f5ab",
-      "665085415b8edd087301f5b8",
-      "665085fd0334608c567e9e1f",
-      "665087f98e91cde065abcbe3",
-      "66508b6e141b88d8c645bcd9",
-      "66508d1ce5d9565fadc85172",
-      "66508f0abb7443a72a9c99e6",
-      "6650a6d74da6a558df29006a",
-    ],
-    firstName: "Marwanetest",
-    lastName: "Test",
-    password: "$2b$10$DiEweMDLk1vhI2.F6MJD8OmxNHPQ3jcu9p/zfljow/LEy.SSO1a5S",
-    token: "tYfSRuWFBWWOLJaiYrDRkWPDcoGI76nt",
-    transactions: ["664f6169f69f20d7b4f7bbc8"],
-  },
-  shareAmount: 3,
-  totalSum: 8889,
-  transactions: [],
-};
 
 export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
@@ -97,10 +32,7 @@ export default function EventScreen({ route, navigation }) {
   const [event, setEvent] = useState({});
   const [selectedComponent, setSelectedComponent] = useState("expenses");
   const [expenses, setExpenses] = useState([]);
-
-  useEffect(() => {
-    // This function will be called whenever `expenses` changes
-  }, [expenses]);
+  const [errorMessage, seterrorMessage] = useState(null);
 
   const handlePayment = () => {
     fetch(
@@ -115,12 +47,16 @@ export default function EventScreen({ route, navigation }) {
     )
       .then((response) => response.json())
       .then((data) => {
-        if (data.result) {
+        //console.log("data récup du premier fetch pour participation:", data);
+        if (!data.result) {
+          seterrorMessage(data.error);
+        } else {
           fetch(`${PATH}/events/event/${eventId}`)
             .then((response) => response.json())
             .then((data) => {
               if (data.result) {
                 setEvent(data.event);
+                console.log("data du deuxième fetch:", data.event);
               }
             });
         }
@@ -229,140 +165,148 @@ const totalExpenses = expenses.reduce(
 const remainingBalance = event.totalSum - totalExpenses;
 
     return (
-      <ScrollView style={{ maxHeight: 200 }}>
-  {expenses
-    .slice(0, 3)
-    .reverse()
-    .map((expense, index) => (
-      <View
-        key={index}
-        style={[
-          styles.listCard,
-          Platform.OS === "ios"
-            ? styles.shadowIOS
-            : styles.shadowAndroid,
-        ]}
+      <ScrollView
+        style={{ ...styles.scrollView, marginTop: 30 }}
+        showsVerticalScrollIndicator={true}
       >
-        <Text style={styles.textCurrentListCard}>{expense.name}</Text>
-        <View style={styles.leftPartInsideCard}>
-          <Text
-            style={{ ...styles.textCurrentListCard, marginRight: 30 }}
-          >
-            {expense.amount}€
-          </Text>
-          <Icon
-            name="document-text-sharp"
-            size={25}
-            color="#4E3CBB"
-          ></Icon>
-        </View>
-      </View>
-    ))}
-        
-        <View
-          style={[
-            { ...styles.listCard, marginBottom: 30 },
-            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-          ]}
-        >
-          <TextInput
-            style={styles.textAddingCard}
-            placeholder="Nom de la dépense"
-            value={expenseName}
-            onChangeText={(value) => setExpenseName(value)}
-          />
-          <View style={styles.leftPartInsideCard}>
-            <TextInput
-              style={{ ...styles.textAddingCard, marginRight: 30 }}
-              placeholder="XX€"
-              keyboardType="numeric"
-              value={expenseAmount}
-              onChangeText={(text) => {
-                if (text.includes(".") && text.split(".")[1].length > 2) {
-                  const truncatedText = text.substring(
-                    0,
-                    text.indexOf(".") + 3
-                  );
-                  setExpenseAmount(truncatedText);
-                } else if (!isNaN(text)) {
-                  setExpenseAmount(text);
-                }
-              }}
-            />
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Icon name="document-text-sharp" size={25} color="#EB1194" />
-            </TouchableOpacity>
-
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Nom de l'image"
-                    value={imageName}
-                    onChangeText={(text) => setImageName(text)}
-                  />
-                  <Button
-                    color="#4E3CBB"
-                    title="Ajouter l'image"
-                    onPress={() => {
-                      if (imageName.trim() === "") {
-                        alert("Merci de renseigner un nom pour l'image");
-                      } else {
-                        alert(`Image ${imageName} ajouté!`);
-                        setModalVisible(false); // Close the modal
-                      }
-                    }}
-                  />
-                  <TouchableOpacity
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => setModalVisible(!modalVisible)}
+        <View>
+          {expenses
+            .slice()
+            .reverse()
+            .map((expense, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.listCard,
+                  Platform.OS === "ios"
+                    ? styles.shadowIOS
+                    : styles.shadowAndroid,
+                ]}
+              >
+                <Text style={styles.textCurrentListCard}>{expense.name}</Text>
+                <View style={styles.leftPartInsideCard}>
+                  <Text
+                    style={{ ...styles.textCurrentListCard, marginRight: 30 }}
                   >
-                    <Text style={styles.textStyle}>Fermer</Text>
-                  </TouchableOpacity>
+                    {expense.amount}€
+                  </Text>
+                  <Icon
+                    name="document-text-sharp"
+                    size={25}
+                    color="#4E3CBB"
+                  ></Icon>
                 </View>
               </View>
-            </Modal>
-            <TouchableOpacity onPress={submitExpense}>
-              <Icon name="add-circle" size={30} color="#EB1194"></Icon>
-            </TouchableOpacity>
-          </View>
-        </View>
+            ))}
 
-        <View
-          style={[
-            styles.recapCard,
-            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-          ]}
-        >
-          <View style={styles.recapCardRow}>
-            <View style={styles.amount}>
-              <Text style={styles.textRecapAmount}>{event.totalSum}€</Text>
-              <Text style={styles.textRecap}>Budget initial</Text>
-            </View>
-            <View style={styles.amount}>
-              <Text style={styles.textRecapAmount}>{totalExpenses}€</Text>
-              <Text style={styles.textRecap}>Total des dépenses</Text>
+          <View
+            style={[
+              { ...styles.listCard, marginBottom: 30 },
+              Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+            ]}
+          >
+            <TextInput
+              style={styles.textAddingCard}
+              placeholder="Nom de la dépense"
+              value={expenseName}
+              onChangeText={(value) => setExpenseName(value)}
+            />
+            <View style={styles.leftPartInsideCard}>
+              <TextInput
+                style={{ ...styles.textAddingCard, marginRight: 30 }}
+                placeholder="XX€"
+                keyboardType="numeric"
+                value={expenseAmount}
+                onChangeText={(text) => {
+                  if (text.includes(".") && text.split(".")[1].length > 2) {
+                    const truncatedText = text.substring(
+                      0,
+                      text.indexOf(".") + 3
+                    );
+                    setExpenseAmount(truncatedText);
+                  } else if (!isNaN(text)) {
+                    setExpenseAmount(text);
+                  }
+                }}
+              />
+              <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Icon name="document-text-sharp" size={25} color="#EB1194" />
+              </TouchableOpacity>
+
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Nom de l'image"
+                      value={imageName}
+                      onChangeText={(text) => setImageName(text)}
+                    />
+                    <Button
+                      color="#4E3CBB"
+                      title="Ajouter l'image"
+                      onPress={() => {
+                        if (imageName.trim() === "") {
+                          alert("Merci de renseigner un nom pour l'image");
+                        } else {
+                          alert(`Image ${imageName} ajouté!`);
+                          setModalVisible(false); // Close the modal
+                        }
+                      }}
+                    />
+                    <TouchableOpacity
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => setModalVisible(!modalVisible)}
+                    >
+                      <Text style={styles.textStyle}>Fermer</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+              <TouchableOpacity onPress={submitExpense}>
+                <Icon name="add-circle" size={30} color="#EB1194"></Icon>
+              </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.amount}>
-            <Text style={styles.textRecapBalance}>{remainingBalance}€</Text>
-            <Text style={styles.textRecap}>Solde restant</Text>
+
+          <View
+            style={[
+              styles.recapCard,
+              Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+            ]}
+          >
+            <View style={styles.recapCardRow}>
+              <View style={styles.amount}>
+                <Text style={styles.textRecapAmount}>{event.totalSum}€</Text>
+                <Text style={styles.textRecap}>Budget initial</Text>
+              </View>
+              <View style={styles.amount}>
+                <Text style={styles.textRecapAmount}>{totalExpenses}€</Text>
+                <Text style={styles.textRecap}>Total des dépenses</Text>
+              </View>
+            </View>
+            <View style={styles.amount}>
+              <Text style={styles.textRecapBalance}>{remainingBalance}€</Text>
+              <Text style={styles.textRecap}>Solde restant</Text>
+            </View>
           </View>
         </View>
-      </View>
       </ScrollView>
     );
   };
 
   const EventPayment = () => {
+    const totalExpenses = expenses.reduce(
+      (total, expense) => total + Number(expense.amount),
+      0
+    );
     const currentUser = event.guests.find(
       (guest) =>
         guest.userId.email === user.email &&
@@ -377,56 +321,56 @@ const remainingBalance = event.totalSum - totalExpenses;
 
     return (
       <ScrollView
-      style={styles.scrollView} // Ajouté pour s'assurer que le ScrollView a un style
-      contentContainerStyle={{ paddingVertical: 20 }} // Ajouté pour ajouter un padding vertical
-      showsVerticalScrollIndicator={true}
-    >
-      <View>
-        <Text
-          style={[
-            globalStyles.titleList,
-            globalStyles.violet,
-            globalStyles.capital,
-            { marginTop: 20 },
-          ]}
-        >
-          RÉCAPITULATIF DES FONDS
-        </Text>
+        style={styles.scrollView} // Ajouté pour s'assurer que le ScrollView a un style
+        contentContainerStyle={{ paddingVertical: 20 }} // Ajouté pour ajouter un padding vertical
+        showsVerticalScrollIndicator={true}
+      >
+        <View>
+          <Text
+            style={[
+              globalStyles.titleList,
+              globalStyles.violet,
+              globalStyles.capital,
+              { marginTop: 20 },
+            ]}
+          >
+            RÉCAPITULATIF DES FONDS
+          </Text>
 
-        <View
-          style={[
-            styles.RecapEventCard,
-            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-          ]}
-        >
-          <View style={{ ...styles.recapCardRow, margin: 7 }}>
-            <Text style={styles.textCurrentListCard}>Budget initial</Text>
-            <Text style={styles.textPaymentRecapLeft}>{event.totalSum}€</Text>
+          <View
+            style={[
+              styles.RecapEventCard,
+              Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+            ]}
+          >
+            <View style={{ ...styles.recapCardRow, margin: 7 }}>
+              <Text style={styles.textCurrentListCard}>Budget initial</Text>
+              <Text style={styles.textPaymentRecapLeft}>{event.totalSum}€</Text>
+            </View>
+            <View style={{ ...styles.recapCardRow, margin: 7 }}>
+              <Text style={styles.textCurrentListCard}>
+                Nombre de participants
+              </Text>
+              <Text style={styles.textPaymentRecapLeft}>
+                {event.guests.length}
+              </Text>
+            </View>
+            <View style={{ ...styles.recapCardRow, margin: 7 }}>
+              <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
+              <Text style={styles.textPaymentRecapLeft}>{totalExpenses}€</Text>
+            </View>
           </View>
-          <View style={{ ...styles.recapCardRow, margin: 7 }}>
-            <Text style={styles.textCurrentListCard}>
-              Nombre de participants
-            </Text>
-            <Text style={styles.textPaymentRecapLeft}>
-              {event.guests.length}
-            </Text>
-          </View>
-          <View style={{ ...styles.recapCardRow, margin: 7 }}>
-            <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
-            <Text style={styles.textPaymentRecapLeft}>XX€</Text>
-          </View>
-        </View>
 
-        <Text
-          style={[
-            globalStyles.titleList,
-            globalStyles.violet,
-            globalStyles.capital,
-          ]}
-        >
-          STATUT DES RÉGLEMENTS
-        </Text>
-        {/* <ScrollView
+          <Text
+            style={[
+              globalStyles.titleList,
+              globalStyles.violet,
+              globalStyles.capital,
+            ]}
+          >
+            STATUT DES RÉGLEMENTS
+          </Text>
+          {/* <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
         > */}
@@ -455,15 +399,20 @@ const remainingBalance = event.totalSum - totalExpenses;
                 {currentUser.hasPaid ? (
                   <Icon name="checkmark-circle" size={25} color="#EB1194" />
                 ) : (
-                  <TouchableOpacity
-                    onPress={() => handlePayment()}
-                    style={styles.PaymentCTAContainer}
-                    activeOpacity={0.8}
-                  >
-                    <View>
-                      <Text style={[globalStyles.buttonText, styles.participer]}>Participer</Text>
-                    </View>
-                  </TouchableOpacity>
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => handlePayment()}
+                      style={styles.paymentCTAContainer}
+                      activeOpacity={0.8}
+                    >
+                      <View>
+                        <Text style={globalStyles.buttonText}>Participer</Text>
+                      </View>
+                    </TouchableOpacity>
+                    {errorMessage && (
+                      <Text style={styles.error}>{errorMessage} </Text>
+                    )}
+                  </View>
                 )}
               </View>
             )}
@@ -491,7 +440,6 @@ const remainingBalance = event.totalSum - totalExpenses;
                     </Text>
                   </View>
                 </View>
-                
 
                 {guest.hasPaid ? (
                   <Icon name="checkmark-circle" size={25} color="#EB1194" />
@@ -500,11 +448,10 @@ const remainingBalance = event.totalSum - totalExpenses;
                 )}
               </View>
             ))}
-            <GuestInput/>
+            <GuestInput />
           </View>
-          </View>
-        </ScrollView>
-
+        </View>
+      </ScrollView>
     );
   };
 
@@ -523,48 +470,48 @@ const remainingBalance = event.totalSum - totalExpenses;
       start={[0.2, 0.2]}
       end={[0.8, 0.8]}
     >
-    <ScrollView
-    style={{ ...styles.scrollView}}
-    showsVerticalScrollIndicator={false}
-  >
-      <View style={styles.headerContainer}>
-        <Image
-          source={require("../assets/EASPLIT-NOIR.png")}
-          style={styles.logo}
-        />
-        <DropdownMenu />
-      </View>
-      <TouchableOpacity
-        style={styles.goback}
-        activeOpacity={0.8}
-        onPress={() => navigation.navigate("EventsList")}
+      <ScrollView
+        style={{ ...styles.scrollView }}
+        showsVerticalScrollIndicator={false}
       >
-        <Icon name="arrow-back" size={35} color="#4E3CBB"></Icon>
-        <Text style={styles.textGoBack}>{event.name}</Text>
-      </TouchableOpacity>
+        <View style={styles.headerContainer}>
+          <Image
+            source={require("../assets/EASPLIT-NOIR.png")}
+            style={styles.logo}
+          />
+          <DropdownMenu />
+        </View>
+        <TouchableOpacity
+          style={styles.goback}
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate("EventsList")}
+        >
+          <Icon name="arrow-back" size={35} color="#4E3CBB"></Icon>
+          <Text style={styles.textGoBack}>{event.name}</Text>
+        </TouchableOpacity>
 
-      <View style={styles.toggleSelection}>
-        <Pressable
-          style={[
-            styles.button,
-            selectedComponent === "expenses" && styles.selectedButton,
-          ]}
-          onPress={() => setSelectedComponent("expenses")}
-        >
-          <Text style={styles.textButton}>Toutes les dépenses</Text>
-        </Pressable>
-        <Pressable
-          style={[
-            styles.button,
-            selectedComponent === "payments" && styles.selectedButton,
-          ]}
-          onPress={() => setSelectedComponent("payments")}
-        >
-          <Text style={styles.textButton}>Tous les paiements</Text>
-        </Pressable>
-      </View>
-      <View>{renderSelectedComponent()}</View>
-    </ScrollView>
+        <View style={styles.toggleSelection}>
+          <Pressable
+            style={[
+              styles.button,
+              selectedComponent === "expenses" && styles.selectedButton,
+            ]}
+            onPress={() => setSelectedComponent("expenses")}
+          >
+            <Text style={styles.textButton}>Toutes les dépenses</Text>
+          </Pressable>
+          <Pressable
+            style={[
+              styles.button,
+              selectedComponent === "payments" && styles.selectedButton,
+            ]}
+            onPress={() => setSelectedComponent("payments")}
+          >
+            <Text style={styles.textButton}>Tous les paiements</Text>
+          </Pressable>
+        </View>
+        <View>{renderSelectedComponent()}</View>
+      </ScrollView>
     </LinearGradient>
   );
 }
@@ -588,8 +535,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     // backgroundColor: "white",
   },
-  participer:{
-    height:25,
+  participer: {
+    height: 25,
   },
   headerContainer: {
     flexDirection: "row",
@@ -663,7 +610,7 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   RecapEventCard: {
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
@@ -731,6 +678,10 @@ const styles = StyleSheet.create({
     color: "#4E3CBB",
     fontSize: 12,
   },
+  error: {
+    marginTop: 10,
+    color: "red",
+  },
   //CSS de la modal
   centeredView: {
     flex: 1,
@@ -783,13 +734,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   // AUTRES
-  PaymentCTAContainer: {
+  paymentCTAContainer: {
     backgroundColor: "#EB1194",
-    paddingVertical: 5,
+    // paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
   },
-
 });

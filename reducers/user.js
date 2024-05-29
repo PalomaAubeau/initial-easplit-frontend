@@ -41,9 +41,16 @@ export const userSlice = createSlice({
     loadEvents: (state, action) => {
       state.value.events = action.payload;
     },
+    addBalance: (state, action) => { //fonction reload / refund 
+      state.value.balance += action.payload;
+     // state.value.transactions.unshift(action.payload.transaction);
+    },// test beranger
+    downBalance: (state, action) => { //fonction paiement 
+      state.value.balance += action.payload;
+    },// test beranger
   },
 });
 
-export const { login, logout, addEvent, removeEvent, loadEvents } =
+export const { login, logout, addEvent, removeEvent, loadEvents, addBalance, downBalance } =
   userSlice.actions;
 export default userSlice.reducer;

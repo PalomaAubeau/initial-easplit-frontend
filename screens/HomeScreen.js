@@ -9,8 +9,8 @@ import {
   Image,
 } from "react-native";
 import { StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
-import { updateFirstName } from "../reducers/user";
+import { useSelector, useDispatch } from "react-redux";
+import { addBalance, updateFirstName } from "../reducers/user";
 import Icon from "react-native-vector-icons/Ionicons";
 import DropdownMenu from "../components/DropdownMenu";
 import { LinearGradient } from "expo-linear-gradient";
@@ -25,6 +25,7 @@ import { BlurView } from "expo-blur"; // Import du BlurView
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
+  const dispatch = useDispatch(); 
   //console.log('reducerUser' + user)
 
   //ajout du state de la modal
@@ -103,7 +104,9 @@ export default function HomeScreen({ navigation }) {
   
       if (response.ok) {
         const data = await response.json();
-  
+       
+        dispatch(addBalance(rechargeAmount))
+        
         setUserBalance((prevBalance) => prevBalance + rechargeAmount);
   
         setBalance("");
