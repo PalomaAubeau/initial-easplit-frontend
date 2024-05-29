@@ -330,9 +330,18 @@ export default function CreateEventScreen({ navigation }) {
                     onUpdateParts={handleUpdateParts}
                   />
                 ))}
+                <Text
+                  style={[
+                    globalStyles.inputLabel,
+                    globalStyles.capital,
+                    styles.margin,
+                  ]}
+                >
+                  Montant Total en €
+                </Text>
                 <TextInput
   style={[styles.input, styles.amount]}
-  placeholder="Montant Total"
+  placeholder=""
   keyboardType="numeric"
   value={localTotalAmount}
   onChangeText={(text) => {
@@ -351,9 +360,18 @@ export default function CreateEventScreen({ navigation }) {
     }
   }}
 />
+<Text
+                  style={[
+                    globalStyles.inputLabel,
+                    globalStyles.capital,
+                    styles.margin,
+                  ]}
+                >
+                  Montant Par Part en €
+                </Text>
 <TextInput
   style={[styles.input, styles.amount]}
-  placeholder="Montant Par Part"
+  placeholder=""
   keyboardType="numeric"
   value={amountPerPart}
   onChangeText={(text) => {

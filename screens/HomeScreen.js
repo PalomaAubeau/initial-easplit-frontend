@@ -57,14 +57,79 @@ export default function HomeScreen({ navigation }) {
     setBalance(""); // Réinitialise le placeholder à chaque validation
   };
 
+  const [displayBalance, setDisplayBalance] = useState(null);
+  const [userBalance, setUserBalance] = useState(null);
+
+  useEffect(() => {
+    setDisplayBalance(userBalance);
+  }, [userBalance]);
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await fetch(`${PATH}/users/getbalance/${user.token}`);
+        if (response.ok) {
+          const data = await response.json();
+          setUserBalance(data.balance);
+        } else {
+          console.error("Failed to fetch balance");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchBalance();
+  }, []);
+
+  const handleRecharge = async () => {
+    const rechargeAmount = Number(balance);
+  
+    const requestBody = {
+      emitter: user.token, // Utiliser le token de l'utilisateur comme émetteur
+      recipient: user.token, // Le destinataire est le même que l'émetteur dans ce cas
+      type: "reload",
+      amount: rechargeAmount,
+    };
+  
+    try {
+      const response = await fetch(`${PATH}/transactions/reload/${user.token}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+  
+        setUserBalance((prevBalance) => prevBalance + rechargeAmount);
+  
+        setBalance("");
+      } else {
+        console.error("Failed to update balance");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  
+    // Close the modal
+    setModalVisible(false);
+  };
+  
+
   return (
     <LinearGradient
-    style={styles.container}
-    colors={["white", "#CAD1E0"]}
-    start={[0.2, 0.2]}
-    end={[0.8, 0.8]}
+      style={styles.container}
+      colors={["white", "#CAD1E0"]}
+      start={[0.2, 0.2]}
+      end={[0.8, 0.8]}
     >
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        >
+
           {/* // garder le click sans devoir fermer le keyboard */}
         <View>
           <View style={styles.headerContainer}>
@@ -95,7 +160,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.View}>
             <View style={styles.balanceContainer}>
               <Text style={styles.textBalanceContainer}>
-                {user && user.balance ? user.balance.toFixed(2) : "0.00"}€
+                {displayBalance ? displayBalance.toFixed(2) : "0.00"}€
               </Text>
             </View>
           </View>
@@ -140,7 +205,7 @@ export default function HomeScreen({ navigation }) {
                           <TouchableOpacity
                             style={globalStyles.buttonContainer}
                             activeOpacity={0.8}
-                            onPress={handleModalClose}
+                            onPress={handleRecharge}
                           >
                             <LinearGradient
                               colors={["#EB1194", "#4E3CBB"]}
@@ -160,12 +225,7 @@ export default function HomeScreen({ navigation }) {
                             activeOpacity={0.8}
                             onPress={handleModalClose}
                           >
-
-                                <Text style={styles.closeButtonText}>
-                                  Fermer
-                                </Text>
-                             
-                            
+                            <Text style={styles.closeButtonText}>Fermer</Text>
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -211,8 +271,8 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.textAddingContainer}>voir plus</Text>
           </TouchableOpacity>
         </View>
-    </ScrollView>
-      </LinearGradient>
+      </ScrollView>
+    </LinearGradient>
   );
 }
 
@@ -221,7 +281,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 30,
     paddingRight: 30,
-    height: '100vh',
+    height: "100vh",
   },
   logo: {
     width: 100,
@@ -266,7 +326,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     paddingHorizontal: 10,
-    
   },
   reloadbuttonText: {
     fontFamily: "CodecPro-ExtraBold",
@@ -361,7 +420,7 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 0,
     fontFamily: "CodecPro-ExtraBold",
-    color :'#4E3CBB',
+    color: "#4E3CBB",
     fontSize: 20,
     textAlign: "center",
   },
@@ -382,7 +441,7 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-Regular",
     fontSize: 16,
     marginTop: 5,
-    height:32, // container dans react native ne s'adapte pas toujours au contenu 
+    height: 32, // container dans react native ne s'adapte pas toujours au contenu
   },
   input: {
     fontFamily: "CodecPro-ExtraBold",
@@ -394,7 +453,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     marginTop: 30,
     fontSize: 20,
-    color: '#4E3CBB',
+    color: "#4E3CBB",
     textAlign: "center",
   },
   absolute: {
@@ -412,5 +471,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
 });
