@@ -22,6 +22,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
 import GuestInput from "../components/GuestInput";
+//import { addExpense } from "../reducers/events";
 
 //mockUp
 const mock = {
@@ -175,7 +176,8 @@ useEffect(() => {
     const [modalVisible, setModalVisible] = useState(false);
     const [expenseAmount, setExpenseAmount] = useState("");
     const [imageName, setImageName] = useState("");
-    const [update, setUpdate] = useState(false); // New state variable
+
+    const dispatch = useDispatch();
   
     const submitExpense = async () => {
       try {
@@ -189,9 +191,9 @@ useEffect(() => {
             name: expenseName,
             invoice: imageName,
           };
-    
+  
           console.log("Request body:", requestBody);
-    
+  
           const response = await fetch(`${PATH}/transactions/create/expense`, {
             method: "POST",
             headers: {
@@ -199,17 +201,13 @@ useEffect(() => {
             },
             body: JSON.stringify(requestBody),
           });
-    
+  
           console.log("Response:", response);
           if (response.ok) {
-            // Assuming response.json() returns the newly created expense
             const newExpense = await response.json();
-            console.log("New expense:", newExpense); // Log the new expense
-            setExpenses(prevExpenses => {
-              const updatedExpenses = [...prevExpenses, newExpense];
-              console.log("Updated expenses:", updatedExpenses); // Log the updated expenses
-              return updatedExpenses;
-            });
+            dispatch(addExpense(newExpense));
+            setExpenses(prevExpenses => [...prevExpenses, newExpense]);
+          
           }
           setExpenseName("");
           setExpenseAmount("");
@@ -231,40 +229,35 @@ const totalExpenses = expenses.reduce(
 const remainingBalance = event.totalSum - totalExpenses;
 
     return (
-      <ScrollView
-          style={{ ...styles.scrollView, marginTop: 30}}
-          showsVerticalScrollIndicator={true}
-        >
-      <View>
-        
-          {expenses
-            .slice()
-            .reverse()
-            .map((expense, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.listCard,
-                  Platform.OS === "ios"
-                    ? styles.shadowIOS
-                    : styles.shadowAndroid,
-                ]}
-              >
-                <Text style={styles.textCurrentListCard}>{expense.name}</Text>
-                <View style={styles.leftPartInsideCard}>
-                  <Text
-                    style={{ ...styles.textCurrentListCard, marginRight: 30 }}
-                  >
-                    {expense.amount}€
-                  </Text>
-                  <Icon
-                    name="document-text-sharp"
-                    size={25}
-                    color="#4E3CBB"
-                  ></Icon>
-                </View>
-              </View>
-            ))}
+      <ScrollView style={{ maxHeight: 200 }}>
+  {expenses
+    .slice(0, 3)
+    .reverse()
+    .map((expense, index) => (
+      <View
+        key={index}
+        style={[
+          styles.listCard,
+          Platform.OS === "ios"
+            ? styles.shadowIOS
+            : styles.shadowAndroid,
+        ]}
+      >
+        <Text style={styles.textCurrentListCard}>{expense.name}</Text>
+        <View style={styles.leftPartInsideCard}>
+          <Text
+            style={{ ...styles.textCurrentListCard, marginRight: 30 }}
+          >
+            {expense.amount}€
+          </Text>
+          <Icon
+            name="document-text-sharp"
+            size={25}
+            color="#4E3CBB"
+          ></Icon>
+        </View>
+      </View>
+    ))}
         
         <View
           style={[

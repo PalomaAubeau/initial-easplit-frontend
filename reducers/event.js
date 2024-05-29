@@ -28,8 +28,11 @@ export const eventSlice = createSlice({
     loadEvent: (state, action) => {
       state.value = action.payload;
     },
+    addExpense: (state, action) => {
+      state.value.transactions.push(action.payload);
+    },
   },
 });
 
-export const { addEvent, removeEvent, loadEvent } = eventSlice.actions;
+export const { addEvent, removeEvent, loadEvent, addExpense } = eventSlice.actions;
 export default eventSlice.reducer;
