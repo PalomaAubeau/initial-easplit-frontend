@@ -110,7 +110,7 @@ export default function EventScreen({ route, navigation }) {
     )
       .then((response) => response.json())
       .then((data) => {
-        //console.log("data récup du premier fetch:", data);
+        //console.log("data récup du premier fetch pour participation:", data);
         if (!data.result) {
           seterrorMessage(data.error);
         } else {
@@ -119,6 +119,7 @@ export default function EventScreen({ route, navigation }) {
             .then((data) => {
               if (data.result) {
                 setEvent(data.event);
+                // console.log("data du deuxième fetch:", data.event);
               }
             });
         }
@@ -352,6 +353,10 @@ export default function EventScreen({ route, navigation }) {
   };
 
   const EventPayment = () => {
+    const totalExpenses = expenses.reduce(
+      (total, expense) => total + Number(expense.amount),
+      0
+    );
     const currentUser = event.guests.find(
       (guest) =>
         guest.userId.email === user.email &&
@@ -397,7 +402,7 @@ export default function EventScreen({ route, navigation }) {
           </View>
           <View style={{ ...styles.recapCardRow, margin: 7 }}>
             <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
-            <Text style={styles.textPaymentRecapLeft}>XX€</Text>
+            <Text style={styles.textPaymentRecapLeft}>{totalExpenses}€</Text>
           </View>
         </View>
 
@@ -439,15 +444,20 @@ export default function EventScreen({ route, navigation }) {
                 {currentUser.hasPaid ? (
                   <Icon name="checkmark-circle" size={25} color="#EB1194" />
                 ) : (
-                  <TouchableOpacity
-                    onPress={() => handlePayment()}
-                    style={styles.paymentCTAContainer}
-                    activeOpacity={0.8}
-                  >
-                    <View>
-                      <Text style={globalStyles.buttonText}>Participer</Text>
-                    </View>
-                  </TouchableOpacity>
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => handlePayment()}
+                      style={styles.paymentCTAContainer}
+                      activeOpacity={0.8}
+                    >
+                      <View>
+                        <Text style={globalStyles.buttonText}>Participer</Text>
+                      </View>
+                    </TouchableOpacity>
+                    {errorMessage && (
+                      <Text style={styles.error}>{errorMessage} </Text>
+                    )}
+                  </View>
                 )}
               </View>
             )}
@@ -702,6 +712,10 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-Regular",
     color: "#4E3CBB",
     fontSize: 12,
+  },
+  error: {
+    marginTop: 10,
+    color: "red",
   },
   //CSS de la modal
   centeredView: {
