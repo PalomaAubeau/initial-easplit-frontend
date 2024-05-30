@@ -283,6 +283,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 15,
     height: 60,
+    marginHorizontal: 10,
   },
   shadowAndroid: {
     elevation: 6,
@@ -311,6 +312,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     height: 150,
+    marginHorizontal: 10,
   },
   // TEXTES
   textButton: {
