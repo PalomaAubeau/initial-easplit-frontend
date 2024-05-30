@@ -25,7 +25,7 @@ import { BlurView } from "expo-blur"; // Import du BlurView
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
   //console.log('reducerUser' + user)
 
   //ajout du state de la modal
@@ -85,41 +85,43 @@ export default function HomeScreen({ navigation }) {
 
   const handleRecharge = async () => {
     const rechargeAmount = Number(balance);
-    
+
     const requestBody = {
       emitter: user.token, // Utiliser le token de l'utilisateur comme émetteur
       recipient: user.token, // Le destinataire est le même que l'émetteur dans ce cas
       type: "reload",
       amount: rechargeAmount,
     };
-    
+
     try {
-      const response = await fetch(`${PATH}/transactions/reload/${user.token}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
-  
+      const response = await fetch(
+        `${PATH}/transactions/reload/${user.token}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+
       if (response.ok) {
         const data = await response.json();
-       
-        dispatch(addBalance(rechargeAmount))
-        
+
+        dispatch(addBalance(rechargeAmount));
+
         setUserBalance((prevBalance) => prevBalance + rechargeAmount);
-  
+
         setBalance("");
       } else {
-                console.error("Failed to update balance");
+        console.error("Failed to update balance");
       }
     } catch (error) {
-            console.error("Error:", error);
+      console.error("Error:", error);
     }
-  
+
     // Close the modal
     setModalVisible(false);
-
   };
 
   return (
@@ -129,11 +131,11 @@ export default function HomeScreen({ navigation }) {
       start={[0.2, 0.2]}
       end={[0.8, 0.8]}
     >
-        <ScrollView keyboardShouldPersistTaps="handled"
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
-        >
-
-          {/* // garder le click sans devoir fermer le keyboard */}
+      >
+        {/* // garder le click sans devoir fermer le keyboard */}
         <View>
           <View style={styles.headerContainer}>
             <Image
@@ -163,7 +165,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.View}>
             <View style={styles.balanceContainer}>
               <Text style={styles.textBalanceContainer}>
-                {displayBalance ? displayBalance.toFixed(2) : "0.00"}€
+                {user.balance ? user.balance.toFixed(2) : "0.00"}€
               </Text>
             </View>
           </View>

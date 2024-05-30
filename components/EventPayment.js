@@ -13,13 +13,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
-import GuestInput from "../components/GuestInput";
+import { downBalance } from "../reducers/user";
 
-export default function EventPayment({ expenses, event, navigation }) {
+export default function EventPayment({ expenses, event, navigation, eventId }) {
   const user = useSelector((state) => state.user.value);
+  //console.log(user.balance);
   const dispatch = useDispatch();
-
-  const [balance, setBalance] = useState(0);
+  const [currentEvent, setCurrentEvent] = useState(event);
   const [errorMessage, seterrorMessage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -27,13 +27,13 @@ export default function EventPayment({ expenses, event, navigation }) {
     (total, expense) => total + Number(expense.amount),
     0
   );
-  const currentUser = event.guests.find(
+  const currentUser = currentEvent.guests.find(
     (guest) =>
       guest.userId.email === user.email &&
       guest.userId.firstName === user.firstName
   );
 
-  const otherGuests = event.guests.filter(
+  const otherGuests = currentEvent.guests.filter(
     (guest) =>
       guest.userId.email !== user.email &&
       guest.userId.firstName !== user.firstName
@@ -65,13 +65,19 @@ export default function EventPayment({ expenses, event, navigation }) {
         if (!data.result) {
           seterrorMessage(data.error);
         } else {
-          dispatch(downBalance());
+          dispatch(downBalance(data.transactionSaved.amount));
+          //   console.log(
+          //     "test EventPayment transactionSaved.amount:",
+          //     data.transactionSaved.amount
+          //   );
+          //   console.log("test user.balance", user.balance);
           fetch(`${PATH}/events/event/${eventId}`)
             .then((response) => response.json())
             .then((data) => {
               if (data.result) {
-                setEvent(data.event);
+                setCurrentEvent(data.event);
               }
+              //console.log("EventPayment", data.event);
             });
         }
       });
