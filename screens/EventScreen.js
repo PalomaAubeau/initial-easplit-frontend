@@ -22,6 +22,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
 import GuestInput from "../components/GuestInput";
+import { addExpense } from "../reducers/event";
 
 export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
@@ -33,7 +34,7 @@ export default function EventScreen({ route, navigation }) {
   const [selectedComponent, setSelectedComponent] = useState("expenses");
   const [expenses, setExpenses] = useState([]);
   const [errorMessage, seterrorMessage] = useState(null);
-
+  const dispatch = useDispatch(); 
   const handlePayment = () => {
     fetch(
       `${PATH}/transactions/create/payment/${user.token}/${event.eventUniqueId}`,
@@ -113,8 +114,6 @@ useEffect(() => {
     const [expenseAmount, setExpenseAmount] = useState("");
     const [imageName, setImageName] = useState("");
 
-    const dispatch = useDispatch();
-  
     const submitExpense = async () => {
       try {
         if (imageName.trim() === "") {
@@ -137,7 +136,8 @@ useEffect(() => {
             },
             body: JSON.stringify(requestBody),
           });
-  
+          fetchExpenses() //test beranger
+          // placer le dispatchr
           console.log("Response:", response);
           if (response.ok) {
             const newExpense = await response.json();
