@@ -68,7 +68,7 @@ const LastTransactions = () => {
           } else if (transaction.type === "payment") {
             transactionText = `${transaction.name}`;
             transactionDescription = "Participation";
-            displayAmount = `- ${transaction.amount} €`;
+            displayAmount = `- ${transaction.amount.toFixed(2)} €`;
           }
 
           return {
