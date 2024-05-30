@@ -46,7 +46,7 @@ export const userSlice = createSlice({
      // state.value.transactions.unshift(action.payload.transaction);
     },// test beranger
     downBalance: (state, action) => { //fonction paiement 
-      state.value.balance += action.payload;
+      state.value.balance = state.value.balance - action.payload;
     },// test beranger
   },
 });
