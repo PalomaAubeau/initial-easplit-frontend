@@ -1,7 +1,6 @@
 import { StyleSheet } from "react-native";
 import globalStyles from "../styles/globalStyles";
 import { LinearGradient } from "expo-linear-gradient";
-//import MaskedView from "@react-native-masked-view/masked-view";
 import DropdownMenu from "../components/DropdownMenu";
 import Icon from "react-native-vector-icons/Ionicons";
 import {
@@ -24,12 +23,10 @@ import { PATH } from "../utils/path";
 import GuestInput from "../components/GuestInput";
 import { addExpense } from "../reducers/event";
 import EventPayment from "../components/EventPayment";
-//Ajout de fichiers 
 import * as ImagePicker from "expo-image-picker";
 
 export default function EventScreen({ route, navigation }) {
-  //1.Déclaration des états et imports reducers si besoin
-  const { eventId } = route.params; // Récupération de l'_id de l'Event (props du screen précédent via la fonction de la navigation)
+  const { eventId } = route.params;
   const user = useSelector((state) => state.user.value);
   const isFocused = useIsFocused();
   const [event, setEvent] = useState({});
@@ -68,16 +65,15 @@ export default function EventScreen({ route, navigation }) {
   const EventExpense = () => {
     const [expenseName, setExpenseName] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalPhotoVisible, setModalPhotoVisible] = useState(false);
+    const [selectedExpense, setSelectedExpense] = useState(null);
     const [expenseAmount, setExpenseAmount] = useState("");
     const [imageName, setImageName] = useState("");
     const [urlImage, setUrlImage] = useState("");
 
-    const [imageModalVisible, setImageModalVisible] = useState(false);
-    const [selectedInvoice, setSelectedInvoice] = useState("");
-
-    const handleIconClick = (invoiceUrl) => {
-      setSelectedInvoice(invoiceUrl);
-      setImageModalVisible(true);
+    const handleIconClick = (expense) => {
+      setSelectedExpense(expense);
+      setModalPhotoVisible(true);
     };
 
     const saveImage = async (image) => {
@@ -115,6 +111,7 @@ export default function EventScreen({ route, navigation }) {
             .then((data) => {
               if (data.result) {
                 setUrlImage(data.url);
+                console.log("Image URL:", data.url);
               }
             });
         }
@@ -143,10 +140,19 @@ export default function EventScreen({ route, navigation }) {
             },
             body: JSON.stringify(requestBody),
           });
-          fetchExpenses();
-          setExpenseName("");
-          setExpenseAmount("");
-          setImageName("");
+          const data = await response.json();
+          console.log("Response:", data);
+
+          if (data.response) {
+            fetchExpenses();
+            setExpenseName("");
+            setExpenseAmount("");
+            // setImageName("");
+            setUrlImage("");
+            
+          } else {
+            console.error("Error in response:", data.message);
+          }
         }
       } catch (error) {
         console.error("Error:", error);
@@ -185,7 +191,7 @@ export default function EventScreen({ route, navigation }) {
                   >
                     {expense.amount}€
                   </Text>
-                  <TouchableOpacity onPress={() => handleIconClick(expense.invoice)}>
+                  <TouchableOpacity onPress={() => handleIconClick(expense)}>
                     <Icon
                       name="document-text-sharp"
                       size={25}
@@ -288,25 +294,26 @@ export default function EventScreen({ route, navigation }) {
             </View>
           </View>
         </View>
-        
-        {/* Insert modal here */}
+
+        {/* Modal pour afficher la photo de l'invoice */}
         <Modal
-          transparent={true}
           animationType="slide"
-          visible={imageModalVisible}
-          onRequestClose={() => setImageModalVisible(false)}
+          transparent={true}
+          visible={modalPhotoVisible}
+          onRequestClose={() => setModalPhotoVisible(false)}
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Image
-                source={{ uri: selectedInvoice }}
-                style={styles.image}
-              />
-              <Button title="Fermer" onPress={() => setImageModalVisible(false)} />
+              {selectedExpense && (
+                <Image
+                  source={{ uri: selectedExpense.invoice }}
+                  style={styles.image}
+                />
+              )}
+              <Button title="Fermer" onPress={() => setModalPhotoVisible(false)} />
             </View>
           </View>
         </Modal>
-        
       </ScrollView>
     );
   };
@@ -579,15 +586,19 @@ const styles = StyleSheet.create({
     color: "#4E3CBB",
     textAlign: "center",
   },
+
   buttonClose: {
     backgroundColor: "#EB1194",
     marginTop: 20,
+    padding: 15,
+    borderRadius: 10,
   },
   textStyle: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
   },
+
   personIconContainer: {
     backgroundColor: "#4E3CBB33",
     padding: 5,
@@ -600,6 +611,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
+  },
+  imageContainer: {
+    position: "absolute",
+    marginTop: 20,
   },
   modalContainer: {
     flex: 1,
@@ -620,5 +635,4 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
-
 
