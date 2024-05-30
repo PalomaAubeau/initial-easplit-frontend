@@ -84,7 +84,7 @@ export default function EventsListScreen({ navigation }) {
 
   //.map sur la BDD pour faire une copie du tableau d'objets récupéré et afficher un composant
   //Au moment d'appeler la fonction navigate on ajoute en paramètre l'id créé de l'event pour pouvoir le récupérer ailleurs
-  const userEvents = events.map((data) => {
+  const userEvents = [...events].reverse().map((data) => { //mettre entre crochet avec un spead pour bien récuperer toute le tableau (sécurité) .reverse pour inverser les infdex et le map
     return <EventCard key={data._id} event={data} />;
   });
 
