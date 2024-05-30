@@ -24,6 +24,7 @@ import { PATH } from "../utils/path";
 import GuestInput from "../components/GuestInput";
 import { addExpense } from "../reducers/event";
 import EventPayment from "../components/EventPayment";
+import EventExpense from "../components/EventExpense";
 
 export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
@@ -64,210 +65,17 @@ export default function EventScreen({ route, navigation }) {
     fetchExpenses();
   }, []);
 
-  // const onNameChange = (value) => {
-  //   setExpenseName(value);
-  // };
-
-  // const onAmountChange = (text) => {
-  //   if (text.includes(".") && text.split(".")[1].length > 2) {
-  //     return;
-  //   }
-  //   if (!isNaN(text)) {
-  //     setExpenseAmount(text);
-  //   }
-  // };
-
-  // const onImageNameChange = (text) => {
-  //   setImageName(text);
-  // };
-
-  const EventExpense = () => {
-    const [expenseName, setExpenseName] = useState("");
-    const [modalVisible, setModalVisible] = useState(false);
-    const [expenseAmount, setExpenseAmount] = useState("");
-    const [imageName, setImageName] = useState("");
-
-    const submitExpense = async () => {
-      try {
-        if (imageName.trim() === "") {
-          alert("Please add an invoice name");
-        } else {
-          const requestBody = {
-            emitter: eventId,
-            amount: Number(expenseAmount),
-            type: "expense",
-            name: expenseName,
-            invoice: imageName,
-          };
-
-          console.log("Request body:", requestBody);
-
-          const response = await fetch(`${PATH}/transactions/create/expense`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-          });
-          fetchExpenses(); //test beranger
-          // placer le dispatchr
-          console.log("Response:", response);
-          setExpenseName("");
-          setExpenseAmount("");
-          setImageName("");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
-
-    const totalExpenses = expenses.reduce(
-      (total, expense) => total + Number(expense.amount),
-      0
-    );
-    const remainingBalance = event.totalSum - totalExpenses;
-
-    return (
-      <ScrollView
-        style={{ ...styles.scrollView, marginTop: 30 }}
-        showsVerticalScrollIndicator={true}
-      >
-        <View>
-          {expenses
-            .slice()
-            .reverse()
-            .map((expense, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.listCard,
-                  Platform.OS === "ios"
-                    ? styles.shadowIOS
-                    : styles.shadowAndroid,
-                ]}
-              >
-                <Text style={styles.textCurrentListCard}>{expense.name}</Text>
-                <View style={styles.leftPartInsideCard}>
-                  <Text
-                    style={{ ...styles.textCurrentListCard, marginRight: 30 }}
-                  >
-                    {expense.amount}€
-                  </Text>
-                  <Icon
-                    name="document-text-sharp"
-                    size={25}
-                    color="#4E3CBB"
-                  ></Icon>
-                </View>
-              </View>
-            ))}
-
-          <View
-            style={[
-              { ...styles.listCard, marginBottom: 30 },
-              Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-            ]}
-          >
-            <TextInput
-              style={styles.textAddingCard}
-              placeholder="Nom de la dépense"
-              value={expenseName}
-              onChangeText={(value) => setExpenseName(value)}
-            />
-            <View style={styles.leftPartInsideCard}>
-              <TextInput
-                style={{ ...styles.textAddingCard, marginRight: 30 }}
-                placeholder="XX€"
-                keyboardType="numeric"
-                value={expenseAmount}
-                onChangeText={(text) => {
-                  if (text.includes(".") && text.split(".")[1].length > 2) {
-                    const truncatedText = text.substring(
-                      0,
-                      text.indexOf(".") + 3
-                    );
-                    setExpenseAmount(truncatedText);
-                  } else if (!isNaN(text)) {
-                    setExpenseAmount(text);
-                  }
-                }}
-              />
-              <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Icon name="document-text-sharp" size={25} color="#EB1194" />
-              </TouchableOpacity>
-
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                  setModalVisible(!modalVisible);
-                }}
-              >
-                <View style={styles.centeredView}>
-                  <View style={styles.modalView}>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Nom de l'image"
-                      value={imageName}
-                      onChangeText={(text) => setImageName(text)}
-                    />
-                    <Button
-                      color="#4E3CBB"
-                      title="Ajouter l'image"
-                      onPress={() => {
-                        if (imageName.trim() === "") {
-                          alert("Merci de renseigner un nom pour l'image");
-                        } else {
-                          alert(`Image ${imageName} ajouté!`);
-                          setModalVisible(false); // Close the modal
-                        }
-                      }}
-                    />
-                    <TouchableOpacity
-                      style={[styles.button, styles.buttonClose]}
-                      onPress={() => setModalVisible(!modalVisible)}
-                    >
-                      <Text style={styles.textStyle}>Fermer</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </Modal>
-              <TouchableOpacity onPress={submitExpense}>
-                <Icon name="add-circle" size={30} color="#EB1194"></Icon>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View
-            style={[
-              styles.recapCard,
-              Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-            ]}
-          >
-            <View style={styles.recapCardRow}>
-              <View style={styles.amount}>
-                <Text style={styles.textRecapAmount}>{event.totalSum}€</Text>
-                <Text style={styles.textRecap}>Budget initial</Text>
-              </View>
-              <View style={styles.amount}>
-                <Text style={styles.textRecapAmount}>{totalExpenses}€</Text>
-                <Text style={styles.textRecap}>Total des dépenses</Text>
-              </View>
-            </View>
-            <View style={styles.amount}>
-              <Text style={styles.textRecapBalance}>{remainingBalance}€</Text>
-              <Text style={styles.textRecap}>Solde restant</Text>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
-    );
-  };
-
   const renderSelectedComponent = () => {
     if (selectedComponent === "expenses") {
-      return <EventExpense />;
+      return (
+        <EventExpense
+          expenses={expenses}
+          event={event}
+          eventId={eventId}
+          fetchExpenses={fetchExpenses}
+          setExpenses={setExpenses}
+        />
+      );
     } else {
       return (
         <EventPayment
