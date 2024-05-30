@@ -86,10 +86,13 @@ export default function EventScreen({ route, navigation }) {
   const EventExpense = () => {
     const [expenseName, setExpenseName] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalPhotoVisible, setModalPhotoVisible] = useState(false);
     const [expenseAmount, setExpenseAmount] = useState("");
     const [imageName, setImageName] = useState("");
     // Ajout de l'Url de l'image dans un état :
     const [urlImage, setUrlImage] = useState("");
+    //Gestion apparition image
+    const [showImage, setShowImage] = useState(false);
     
 
 //Elements concernant l'ajout de fichiers
@@ -217,20 +220,39 @@ const saveImage = async (image) => {
                   >
                     {expense.amount}€
                   </Text>
-                <TouchableOpacity onPress={handleIconClick}>
+                <TouchableOpacity onPress={() => setModalPhotoVisible(true)}>
                   <Icon
                     name="document-text-sharp"
                     size={25}
                     color="#4E3CBB"
                   ></Icon>
           </TouchableOpacity>
-                  {showImage && (
-        <View style={styles.imageContainer}>
-          <Image
-            source={{ url: expense.invoice }}//récupère dans la BDD l'url de l'invoice 
-            style={styles.image}
-          />
-          </View>)}
+                 
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalPhotoVisible}
+        onRequestClose={() => {
+          setModalPhotoVisible(!modalPhotoVisible);
+        }}
+      >
+        <View style={styles.modalView}>
+
+        <Image
+          source={{ uri: expense.invoice }}
+          //récupère dans la BDD l'url de l'invoice 
+                  width={150}
+                  height={150}
+        />
+        <TouchableOpacity
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => setModalPhotoVisible(!modalPhotoVisible)}
+                    >
+                      <Text style={styles.textStyle}>Fermer</Text>
+                    </TouchableOpacity>
+        </View>
+      </Modal>
+          
                 </View>
               </View>
             ))}
@@ -609,9 +631,12 @@ const styles = StyleSheet.create({
     color: "#4E3CBB",
     textAlign: "center",
   },
+  
   buttonClose: {
     backgroundColor: "#EB1194",
     marginTop: 20,
+    padding:15,
+    borderRadius:10,
   },
   textStyle: {
     color: "white",
@@ -633,5 +658,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
+  },
+  imageContainer: {
+    position:"absolute",
+    marginTop: 20,
   },
 });
