@@ -103,27 +103,32 @@ export default function CreateEventScreen({ navigation }) {
   const handleEventDateChange = (value) => {
     setEventDate(value);
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const eventDateObj = new Date(value);
+    eventDateObj.setHours(0, 0, 0, 0);
     if (eventDateObj < today) {
       setErrors((prev) => ({ ...prev, eventDate: "La date de l'événement ne peut pas être antérieure à la date du jour." }));
     } else {
       setErrors((prev) => ({ ...prev, eventDate: null }));
     }
-  };
+};
 
-  const handleDeadLineChange = (value) => {
+const handleDeadLineChange = (value) => {
     setDeadLine(value);
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const deadLineObj = new Date(value);
+    deadLineObj.setHours(0, 0, 0, 0);
     const eventDateObj = new Date(eventDate);
+    eventDateObj.setHours(0, 0, 0, 0);
     if (deadLineObj < today) {
       setErrors((prev) => ({ ...prev, deadLine: "La date limite de paiement ne peut pas être antérieure à la date du jour." }));
-    } else if (eventDateObj <= deadLineObj) {
+    } else if (eventDateObj < deadLineObj) {
       setErrors((prev) => ({ ...prev, deadLine: "La date limite de paiement doit être antérieure à la date de l'événement." }));
     } else {
       setErrors((prev) => ({ ...prev, deadLine: null }));
     }
-  };
+};
   // FIN : Gestion des erreurs et des dates :
 
   //Mécanique pour créer l'évènement :
@@ -169,6 +174,16 @@ export default function CreateEventScreen({ navigation }) {
       navigation.navigate('Success');
   
       console.log(participants)
+
+    setEventName('');
+    setEventDate('');
+    setDeadLine('');
+    setEventDesc('');
+    setParticipants([]);
+    setTotalAmount(0);
+    setAmountPerPart(0);
+    setLocalTotalAmount('');
+
   
     } catch (error) {
       console.error('Erreur lors de la création de l\'événement :', error);

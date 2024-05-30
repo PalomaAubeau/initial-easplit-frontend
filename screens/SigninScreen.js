@@ -49,6 +49,9 @@ export default function SigninScreen({ navigation }) {
           navigation.navigate("TabNavigator", {
             screen: "EventsListScreen",
           });
+          setEmail('');
+          setPassword('');
+          setLoginErrorMessage(null);
         }
       });
   };

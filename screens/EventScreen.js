@@ -335,7 +335,15 @@ const saveImage = async (image) => {
 
   const renderSelectedComponent = () => {
     if (selectedComponent === "expenses") {
-      return <EventExpense />;
+      return (
+        <EventExpense
+          expenses={expenses}
+          event={event}
+          eventId={eventId}
+          fetchExpenses={fetchExpenses}
+          setExpenses={setExpenses}
+        />
+      );
     } else {
       return (
         <EventPayment
@@ -443,7 +451,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   button: {
-    padding: 10,
+    paddingHorizontal: 10,
     width: "50%",
   },
   selectedButton: {

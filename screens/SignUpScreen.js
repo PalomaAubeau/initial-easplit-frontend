@@ -56,6 +56,12 @@ export default function SignUpScreen({ navigation }) {
               })
             );
             navigation.navigate("TabNavigator", { screen: "EventsListScreen" });
+            setFirstName('');
+            setLastName('');
+            setEmail('');
+            setPassword('');
+            setIsWrongEmailFormat(false);
+            setLoginErrorMessage(null);
           }
         });
     } else {
