@@ -1,0 +1,471 @@
+import { StyleSheet } from "react-native";
+import globalStyles from "../styles/globalStyles";
+import Icon from "react-native-vector-icons/Ionicons";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Platform,
+  Modal,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import React, { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { PATH } from "../utils/path";
+import GuestInput from "../components/GuestInput";
+
+export default function EventPayment({ expenses, event, navigation }) {
+  const user = useSelector((state) => state.user.value);
+
+  const [errorMessage, seterrorMessage] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const totalExpenses = expenses.reduce(
+    (total, expense) => total + Number(expense.amount),
+    0
+  );
+  const currentUser = event.guests.find(
+    (guest) =>
+      guest.userId.email === user.email &&
+      guest.userId.firstName === user.firstName
+  );
+
+  const otherGuests = event.guests.filter(
+    (guest) =>
+      guest.userId.email !== user.email &&
+      guest.userId.firstName !== user.firstName
+  );
+
+  useEffect(() => {
+    if (errorMessage) {
+      setIsModalVisible(true);
+    }
+  }, [errorMessage]);
+
+  const handleCloseModal = () => {
+    seterrorMessage(null);
+    setIsModalVisible(false);
+  };
+  const handlePayment = () => {
+    fetch(
+      `${PATH}/transactions/create/payment/${user.token}/${event.eventUniqueId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "payment",
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.result) {
+          seterrorMessage(data.error);
+        } else {
+          fetch(`${PATH}/events/event/${eventId}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.result) {
+                setEvent(data.event);
+              }
+            });
+        }
+      });
+  };
+
+  return (
+    <ScrollView
+      style={styles.scrollView} // Ajouté pour s'assurer que le ScrollView a un style
+      contentContainerStyle={{ paddingVertical: 20 }} // Ajouté pour ajouter un padding vertical
+      showsVerticalScrollIndicator={true}
+    >
+      <View>
+        <Text
+          style={[
+            globalStyles.titleList,
+            globalStyles.violet,
+            globalStyles.capital,
+            { marginTop: 20 },
+          ]}
+        >
+          RÉCAPITULATIF DES FONDS
+        </Text>
+
+        <View
+          style={[
+            styles.RecapEventCard,
+            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+          ]}
+        >
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
+            <Text style={styles.textCurrentListCard}>Budget initial</Text>
+            <Text style={styles.textPaymentRecapLeft}>{event.totalSum}€</Text>
+          </View>
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
+            <Text style={styles.textCurrentListCard}>
+              Nombre de participants
+            </Text>
+            <Text style={styles.textPaymentRecapLeft}>
+              {event.guests.length}
+            </Text>
+          </View>
+          <View style={{ ...styles.recapCardRow, margin: 7 }}>
+            <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
+            <Text style={styles.textPaymentRecapLeft}>{totalExpenses}€</Text>
+          </View>
+        </View>
+
+        <Text
+          style={[
+            globalStyles.titleList,
+            globalStyles.violet,
+            globalStyles.capital,
+          ]}
+        >
+          STATUT DES RÉGLEMENTS
+        </Text>
+        {/* <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        > */}
+        <View>
+          {currentUser && (
+            <View
+              style={[
+                styles.listCard,
+                Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+                styles.currentUserCard,
+              ]}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View style={styles.personIconContainer}>
+                  <Icon name="person" size={20} color="#4E3CBB"></Icon>
+                </View>
+                <Text
+                  style={[styles.textCurrentListCard, styles.currentUserText]}
+                >
+                  MOI
+                </Text>
+              </View>
+
+              {currentUser.hasPaid ? (
+                <Icon name="checkmark-circle" size={25} color="#EB1194" />
+              ) : (
+                <View>
+                  <TouchableOpacity
+                    onPress={() => handlePayment()}
+                    style={styles.paymentCTAContainer}
+                    activeOpacity={0.8}
+                  >
+                    <View>
+                      <Text style={globalStyles.buttonText}>Participer</Text>
+                    </View>
+                  </TouchableOpacity>
+                  {errorMessage && (
+                    <Modal
+                      isVisible={isModalVisible}
+                      animationType="slide"
+                      transparent={true}
+                      onRequestClose={handleCloseModal}
+                    >
+                      <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                          <Text style={styles.error}>{errorMessage}</Text>
+                          <TouchableOpacity
+                            style={globalStyles.buttonContainer}
+                            activeOpacity={0.8}
+                            onPress={() => navigation.navigate("Home")}
+                          >
+                            <LinearGradient
+                              colors={["#EB1194", "#4E3CBB"]}
+                              start={{ x: 0, y: 0 }}
+                              end={{ x: 1, y: 1 }}
+                              style={globalStyles.gradientBackground}
+                            >
+                              <View style={globalStyles.textContainer}>
+                                <Text style={styles.reloadbuttonText}>
+                                  Je recharge
+                                </Text>
+                              </View>
+                            </LinearGradient>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={styles.buttonContainer}
+                            activeOpacity={0.8}
+                            onPress={handleCloseModal}
+                          >
+                            <Text style={styles.closeButtonText}>Fermer</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </Modal>
+                  )}
+                </View>
+              )}
+            </View>
+          )}
+
+          {otherGuests.map((guest, i) => (
+            <View
+              key={i}
+              style={[
+                styles.listCard,
+                Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+              ]}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View style={styles.personIconContainer}>
+                  <Icon name="person" size={20} color="#4E3CBB"></Icon>
+                </View>
+                <View>
+                  <Text style={styles.textCurrentListCard}>
+                    {guest.userId.firstName}
+                  </Text>
+                  <Text style={styles.textSmallCurrentListCard}>
+                    {guest.userId.email}
+                  </Text>
+                </View>
+              </View>
+
+              {guest.hasPaid ? (
+                <Icon name="checkmark-circle" size={25} color="#EB1194" />
+              ) : (
+                <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
+              )}
+            </View>
+          ))}
+          <GuestInput />
+        </View>
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  //MAINS CONTAINERS
+  container: {
+    flex: 1,
+    paddingLeft: 30,
+    paddingRight: 30,
+  },
+  goback: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  scrollView: {
+    // flex:1,
+    marginBottom: 20,
+    // backgroundColor: "white",
+  },
+  participer: {
+    height: 25,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 30,
+  },
+  // ELEMENT RAPPORTE
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
+  },
+  // TOOGLE SELECTION
+  toggleSelection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#4E3CBB33",
+    borderRadius: 5,
+  },
+  button: {
+    padding: 10,
+    width: "50%",
+  },
+  selectedButton: {
+    backgroundColor: "#4E3CBB",
+    borderRadius: 5,
+  },
+
+  // EVENTS CONTAINER
+  listCard: {
+    backgroundColor: "#FFFFFF",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+    height: 60,
+  },
+  shadowAndroid: {
+    elevation: 6,
+  },
+  shadowIOS: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+  },
+  leftPartInsideCard: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  recapCard: {
+    backgroundColor: "#FFFFFF",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 50,
+    height: 200,
+  },
+  recapCardRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  amount: {
+    alignItems: "center",
+    margin: 20,
+  },
+  RecapEventCard: {
+    paddingHorizontal: 20,
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    marginBottom: 20,
+    height: 150,
+  },
+  // TEXTES
+  textGoBack: {
+    fontFamily: "CodecPro-ExtraBold",
+    color: "#4E3CBB",
+    fontSize: 20,
+    marginLeft: 20,
+  },
+  textButton: {
+    color: "#FFFFFF",
+    fontFamily: "CodecPro-ExtraBold",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  textCurrentListCard: {
+    fontFamily: "CodecPro-Regular",
+    color: "#4E3CBB",
+    fontSize: 16,
+  },
+  textAddingCard: {
+    fontFamily: "CodecPro-ExtraBold",
+    color: "#EB1194",
+    fontSize: 16,
+  },
+  message: {
+    fontFamily: "CodecPro-Regular",
+    color: "#EB1194",
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+  },
+  textRecap: {
+    fontFamily: "CodecPro-Regular",
+    color: "#4E3CBB",
+    fontSize: 16,
+    marginTop: 10,
+  },
+  textRecapAmount: {
+    fontFamily: "CodecPro-ExtraBold",
+    color: "#4E3CBB",
+    fontSize: 20,
+  },
+  textRecapBalance: {
+    fontFamily: "CodecPro-ExtraBold",
+    color: "#EB1194",
+    fontSize: 25,
+  },
+  currentUserText: {
+    fontFamily: "CodecPro-ExtraBold",
+    color: "#4E3CBB",
+    fontSize: 20,
+  },
+  textPaymentRecapLeft: {
+    fontFamily: "CodecPro-ExtraBold",
+    fontSize: 16,
+    color: "#4E3CBB",
+  },
+  textSmallCurrentListCard: {
+    fontFamily: "CodecPro-Regular",
+    color: "#4E3CBB",
+    fontSize: 12,
+  },
+  error: {
+    marginTop: 10,
+    color: "red",
+  },
+  //CSS de la modal
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 30,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  input: {
+    fontFamily: "CodecPro-ExtraBold",
+    width: 180,
+    borderBottomColor: "#4E3CBB",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    marginBottom: 40,
+    marginTop: 30,
+    fontSize: 20,
+    color: "#4E3CBB",
+    textAlign: "center",
+  },
+  buttonClose: {
+    backgroundColor: "#EB1194",
+    marginTop: 20,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+
+  personIconContainer: {
+    backgroundColor: "#4E3CBB33",
+    padding: 5,
+    borderRadius: 50,
+    marginRight: 10,
+  },
+  // AUTRES
+  paymentCTAContainer: {
+    backgroundColor: "#EB1194",
+    // paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

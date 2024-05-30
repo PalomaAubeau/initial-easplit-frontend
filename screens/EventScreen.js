@@ -23,6 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
 import GuestInput from "../components/GuestInput";
 import { addExpense } from "../reducers/event";
+import EventPayment from "../components/EventPayment";
 
 export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
@@ -34,35 +35,7 @@ export default function EventScreen({ route, navigation }) {
   const [selectedComponent, setSelectedComponent] = useState("expenses");
   const [expenses, setExpenses] = useState([]);
   const [errorMessage, seterrorMessage] = useState(null);
-  const dispatch = useDispatch(); 
-  const handlePayment = () => {
-    fetch(
-      `${PATH}/transactions/create/payment/${user.token}/${event.eventUniqueId}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "payment",
-        }),
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        //console.log("data récup du premier fetch pour participation:", data);
-        if (!data.result) {
-          seterrorMessage(data.error);
-        } else {
-          fetch(`${PATH}/events/event/${eventId}`)
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.result) {
-                setEvent(data.event);
-                console.log("data du deuxième fetch:", data.event);
-              }
-            });
-        }
-      });
-  };
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetch(`${PATH}/events/event/${eventId}`)
@@ -136,7 +109,7 @@ export default function EventScreen({ route, navigation }) {
             },
             body: JSON.stringify(requestBody),
           });
-          fetchExpenses() //test beranger
+          fetchExpenses(); //test beranger
           // placer le dispatchr
           console.log("Response:", response);
           setExpenseName("");
@@ -292,164 +265,17 @@ export default function EventScreen({ route, navigation }) {
     );
   };
 
-  const EventPayment = () => {
-    const totalExpenses = expenses.reduce(
-      (total, expense) => total + Number(expense.amount),
-      0
-    );
-    const currentUser = event.guests.find(
-      (guest) =>
-        guest.userId.email === user.email &&
-        guest.userId.firstName === user.firstName
-    );
-
-    const otherGuests = event.guests.filter(
-      (guest) =>
-        guest.userId.email !== user.email &&
-        guest.userId.firstName !== user.firstName
-    );
-
-    return (
-      <ScrollView
-        style={styles.scrollView} // Ajouté pour s'assurer que le ScrollView a un style
-        contentContainerStyle={{ paddingVertical: 20 }} // Ajouté pour ajouter un padding vertical
-        showsVerticalScrollIndicator={true}
-      >
-        <View>
-          <Text
-            style={[
-              globalStyles.titleList,
-              globalStyles.violet,
-              globalStyles.capital,
-              { marginTop: 20 },
-            ]}
-          >
-            RÉCAPITULATIF DES FONDS
-          </Text>
-
-          <View
-            style={[
-              styles.RecapEventCard,
-              Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-            ]}
-          >
-            <View style={{ ...styles.recapCardRow, margin: 7 }}>
-              <Text style={styles.textCurrentListCard}>Budget initial</Text>
-              <Text style={styles.textPaymentRecapLeft}>{event.totalSum}€</Text>
-            </View>
-            <View style={{ ...styles.recapCardRow, margin: 7 }}>
-              <Text style={styles.textCurrentListCard}>
-                Nombre de participants
-              </Text>
-              <Text style={styles.textPaymentRecapLeft}>
-                {event.guests.length}
-              </Text>
-            </View>
-            <View style={{ ...styles.recapCardRow, margin: 7 }}>
-              <Text style={styles.textCurrentListCard}>Total des dépenses</Text>
-              <Text style={styles.textPaymentRecapLeft}>{totalExpenses}€</Text>
-            </View>
-          </View>
-
-          <Text
-            style={[
-              globalStyles.titleList,
-              globalStyles.violet,
-              globalStyles.capital,
-            ]}
-          >
-            STATUT DES RÉGLEMENTS
-          </Text>
-          {/* <ScrollView
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-        > */}
-          <View>
-            {currentUser && (
-              <View
-                style={[
-                  styles.listCard,
-                  Platform.OS === "ios"
-                    ? styles.shadowIOS
-                    : styles.shadowAndroid,
-                  styles.currentUserCard,
-                ]}
-              >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <View style={styles.personIconContainer}>
-                    <Icon name="person" size={20} color="#4E3CBB"></Icon>
-                  </View>
-                  <Text
-                    style={[styles.textCurrentListCard, styles.currentUserText]}
-                  >
-                    MOI
-                  </Text>
-                </View>
-
-                {currentUser.hasPaid ? (
-                  <Icon name="checkmark-circle" size={25} color="#EB1194" />
-                ) : (
-                  <View>
-                    <TouchableOpacity
-                      onPress={() => handlePayment()}
-                      style={styles.paymentCTAContainer}
-                      activeOpacity={0.8}
-                    >
-                      <View>
-                        <Text style={globalStyles.buttonText}>Participer</Text>
-                      </View>
-                    </TouchableOpacity>
-                    {errorMessage && (
-                      <Text style={styles.error}>{errorMessage} </Text>
-                    )}
-                  </View>
-                )}
-              </View>
-            )}
-
-            {otherGuests.map((guest, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.listCard,
-                  Platform.OS === "ios"
-                    ? styles.shadowIOS
-                    : styles.shadowAndroid,
-                ]}
-              >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <View style={styles.personIconContainer}>
-                    <Icon name="person" size={20} color="#4E3CBB"></Icon>
-                  </View>
-                  <View>
-                    <Text style={styles.textCurrentListCard}>
-                      {guest.userId.firstName}
-                    </Text>
-                    <Text style={styles.textSmallCurrentListCard}>
-                      {guest.userId.email}
-                    </Text>
-                  </View>
-                </View>
-
-                {guest.hasPaid ? (
-                  <Icon name="checkmark-circle" size={25} color="#EB1194" />
-                ) : (
-                  <Icon name="checkmark-circle" size={25} color="#4E3CBB33" />
-                )}
-              </View>
-            ))}
-            <GuestInput />
-          </View>
-        </View>
-      </ScrollView>
-    );
-  };
-
   const renderSelectedComponent = () => {
     if (selectedComponent === "expenses") {
       return <EventExpense />;
     } else {
-      return <EventPayment />;
+      return (
+        <EventPayment
+          expenses={expenses}
+          event={event}
+          navigation={navigation}
+        />
+      );
     }
   };
 
