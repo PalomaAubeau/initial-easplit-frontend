@@ -238,7 +238,6 @@ export default function EventPayment({ expenses, event, navigation }) {
               )}
             </View>
           ))}
-          <GuestInput />
         </View>
       </View>
     </ScrollView>
