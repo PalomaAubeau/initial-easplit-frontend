@@ -137,6 +137,7 @@ export default function EventScreen({ route, navigation }) {
             body: JSON.stringify(requestBody),
           });
           fetchExpenses() //test beranger
+          // placer le dispatchr
           console.log("Response:", response);
           setExpenseName("");
           setExpenseAmount("");
