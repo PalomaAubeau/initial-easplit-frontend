@@ -30,57 +30,85 @@ const EventExpense = ({
   eventId,
   fetchExpenses,
   setExpenses,
-  navigation,
+  currentUser,
 }) => {
   const dispatch = useDispatch();
 
-  const [expenseName, setExpenseName] = useState("");
+  const [expenseName, setExpenseName] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [expenseAmount, setExpenseAmount] = useState("");
-  const [imageName, setImageName] = useState("");
+  const [expenseAmount, setExpenseAmount] = useState('');
+  const [imageName, setImageName] = useState('');
+  const [isOrganizer, setIsOrganizer] = useState(false);
+
+  useEffect(() => {
+    if (event.organizer === currentUser) {
+      setIsOrganizer(true);
+    }
+  }, [event, currentUser]);
+
+  const fetchOrganizer = async () => {
+    try {
+      const response = await fetch(`${PATH}events/organizer/${eventId}`, { method: 'GET' });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const text = await response.text();
+      console.log('Response text:', text);
+      const data = JSON.parse(text);
+      if (data.result) {
+        console.log('Organizer:', data.organizer);
+        setIsOrganizer(data.organizer === 'Your Organizer Identifier');
+      } else {
+        console.error('Error:', data.error);
+      }
+    } catch (error) {
+      if (error.message === 'Network request failed') {
+        console.error('Network error. Please check your internet connection and try again.');
+      } else {
+        console.error('Error:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchOrganizer();
+  }, [eventId]);
 
   const submitExpense = async () => {
     try {
-      if (imageName.trim() === "") {
-        alert("Please add an invoice name");
+      if (imageName.trim() === '') {
+        alert('Please add an invoice name');
       } else {
         const requestBody = {
           emitter: eventId,
           amount: Number(expenseAmount),
-          type: "expense",
+          type: 'expense',
           name: expenseName,
           invoice: imageName,
         };
-
-        console.log("Request body:", requestBody);
-
+        console.log('Request body:', requestBody);
         const response = await fetch(`${PATH}/transactions/create/expense`, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(requestBody),
         });
-        fetchExpenses(); //test beranger
-        // placer le dispatchr
-        console.log("Response:", response);
+        fetchExpenses();
+        console.log('Response:', response);
         if (response.ok) {
           const newExpense = await response.json();
           dispatch(addExpense(newExpense));
           setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
         }
-        setExpenseName("");
-        setExpenseAmount("");
-        setImageName("");
+        setExpenseName('');
+        setExpenseAmount('');
+        setImageName('');
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error:', error);
     }
   };
-
-  // useEffect(() => {
-  //   fetchExpenses();
-  // }, [update]); // Fetch expenses when the update state changes
 
   const totalExpenses = expenses.reduce(
     (total, expense) => total + Number(expense.amount),
@@ -106,7 +134,7 @@ const EventExpense = ({
               key={index}
               style={[
                 styles.listCard,
-                Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+                Platform.OS === 'ios' ? styles.shadowIOS : styles.shadowAndroid,
               ]}
             >
               <Text style={styles.textCurrentListCard}>{expense.name}</Text>
@@ -124,88 +152,87 @@ const EventExpense = ({
               </View>
             </View>
           ))}
-
-        <View
-          style={[
-            { ...styles.listCard, marginBottom: 30 },
-            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
-          ]}
-        >
-          <TextInput
-            style={styles.textAddingCard}
-            placeholder="Nom de la dépense"
-            value={expenseName}
-            onChangeText={(value) => setExpenseName(value)}
-          />
-          <View style={styles.leftPartInsideCard}>
+        {isOrganizer && (
+          <View
+            style={[
+              { ...styles.listCard, marginBottom: 30 },
+              Platform.OS === 'ios' ? styles.shadowIOS : styles.shadowAndroid,
+            ]}
+          >
             <TextInput
-              style={{ ...styles.textAddingCard, marginRight: 30 }}
-              placeholder="XX€"
-              keyboardType="numeric"
-              value={expenseAmount}
-              onChangeText={(text) => {
-                if (text.includes(".") && text.split(".")[1].length > 2) {
-                  const truncatedText = text.substring(
-                    0,
-                    text.indexOf(".") + 3
-                  );
-                  setExpenseAmount(truncatedText);
-                } else if (!isNaN(text)) {
-                  setExpenseAmount(text);
-                }
-              }}
+              style={styles.textAddingCard}
+              placeholder="Nom de la dépense"
+              value={expenseName}
+              onChangeText={(value) => setExpenseName(value)}
             />
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Icon name="document-text-sharp" size={25} color="#EB1194" />
-            </TouchableOpacity>
-
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Nom de l'image"
-                    value={imageName}
-                    onChangeText={(text) => setImageName(text)}
-                  />
-                  <Button
-                    color="#4E3CBB"
-                    title="Ajouter l'image"
-                    onPress={() => {
-                      if (imageName.trim() === "") {
-                        alert("Merci de renseigner un nom pour l'image");
-                      } else {
-                        alert(`Image ${imageName} ajouté!`);
-                        setModalVisible(false); // Close the modal
-                      }
-                    }}
-                  />
-                  <TouchableOpacity
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => setModalVisible(!modalVisible)}
-                  >
-                    <Text style={styles.textStyle}>Fermer</Text>
-                  </TouchableOpacity>
+            <View style={styles.leftPartInsideCard}>
+              <TextInput
+                style={{ ...styles.textAddingCard, marginRight: 30 }}
+                placeholder="XX€"
+                keyboardType="numeric"
+                value={expenseAmount}
+                onChangeText={(text) => {
+                  if (text.includes('.') && text.split('.')[1].length > 2) {
+                    const truncatedText = text.substring(
+                      0,
+                      text.indexOf('.') + 3
+                    );
+                    setExpenseAmount(truncatedText);
+                  } else if (!isNaN(text)) {
+                    setExpenseAmount(text);
+                  }
+                }}
+              />
+              <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Icon name="document-text-sharp" size={25} color="#EB1194" />
+              </TouchableOpacity>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Nom de l'image"
+                      value={imageName}
+                      onChangeText={(text) => setImageName(text)}
+                    />
+                    <Button
+                      color="#4E3CBB"
+                      title="Ajouter l'image"
+                      onPress={() => {
+                        if (imageName.trim() === '') {
+                          alert('Merci de renseigner un nom pour l\'image');
+                        } else {
+                          alert(`Image ${imageName} ajouté!`);
+                          setModalVisible(false);
+                        }
+                      }}
+                    />
+                    <TouchableOpacity
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => setModalVisible(!modalVisible)}
+                    >
+                      <Text style={styles.textStyle}>Fermer</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            </Modal>
-            <TouchableOpacity onPress={submitExpense}>
-              <Icon name="add-circle" size={30} color="#EB1194"></Icon>
-            </TouchableOpacity>
+              </Modal>
+              <TouchableOpacity onPress={submitExpense}>
+                <Icon name="add-circle" size={30} color="#EB1194"></Icon>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-
+        )}
         <View
           style={[
             styles.recapCard,
-            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+            Platform.OS === 'ios' ? styles.shadowIOS : styles.shadowAndroid,
           ]}
         >
           <View style={styles.recapCardRow}>

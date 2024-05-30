@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   button: {
-    padding: 10,
+    paddingHorizontal: 10,
     width: "50%",
   },
   selectedButton: {

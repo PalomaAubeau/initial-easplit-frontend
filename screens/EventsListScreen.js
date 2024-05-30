@@ -126,35 +126,36 @@ export default function EventsListScreen({ navigation }) {
         MES ÉVÈNEMENTS
       </Text>
       <ScrollView
-  style={styles.scrollView}
-  showsVerticalScrollIndicator={false}
->
-  {user.events && user.events.length === 0 ? (
-    <Text style={styles.message}>
-      Aucun évènement à afficher pour le moment
-    </Text>
-  ) : (
-    <>{userEvents}</>
-  )}
-</ScrollView>
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
+        {user.events && user.events.length === 0 ? (
+          <Text style={styles.message}>
+            Aucun évènement à afficher pour le moment
+          </Text>
+        ) : (
+          <>{userEvents}</>
+        )}
+      </ScrollView>
 
       <TouchableOpacity
-                  style={[styles.listCardButton]}
-                  activeOpacity={0.8}
-                  onPress={() => navigation.navigate("CreateEvent")}
-                >
-                  <LinearGradient
-                    colors={['#EB1194', '#4E3CBB']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={[globalStyles.gradientBackground]}
-                  >
-                    <View>
-                      <Text style={styles.textEventCardButton}>Ajouter un évènenement</Text>
-                    </View>
-                  </LinearGradient>
-                </TouchableOpacity>
-
+        style={[styles.listCardButton]}
+        activeOpacity={0.8}
+        onPress={() => navigation.navigate("CreateEvent")}
+      >
+        <LinearGradient
+          colors={["#EB1194", "#4E3CBB"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[globalStyles.gradientBackground]}
+        >
+          <View>
+            <Text style={styles.textEventCardButton}>
+              Ajouter un évènenement
+            </Text>
+          </View>
+        </LinearGradient>
+      </TouchableOpacity>
     </LinearGradient>
   );
 }
@@ -197,7 +198,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     marginBottom: 50,
-    marginHorizontal:10,
+    marginHorizontal: 10,
   },
   shadowAndroid: {
     elevation: 6,
@@ -233,10 +234,10 @@ const styles = StyleSheet.create({
   textEventCardButton: {
     fontFamily: "CodecPro-ExtraBold",
     fontSize: 16,
-    padding:15,
+    padding: 15,
     color: "#fff",
-    width:"100%",
-    height:60,
+    width: "100%",
+    height: 60,
   },
   message: {
     fontFamily: "CodecPro-Regular",
