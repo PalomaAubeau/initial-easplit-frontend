@@ -26,8 +26,15 @@ import { addExpense } from "../reducers/event";
 
 
 
-const EventExpense = ({expenses, event, eventId, fetchExpenses, setExpenses, navigation}) => {
 
+const EventExpense = ({expenses, event, eventId, fetchExpenses, setExpenses, navigation}) => {
+  const currentUser = useSelector(state => state.user.value);
+
+  const isOrganizer = event.organizer && event.organizer.email === currentUser.email;
+
+  console.log('Event organizer:', event.organizer);
+  console.log('Current user:', currentUser);
+  console.log('Is organizer:', isOrganizer);
     const dispatch = useDispatch();
 
     const [expenseName, setExpenseName] = useState("");
@@ -48,7 +55,7 @@ const EventExpense = ({expenses, event, eventId, fetchExpenses, setExpenses, nav
             invoice: imageName,
           };
   
-          console.log("Request body:", requestBody);
+          console.log("Request body:", requestBody); 
   
           const response = await fetch(`${PATH}/transactions/create/expense`, {
             method: "POST",
@@ -62,6 +69,7 @@ const EventExpense = ({expenses, event, eventId, fetchExpenses, setExpenses, nav
           console.log("Response:", response);
           if (response.ok) {
             const newExpense = await response.json();
+            console.log("New expense:", newExpense);
             dispatch(addExpense(newExpense));
             setExpenses(prevExpenses => [...prevExpenses, newExpense]);
           
@@ -123,7 +131,7 @@ const EventExpense = ({expenses, event, eventId, fetchExpenses, setExpenses, nav
                 </View>
               </View>
             ))}
-
+{isOrganizer && (
           <View
             style={[
               { ...styles.listCard, marginBottom: 30 },
@@ -200,6 +208,7 @@ const EventExpense = ({expenses, event, eventId, fetchExpenses, setExpenses, nav
               </TouchableOpacity>
             </View>
           </View>
+ )}
 
           <View
             style={[
