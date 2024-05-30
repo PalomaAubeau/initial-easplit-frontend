@@ -43,7 +43,7 @@ import SuccessScreen from "./screens/SuccessScreen.js";
 
 // const reducers = combineReducers({ user });
 
-const store = configureStore({ reducer: { user, event } });
+const store = configureStore({ reducer: { user, event} });
 
 //const persistor = persistStore(store);
 

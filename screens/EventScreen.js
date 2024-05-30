@@ -24,12 +24,11 @@ import { PATH } from "../utils/path";
 import GuestInput from "../components/GuestInput";
 import { addExpense } from "../reducers/event";
 import EventPayment from "../components/EventPayment";
-import EventExpense from "../components/EventExpense";
+//Ajout de fichiers 
+import * as ImagePicker from "expo-image-picker";
 
 export default function EventScreen({ route, navigation }) {
-  //1.Déclaration des états et imports reducers si besoin
-  const { eventId } = route.params; // Récupération de l'_id de l'Event (props du screen précédent via la fonction de la navigation)
-  //console.log("test recup eventId", eventId);
+  const { eventId } = route.params;
   const user = useSelector((state) => state.user.value);
   const isFocused = useIsFocused();
   const [event, setEvent] = useState({});
@@ -65,6 +64,264 @@ export default function EventScreen({ route, navigation }) {
     fetchExpenses();
   }, []);
 
+  const EventExpense = ({ expenses, event, eventId, fetchExpenses, setExpenses }) => {
+    const currentUser = useSelector((state) => state.user.value);
+    const isOrganizer = event.organizer && event.organizer.email === currentUser.email;
+    const dispatch = useDispatch();
+    const [expenseName, setExpenseName] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalPhotoVisible, setModalPhotoVisible] = useState(false);
+    const [expenseAmount, setExpenseAmount] = useState("");
+    const [imageName, setImageName] = useState("");
+    const [urlImage, setUrlImage] = useState("");
+    const [showImage, setShowImage] = useState(false);
+
+    const saveImage = async (image) => {
+      try {
+        setModalVisible(false);
+      } catch (error) {
+        throw error;
+      }
+    };
+
+    const uploadImage = async () => {
+      try {
+        await ImagePicker.requestCameraPermissionsAsync();
+        let result = await ImagePicker.launchCameraAsync({
+          cameraType: ImagePicker.CameraType.back,
+          allowsEditing: true,
+          aspect: [2, 4],
+          quality: 1,
+        });
+
+        if (!result.canceled) {
+          await saveImage(result.assets[0].uri);
+          const formData = new FormData();
+
+          formData.append("photoFromFront", {
+            uri: result.assets[0].uri,
+            name: "photo.jpg",
+            type: "image/jpeg",
+          });
+
+          fetch(`${PATH}/events/upload`, {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              data.result && setUrlImage(data.url);
+            });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const submitExpense = async () => {
+      try {
+        if (imageName.trim() === "") {
+          alert("Please add an invoice name");
+        } else {
+          const requestBody = {
+            emitter: eventId,
+            amount: Number(expenseAmount),
+            type: "expense",
+            name: expenseName,
+            invoice: urlImage,
+          };
+
+          const response = await fetch(`${PATH}/transactions/create/expense`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+          });
+          fetchExpenses();
+          if (response.ok) {
+            const newExpense = await response.json();
+            dispatch(addExpense(newExpense));
+            setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
+          }
+          setExpenseName("");
+          setExpenseAmount("");
+          setImageName("");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    const totalExpenses = expenses.reduce(
+      (total, expense) => total + Number(expense.amount),
+      0
+    );
+
+    let remainingBalance = 0;
+    if (event && event.totalSum) {
+      remainingBalance = event.totalSum - totalExpenses;
+    }
+
+    return (
+      <View style={{ ...styles.scrollView, marginTop: 30 }}>
+        <ScrollView
+          style={{ height: 230 }}
+          showsVerticalScrollIndicator={true}
+        >
+          {expenses
+            .reverse()
+            .map((expense, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.listCard,
+                  Platform.OS === "ios"
+                    ? styles.shadowIOS
+                    : styles.shadowAndroid,
+                ]}
+              >
+                <Text style={styles.textCurrentListCard}>{expense.name}</Text>
+                <View style={styles.leftPartInsideCard}>
+                  <Text
+                    style={{ ...styles.textCurrentListCard, marginRight: 30 }}
+                  >
+                    {expense.amount}€
+                  </Text>
+                  <TouchableOpacity onPress={() => setModalPhotoVisible(true)}>
+                    <Icon
+                      name="document-text-sharp"
+                      size={25}
+                      color="#4E3CBB"
+                    ></Icon>
+                  </TouchableOpacity>
+    
+                  <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalPhotoVisible}
+                    onRequestClose={() => {
+                      setModalPhotoVisible(!modalPhotoVisible);
+                    }}
+                  >
+                    <View style={styles.modalView}>
+                      <Image
+                        source={{ uri: expense.invoice }}
+                        width={150}
+                        height={150}
+                      />
+                      <TouchableOpacity
+                        style={[styles.button, styles.buttonClose]}
+                        onPress={() => setModalPhotoVisible(!modalPhotoVisible)}
+                      >
+                        <Text style={styles.textStyle}>Fermer</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </Modal>
+                </View>
+              </View>
+            ))}
+        </ScrollView>
+    
+        {isOrganizer && (
+          <View
+            style={[
+              { ...styles.listCard, marginBottom: 30 },
+              Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+            ]}
+          >
+            <TextInput
+              style={styles.textAddingCard}
+              placeholder="Nom de la dépense"
+              value={expenseName}
+              onChangeText={(value) => setExpenseName(value)}
+            />
+            <View style={styles.leftPartInsideCard}>
+              <TextInput
+                style={{ ...styles.textAddingCard, marginRight: 30 }}
+                placeholder="XX€"
+                keyboardType="numeric"
+                value={expenseAmount}
+                onChangeText={(text) => {
+                  if (text.includes(".") && text.split(".")[1].length > 2) {
+                    const truncatedText = text.substring(
+                      0,
+                      text.indexOf(".") + 3
+                    );
+                    setExpenseAmount(truncatedText);
+                  } else if (!isNaN(text)) {
+                    setExpenseAmount(text);
+                  }
+                }}
+              />
+              <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Icon name="document-text-sharp" size={25} color="#EB1194" />
+              </TouchableOpacity>
+    
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Nom de l'image"
+                      value={imageName}
+                      onChangeText={(text) => setImageName(text)}
+                    />
+                    <Button
+                      color="#4E3CBB"
+                      title="Ajouter l'image"
+                      onPress={() => {
+                        uploadImage();
+                      }}
+                    />
+                    <TouchableOpacity
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => setModalVisible(!modalVisible)}
+                    >
+                      <Text style={styles.textStyle}>Fermer</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+              <TouchableOpacity onPress={submitExpense}>
+                <Icon name="add-circle" size={30} color="#EB1194"></Icon>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+    
+        <View
+          style={[
+            styles.recapCard,
+            Platform.OS === "ios" ? styles.shadowIOS : styles.shadowAndroid,
+          ]}
+        >
+          <View style={styles.recapCardRow}>
+            <View style={styles.amount}>
+              <Text style={styles.textRecapAmount}>{event.totalSum}€</Text>
+              <Text style={styles.textRecap}>Budget initial</Text>
+            </View>
+            <View style={styles.amount}>
+              <Text style={styles.textRecapAmount}>{totalExpenses}€</Text>
+              <Text style={styles.textRecap}>Total des dépenses</Text>
+            </View>
+          </View>
+          <View style={[styles.amount, {marginTop: -10}]}>
+  <Text style={[styles.textRecapBalance, {marginBottom: 0}]}>{remainingBalance}€</Text>
+  <Text style={[styles.textRecap, {marginTop: 0}]}>Solde restant</Text>
+</View>
+        </View>
+      </View>
+    );
+  };
+  
   const renderSelectedComponent = () => {
     if (selectedComponent === "expenses") {
       return (
@@ -231,6 +488,7 @@ const styles = StyleSheet.create({
   },
   amount: {
     alignItems: "center",
+    justifyContent: "center",
     margin: 20,
   },
   RecapEventCard: {
@@ -341,9 +599,12 @@ const styles = StyleSheet.create({
     color: "#4E3CBB",
     textAlign: "center",
   },
+  
   buttonClose: {
     backgroundColor: "#EB1194",
     marginTop: 20,
+    padding:15,
+    borderRadius:10,
   },
   textStyle: {
     color: "white",
@@ -365,5 +626,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
+  },
+  imageContainer: {
+    position:"absolute",
+    marginTop: 20,
   },
 });
