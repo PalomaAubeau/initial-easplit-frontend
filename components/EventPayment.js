@@ -13,13 +13,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
-import GuestInput from "../components/GuestInput";
+import { downBalance } from "../reducers/user";
 
 export default function EventPayment({ expenses, event, navigation, eventId }) {
   const user = useSelector((state) => state.user.value);
   //console.log(user.balance);
   const dispatch = useDispatch();
-
+  const [currentEvent, setCurrentEvent] = useState({});
   const [errorMessage, seterrorMessage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -71,11 +71,12 @@ export default function EventPayment({ expenses, event, navigation, eventId }) {
             .then((response) => response.json())
             .then((data) => {
               if (data.result) {
-                setEvent(data.event);
+                setCurrentEvent(data.event);
               }
             });
         }
       });
+    console.log();
   };
 
   return (
