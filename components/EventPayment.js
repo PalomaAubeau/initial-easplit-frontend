@@ -17,7 +17,9 @@ import GuestInput from "../components/GuestInput";
 
 export default function EventPayment({ expenses, event, navigation }) {
   const user = useSelector((state) => state.user.value);
+  const dispatch = useDispatch();
 
+  const [balance, setBalance] = useState(0);
   const [errorMessage, seterrorMessage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -63,6 +65,7 @@ export default function EventPayment({ expenses, event, navigation }) {
         if (!data.result) {
           seterrorMessage(data.error);
         } else {
+          dispatch(downBalance());
           fetch(`${PATH}/events/event/${eventId}`)
             .then((response) => response.json())
             .then((data) => {
@@ -235,7 +238,6 @@ export default function EventPayment({ expenses, event, navigation }) {
               )}
             </View>
           ))}
-          <GuestInput />
         </View>
       </View>
     </ScrollView>
@@ -244,26 +246,14 @@ export default function EventPayment({ expenses, event, navigation }) {
 
 const styles = StyleSheet.create({
   //MAINS CONTAINERS
-  container: {
-    flex: 1,
-    paddingLeft: 30,
-    paddingRight: 30,
-  },
-  goback: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    marginTop: 30,
-    marginBottom: 30,
-  },
   scrollView: {
     // flex:1,
     marginBottom: 20,
     // backgroundColor: "white",
   },
-  participer: {
-    height: 25,
-  },
+  //   participer: {
+  //     height: 25,
+  //   },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -275,22 +265,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     resizeMode: "contain",
-  },
-  // TOOGLE SELECTION
-  toggleSelection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#4E3CBB33",
-    borderRadius: 5,
-  },
-  button: {
-    padding: 10,
-    width: "50%",
-  },
-  selectedButton: {
-    backgroundColor: "#4E3CBB",
-    borderRadius: 5,
   },
 
   // EVENTS CONTAINER
@@ -320,20 +294,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  recapCard: {
-    backgroundColor: "#FFFFFF",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 50,
-    height: 200,
-  },
   recapCardRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  amount: {
-    alignItems: "center",
-    margin: 20,
   },
   RecapEventCard: {
     paddingHorizontal: 20,
@@ -344,12 +307,6 @@ const styles = StyleSheet.create({
     height: 150,
   },
   // TEXTES
-  textGoBack: {
-    fontFamily: "CodecPro-ExtraBold",
-    color: "#4E3CBB",
-    fontSize: 20,
-    marginLeft: 20,
-  },
   textButton: {
     color: "#FFFFFF",
     fontFamily: "CodecPro-ExtraBold",
@@ -365,29 +322,6 @@ const styles = StyleSheet.create({
     fontFamily: "CodecPro-ExtraBold",
     color: "#EB1194",
     fontSize: 16,
-  },
-  message: {
-    fontFamily: "CodecPro-Regular",
-    color: "#EB1194",
-    textAlign: "center",
-    marginTop: 20,
-    fontSize: 16,
-  },
-  textRecap: {
-    fontFamily: "CodecPro-Regular",
-    color: "#4E3CBB",
-    fontSize: 16,
-    marginTop: 10,
-  },
-  textRecapAmount: {
-    fontFamily: "CodecPro-ExtraBold",
-    color: "#4E3CBB",
-    fontSize: 20,
-  },
-  textRecapBalance: {
-    fontFamily: "CodecPro-ExtraBold",
-    color: "#EB1194",
-    fontSize: 25,
   },
   currentUserText: {
     fontFamily: "CodecPro-ExtraBold",
@@ -405,8 +339,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   error: {
-    marginTop: 10,
+    marginBottom: 10,
     color: "red",
+  },
+  reloadbuttonText: {
+    fontFamily: "CodecPro-ExtraBold",
+    fontSize: 16,
+    color: "#fff",
   },
   //CSS de la modal
   centeredView: {
@@ -430,36 +369,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  input: {
-    fontFamily: "CodecPro-ExtraBold",
-    width: 180,
-    borderBottomColor: "#4E3CBB",
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottomWidth: 1,
-    marginBottom: 40,
-    marginTop: 30,
-    fontSize: 20,
-    color: "#4E3CBB",
-    textAlign: "center",
-  },
-  buttonClose: {
-    backgroundColor: "#EB1194",
-    marginTop: 20,
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
 
+  // AUTRES
   personIconContainer: {
     backgroundColor: "#4E3CBB33",
     padding: 5,
     borderRadius: 50,
     marginRight: 10,
   },
-  // AUTRES
   paymentCTAContainer: {
     backgroundColor: "#EB1194",
     // paddingVertical: 5,

@@ -4882,10 +4882,10 @@ expo-blur@^13.0.2:
   resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-13.0.2.tgz#c2d179b19b13830db1d8b90c51373235f462e958"
   integrity sha512-t2p7BChO3Reykued++QJRMZ/og6J3aXtSQ+bU31YcBeXhZLkHwjWEhiPKPnJka7J2/yTs4+jOCNDY0kCZmcE3w==
 
-expo-camera@~15.0.9:
-  version "15.0.9"
-  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-15.0.9.tgz#a6a175638bdd9914aca061c6090001452329fcea"
-  integrity sha512-xH+y8gA/3rNLostIw+z4kDGA+AYzsI9+QYb7G1uCFyxr3SxUGhapz+oMBFDU++vmyo9G7Ax0n52nghqIrNBJxQ==
+expo-camera@^15.0.10:
+  version "15.0.10"
+  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-15.0.10.tgz#92cf14135cb82a42a05fe7a76b3ba1e68562ceb3"
+  integrity sha512-cr0s8CHllPSf3bpT+2/D7nJx41Hec1HzSwYeeIZIe63uFUBRSx6R/eAtdrLOfg6cMoLhmh4wfHXBBnJdT015Fw==
   dependencies:
     invariant "^2.2.4"
 
@@ -4913,7 +4913,7 @@ expo-image-loader@~4.7.0:
   resolved "https://registry.yarnpkg.com/expo-image-loader/-/expo-image-loader-4.7.0.tgz#d403106822de80bda12d644c82b7a3b7983c0f0b"
   integrity sha512-cx+MxxsAMGl9AiWnQUzrkJMJH4eNOGlu7XkLGnAXSJrRoIiciGaKqzeaD326IyCTV+Z1fXvIliSgNW+DscvD8g==
 
-expo-image-picker@~15.0.5:
+expo-image-picker@^15.0.5:
   version "15.0.5"
   resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-15.0.5.tgz#8a3d4c3ecdb5bcf58f09e024597dd69edf7baa9c"
   integrity sha512-Qqp16udsadx/YpNcNaWzfbmO0tbMxyX9bS1aFiDVC+Zffh8LY8S4HJJcnWqSC2TeuAl+9SxUwTloJagvPeMBBw==

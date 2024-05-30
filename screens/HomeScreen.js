@@ -85,14 +85,14 @@ export default function HomeScreen({ navigation }) {
 
   const handleRecharge = async () => {
     const rechargeAmount = Number(balance);
-  
+    
     const requestBody = {
       emitter: user.token, // Utiliser le token de l'utilisateur comme émetteur
       recipient: user.token, // Le destinataire est le même que l'émetteur dans ce cas
       type: "reload",
       amount: rechargeAmount,
     };
-  
+    
     try {
       const response = await fetch(`${PATH}/transactions/reload/${user.token}`, {
         method: "PUT",
@@ -111,16 +111,16 @@ export default function HomeScreen({ navigation }) {
   
         setBalance("");
       } else {
-        console.error("Failed to update balance");
+                console.error("Failed to update balance");
       }
     } catch (error) {
-      console.error("Error:", error);
+            console.error("Error:", error);
     }
   
     // Close the modal
     setModalVisible(false);
+
   };
-  
 
   return (
     <LinearGradient
