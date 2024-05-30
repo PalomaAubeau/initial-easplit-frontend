@@ -19,8 +19,7 @@ export const userSlice = createSlice({
       state.value.email = action.payload.email;
       state.value.firstName = action.payload.firstName;
       state.value.balance = action.payload.balance;
-      state.value.transactions = action.payload.transactions
-      
+      state.value.transactions = action.payload.transactions;
     },
     logout: (state) => {
       state.value.token = null;
@@ -28,7 +27,6 @@ export const userSlice = createSlice({
       state.value.firstName = null;
       state.value.balance = null; //bien réinitialiser au logout pour éviter les bugs et conflits (et bien reset à zero le champs)
       state.value.transactions = null;
-      
     },
     addEvent: (state, action) => {
       state.value.events.unshift(action.payload);
@@ -41,16 +39,25 @@ export const userSlice = createSlice({
     loadEvents: (state, action) => {
       state.value.events = action.payload;
     },
-    addBalance: (state, action) => { //fonction reload / refund 
+    addBalance: (state, action) => {
+      //fonction reload / refund
       state.value.balance += action.payload;
-     // state.value.transactions.unshift(action.payload.transaction);
-    },// test beranger
-    downBalance: (state, action) => { //fonction paiement 
-      state.value.balance = state.value.balance - action.payload;
-    },// test beranger
+      // state.value.transactions.unshift(action.payload.transaction);
+    }, // test beranger
+    downBalance: (state, action) => {
+      //fonction paiement
+      state.value.balance -= action.payload;
+    }, // test beranger
   },
 });
 
-export const { login, logout, addEvent, removeEvent, loadEvents, addBalance, downBalance } =
-  userSlice.actions;
+export const {
+  login,
+  logout,
+  addEvent,
+  removeEvent,
+  loadEvents,
+  addBalance,
+  downBalance,
+} = userSlice.actions;
 export default userSlice.reducer;
