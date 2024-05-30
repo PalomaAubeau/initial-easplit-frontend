@@ -30,7 +30,6 @@ import * as ImagePicker from "expo-image-picker";
 export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
   const { eventId } = route.params; // Récupération de l'_id de l'Event (props du screen précédent via la fonction de la navigation)
-  //console.log("test recup eventId", eventId);
   const user = useSelector((state) => state.user.value);
   const isFocused = useIsFocused();
   const [event, setEvent] = useState({});
@@ -66,42 +65,28 @@ export default function EventScreen({ route, navigation }) {
     fetchExpenses();
   }, []);
 
-  // const onNameChange = (value) => {
-  //   setExpenseName(value);
-  // };
-
-  // const onAmountChange = (text) => {
-  //   if (text.includes(".") && text.split(".")[1].length > 2) {
-  //     return;
-  //   }
-  //   if (!isNaN(text)) {
-  //     setExpenseAmount(text);
-  //   }
-  // };
-
-  // const onImageNameChange = (text) => {
-  //   setImageName(text);
-  // };
-
   const EventExpense = () => {
     const [expenseName, setExpenseName] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [expenseAmount, setExpenseAmount] = useState("");
     const [imageName, setImageName] = useState("");
-    // Ajout de l'Url de l'image dans un état :
     const [urlImage, setUrlImage] = useState("");
-    
 
-//Elements concernant l'ajout de fichiers
+    const [imageModalVisible, setImageModalVisible] = useState(false);
+    const [selectedInvoice, setSelectedInvoice] = useState("");
 
-const saveImage = async (image) => {
-  try {
-    // setImage(image);
-    setModalVisible(false);
-  } catch (error) {
-    throw error;
-  }
-};
+    const handleIconClick = (invoiceUrl) => {
+      setSelectedInvoice(invoiceUrl);
+      setImageModalVisible(true);
+    };
+
+    const saveImage = async (image) => {
+      try {
+        setModalVisible(false);
+      } catch (error) {
+        throw error;
+      }
+    };
 
     const uploadImage = async () => {
       try {
@@ -112,38 +97,29 @@ const saveImage = async (image) => {
           aspect: [2, 4],
           quality: 1,
         });
-              console.log(result);
-        // Vérification de l'URI de l'image
         if (!result.canceled) {
           await saveImage(result.assets[0].uri);
           const formData = new FormData();
-  
-                  formData.append("photoFromFront", {
+
+          formData.append("photoFromFront", {
             uri: result.assets[0].uri,
             name: "photo.jpg",
             type: "image/jpeg",
           });
-  
+
           fetch(`${PATH}/events/upload`, {
             method: "POST",
             body: formData,
           })
             .then((response) => response.json())
             .then((data) => {
-                          console.log(data);
-                          data.result && setUrlImage(data.url);
-  
-              // if (imageName.trim() === "") {
-              // alert("Merci de renseigner un nom pour l'image");
-              // return; // Ajouté pour sortir de la fonction si le nom de l'image est vide
-              // } else {
-              // alert(`Image ${imageName} ajoutée!`);
-              // setModalVisible(false); // Fermer la fenêtre modale
-              // }
+              if (data.result) {
+                setUrlImage(data.url);
+              }
             });
         }
       } catch (error) {
-              console.error(error); // Affiche l'erreur dans la console en cas de problème
+        console.error(error);
       }
     };
 
@@ -160,8 +136,6 @@ const saveImage = async (image) => {
             invoice: urlImage,
           };
 
-          console.log("Request body:", requestBody);
-
           const response = await fetch(`${PATH}/transactions/create/expense`, {
             method: "POST",
             headers: {
@@ -169,9 +143,7 @@ const saveImage = async (image) => {
             },
             body: JSON.stringify(requestBody),
           });
-          fetchExpenses(); //test beranger
-          // placer le dispatch
-          console.log("Response:", response);
+          fetchExpenses();
           setExpenseName("");
           setExpenseAmount("");
           setImageName("");
@@ -180,10 +152,6 @@ const saveImage = async (image) => {
         console.error("Error:", error);
       }
     };
-
-    const handleIconClick = async () => {
-      setShowImage(true);
-    }
 
     const totalExpenses = expenses.reduce(
       (total, expense) => total + Number(expense.amount),
@@ -217,20 +185,13 @@ const saveImage = async (image) => {
                   >
                     {expense.amount}€
                   </Text>
-                <TouchableOpacity onPress={handleIconClick}>
-                  <Icon
-                    name="document-text-sharp"
-                    size={25}
-                    color="#4E3CBB"
-                  ></Icon>
-          </TouchableOpacity>
-                  {showImage && (
-        <View style={styles.imageContainer}>
-          <Image
-            source={{ url: expense.invoice }}//récupère dans la BDD l'url de l'invoice 
-            style={styles.image}
-          />
-          </View>)}
+                  <TouchableOpacity onPress={() => handleIconClick(expense.invoice)}>
+                    <Icon
+                      name="document-text-sharp"
+                      size={25}
+                      color="#4E3CBB"
+                    />
+                  </TouchableOpacity>
                 </View>
               </View>
             ))}
@@ -288,9 +249,7 @@ const saveImage = async (image) => {
                     <Button
                       color="#4E3CBB"
                       title="Ajouter l'image"
-                      onPress={() => {
-                        uploadImage()
-                      }}
+                      onPress={uploadImage}
                     />
                     <TouchableOpacity
                       style={[styles.button, styles.buttonClose]}
@@ -329,6 +288,25 @@ const saveImage = async (image) => {
             </View>
           </View>
         </View>
+        
+        {/* Insert modal here */}
+        <Modal
+          transparent={true}
+          animationType="slide"
+          visible={imageModalVisible}
+          onRequestClose={() => setImageModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Image
+                source={{ uri: selectedInvoice }}
+                style={styles.image}
+              />
+              <Button title="Fermer" onPress={() => setImageModalVisible(false)} />
+            </View>
+          </View>
+        </Modal>
+        
       </ScrollView>
     );
   };
@@ -423,9 +401,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   scrollView: {
-    // flex:1,
     marginBottom: 20,
-    // backgroundColor: "white",
   },
   participer: {
     height: 25,
@@ -436,13 +412,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 30,
   },
-  // ELEMENT RAPPORTE
   logo: {
     width: 100,
     height: 100,
     resizeMode: "contain",
   },
-  // TOOGLE SELECTION
   toggleSelection: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -458,8 +432,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#4E3CBB",
     borderRadius: 5,
   },
-
-  // EVENTS CONTAINER
   listCard: {
     backgroundColor: "#FFFFFF",
     flexDirection: "row",
@@ -509,7 +481,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     height: 150,
   },
-  // TEXTES
   textGoBack: {
     fontFamily: "CodecPro-ExtraBold",
     color: "#4E3CBB",
@@ -574,7 +545,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: "red",
   },
-  //CSS de la modal
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -618,20 +588,37 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-
   personIconContainer: {
     backgroundColor: "#4E3CBB33",
     padding: 5,
     borderRadius: 50,
     marginRight: 10,
   },
-  // AUTRES
   paymentCTAContainer: {
     backgroundColor: "#EB1194",
-    // paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  image: {
+    width: 250,
+    height: 250,
+    marginBottom: 20,
+  },
 });
+
+
