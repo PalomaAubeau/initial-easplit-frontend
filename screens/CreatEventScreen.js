@@ -174,6 +174,16 @@ const handleDeadLineChange = (value) => {
       navigation.navigate('Success');
   
       console.log(participants)
+
+    setEventName('');
+    setEventDate('');
+    setDeadLine('');
+    setEventDesc('');
+    setParticipants([]);
+    setTotalAmount(0);
+    setAmountPerPart(0);
+    setLocalTotalAmount('');
+
   
     } catch (error) {
       console.error('Erreur lors de la création de l\'événement :', error);

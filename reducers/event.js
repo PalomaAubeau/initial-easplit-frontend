@@ -29,11 +29,7 @@ export const eventSlice = createSlice({
       state.value = action.payload;
     },
     addExpense: (state, action) => {
-<<<<<<< HEAD
-      state.value.transactions.push(action.payload);
-=======
     state.value.transactions.push(action.payload);
->>>>>>> ef7e1da735ed648f3a4327881eb26acc3f5a279a
     },
   },
 });
