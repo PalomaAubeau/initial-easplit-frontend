@@ -65,8 +65,12 @@ export default function EventPayment({ expenses, event, navigation, eventId }) {
         if (!data.result) {
           seterrorMessage(data.error);
         } else {
-          //console.log("test EventPayment:", data.transactionSaved.amount);
           dispatch(downBalance(data.transactionSaved.amount));
+          //   console.log(
+          //     "test EventPayment transactionSaved.amount:",
+          //     data.transactionSaved.amount
+          //   );
+          //   console.log("test user.balance", user.balance);
           fetch(`${PATH}/events/event/${eventId}`)
             .then((response) => response.json())
             .then((data) => {
