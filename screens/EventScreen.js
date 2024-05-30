@@ -81,6 +81,7 @@ export default function EventScreen({ route, navigation }) {
         <EventPayment
           expenses={expenses}
           event={event}
+          eventId={eventId}
           navigation={navigation}
         />
       );

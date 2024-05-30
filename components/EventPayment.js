@@ -15,11 +15,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { PATH } from "../utils/path";
 import GuestInput from "../components/GuestInput";
 
-export default function EventPayment({ expenses, event, navigation }) {
+export default function EventPayment({ expenses, event, navigation, eventId }) {
   const user = useSelector((state) => state.user.value);
+  //console.log(user.balance);
   const dispatch = useDispatch();
 
-  const [balance, setBalance] = useState(0);
   const [errorMessage, seterrorMessage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -65,7 +65,8 @@ export default function EventPayment({ expenses, event, navigation }) {
         if (!data.result) {
           seterrorMessage(data.error);
         } else {
-          dispatch(downBalance());
+          //console.log("test EventPayment:", data.transactionSaved.amount);
+          dispatch(downBalance(data.transactionSaved.amount));
           fetch(`${PATH}/events/event/${eventId}`)
             .then((response) => response.json())
             .then((data) => {
