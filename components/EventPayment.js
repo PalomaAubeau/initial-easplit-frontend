@@ -19,7 +19,7 @@ export default function EventPayment({ expenses, event, navigation, eventId }) {
   const user = useSelector((state) => state.user.value);
   //console.log(user.balance);
   const dispatch = useDispatch();
-  const [currentEvent, setCurrentEvent] = useState({});
+  const [currentEvent, setCurrentEvent] = useState(event);
   const [errorMessage, seterrorMessage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -27,13 +27,13 @@ export default function EventPayment({ expenses, event, navigation, eventId }) {
     (total, expense) => total + Number(expense.amount),
     0
   );
-  const currentUser = event.guests.find(
+  const currentUser = currentEvent.guests.find(
     (guest) =>
       guest.userId.email === user.email &&
       guest.userId.firstName === user.firstName
   );
 
-  const otherGuests = event.guests.filter(
+  const otherGuests = currentEvent.guests.filter(
     (guest) =>
       guest.userId.email !== user.email &&
       guest.userId.firstName !== user.firstName
@@ -73,10 +73,10 @@ export default function EventPayment({ expenses, event, navigation, eventId }) {
               if (data.result) {
                 setCurrentEvent(data.event);
               }
+              //console.log("EventPayment", data.event);
             });
         }
       });
-    console.log();
   };
 
   return (
