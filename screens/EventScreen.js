@@ -24,6 +24,8 @@ import { PATH } from "../utils/path";
 import GuestInput from "../components/GuestInput";
 import { addExpense } from "../reducers/event";
 import EventPayment from "../components/EventPayment";
+//Ajout de fichiers 
+import * as ImagePicker from "expo-image-picker";
 
 export default function EventScreen({ route, navigation }) {
   //1.Déclaration des états et imports reducers si besoin
@@ -86,6 +88,64 @@ export default function EventScreen({ route, navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [expenseAmount, setExpenseAmount] = useState("");
     const [imageName, setImageName] = useState("");
+    // Ajout de l'Url de l'image dans un état :
+    const [urlImage, setUrlImage] = useState("");
+    
+
+//Elements concernant l'ajout de fichiers
+
+const saveImage = async (image) => {
+  try {
+    // setImage(image);
+    setModalVisible(false);
+  } catch (error) {
+    throw error;
+  }
+};
+
+    const uploadImage = async () => {
+      try {
+        await ImagePicker.requestCameraPermissionsAsync();
+        let result = await ImagePicker.launchCameraAsync({
+          cameraType: ImagePicker.CameraType.back,
+          allowsEditing: true,
+          aspect: [2, 4],
+          quality: 1,
+        });
+              console.log(result);
+        // Vérification de l'URI de l'image
+        if (!result.canceled) {
+          await saveImage(result.assets[0].uri);
+          const formData = new FormData();
+  
+                  formData.append("photoFromFront", {
+            uri: result.assets[0].uri,
+            name: "photo.jpg",
+            type: "image/jpeg",
+          });
+  
+          fetch(`${PATH}/events/upload`, {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+                          console.log(data);
+                          data.result && setUrlImage(data.url);
+  
+              // if (imageName.trim() === "") {
+              // alert("Merci de renseigner un nom pour l'image");
+              // return; // Ajouté pour sortir de la fonction si le nom de l'image est vide
+              // } else {
+              // alert(`Image ${imageName} ajoutée!`);
+              // setModalVisible(false); // Fermer la fenêtre modale
+              // }
+            });
+        }
+      } catch (error) {
+              console.error(error); // Affiche l'erreur dans la console en cas de problème
+      }
+    };
 
     const submitExpense = async () => {
       try {
@@ -97,7 +157,7 @@ export default function EventScreen({ route, navigation }) {
             amount: Number(expenseAmount),
             type: "expense",
             name: expenseName,
-            invoice: imageName,
+            invoice: urlImage,
           };
 
           console.log("Request body:", requestBody);
@@ -110,7 +170,7 @@ export default function EventScreen({ route, navigation }) {
             body: JSON.stringify(requestBody),
           });
           fetchExpenses(); //test beranger
-          // placer le dispatchr
+          // placer le dispatch
           console.log("Response:", response);
           setExpenseName("");
           setExpenseAmount("");
@@ -120,6 +180,10 @@ export default function EventScreen({ route, navigation }) {
         console.error("Error:", error);
       }
     };
+
+    const handleIconClick = async () => {
+      setShowImage(true);
+    }
 
     const totalExpenses = expenses.reduce(
       (total, expense) => total + Number(expense.amount),
@@ -153,11 +217,20 @@ export default function EventScreen({ route, navigation }) {
                   >
                     {expense.amount}€
                   </Text>
+                <TouchableOpacity onPress={handleIconClick}>
                   <Icon
                     name="document-text-sharp"
                     size={25}
                     color="#4E3CBB"
                   ></Icon>
+          </TouchableOpacity>
+                  {showImage && (
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ url: expense.invoice }}//récupère dans la BDD l'url de l'invoice 
+            style={styles.image}
+          />
+          </View>)}
                 </View>
               </View>
             ))}
@@ -216,12 +289,7 @@ export default function EventScreen({ route, navigation }) {
                       color="#4E3CBB"
                       title="Ajouter l'image"
                       onPress={() => {
-                        if (imageName.trim() === "") {
-                          alert("Merci de renseigner un nom pour l'image");
-                        } else {
-                          alert(`Image ${imageName} ajouté!`);
-                          setModalVisible(false); // Close the modal
-                        }
+                        uploadImage()
                       }}
                     />
                     <TouchableOpacity
