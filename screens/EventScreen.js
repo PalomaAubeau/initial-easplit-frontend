@@ -283,7 +283,7 @@ export default function EventScreen({ route, navigation }) {
                         setExpenseAmount(text);
                       }
                     }}
-                  />
+                  /> 
                   <TouchableOpacity onPress={() => setModalVisible(true)}>
                     <Icon name="document-text-sharp" size={25} color="#EB1194" />
                   </TouchableOpacity>
