@@ -182,7 +182,8 @@ export default function EventScreen({ route, navigation }) {
     return (
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <View style={{ marginTop: 30 }}>
-          <View style={{ height: expenses.length > 0 ? 220 : 0 }}>
+        <View style={{ height: expenses.length > 0 ? 220 : 0 }}>
+      {/* //ternaire déclaré au dessus, pour affichage conditionnel si il y a des expenses 220 sinon 0 */}
             <ScrollView showsVerticalScrollIndicator={true}>
               {[...expenses]
                 .reverse()
@@ -226,14 +227,14 @@ export default function EventScreen({ route, navigation }) {
               >
                 <TextInput
                   style={styles.textAddingCard}
-                  placeholder="Nom"
+                  placeholder="Nom  "
                   value={expenseName}
                   onChangeText={(value) => setExpenseName(value)}
                 />
                 <View style={styles.leftPartInsideCard}>
                   <TextInput
                     style={{ ...styles.textAddingCard, marginRight: 30 }}
-                    placeholder="XX€"
+                    placeholder="XX€ "
                     keyboardType="numeric"
                     value={expenseAmount}
                     onChangeText={(text) => {
@@ -327,7 +328,10 @@ export default function EventScreen({ route, navigation }) {
                     style={styles.image}
                   />
                 )}
-                <Button title="Fermer" onPress={() => setModalPhotoVisible(false)} />
+                <TouchableOpacity  onPress={() => setModalPhotoVisible(false)}>
+                <Text style={styles.closeImage} >Fermer</Text>
+                </TouchableOpacity>
+               
               </View>
             </View>
           </Modal>
@@ -367,6 +371,8 @@ export default function EventScreen({ route, navigation }) {
       end={[0.8, 0.8]}
     >
       <ScrollView
+        keyboardShouldPersistTaps="handled"
+        // pour ne pas devoir fermer le clavier pour submit
         style={{ ...styles.scrollView }}
         showsVerticalScrollIndicator={false}
       >
@@ -416,8 +422,8 @@ const styles = StyleSheet.create({
   //MAINS CONTAINERS
   container: {
     flex: 1,
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   goback: {
     flexDirection: "row",
@@ -428,6 +434,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     marginBottom: 20,
+    // paddingHorizontal: 20,
   },
   participer: {
     height: 25,
@@ -467,6 +474,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 15,
     height: 60,
+    marginHorizontal: 10, 
   },
   shadowAndroid: {
     elevation: 6,
@@ -490,10 +498,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 50,
     height: 200,
+    marginHorizontal: 10,
+    marginTop: 15,
   },
   recapCardRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-between", 
+    
   },
   amount: {
     alignItems: "center",
@@ -649,9 +660,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
   },
+  closeImage:{
+  color: '#4E3CBB',
+  fontFamily: "CodecPro-ExtraBold",
+  },
   image: {
     width: 250,
-    height: 250,
+    height: 450,
     marginBottom: 20,
   },
 });
