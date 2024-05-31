@@ -42,15 +42,18 @@ export default function EventScreen({ route, navigation }) {
       .then((data) => {
         if (data.result) {
           setEvent(data.event);
+          // Fetch the updated remainingBalance from the event data
+          let remainingBalance = data.event && data.event.remainingBalance ? data.event.remainingBalance : 0;
+          // Use the remainingBalance in your component
         }
       });
   }, [isFocused]);
-
+  
   const fetchExpenses = async () => {
     try {
       const response = await fetch(`${PATH}/transactions/expenses/${eventId}`);
       const data = await response.json();
-
+  
       if (data.response) {
         setExpenses(data.expenses);
       }
@@ -58,7 +61,7 @@ export default function EventScreen({ route, navigation }) {
       console.error("Error:", error);
     }
   };
-
+  
   useEffect(() => {
     fetchExpenses();
   }, []);
@@ -165,20 +168,21 @@ export default function EventScreen({ route, navigation }) {
       }
     };
 
-    const totalExpenses = expenses.reduce(
-      (total, expense) => total + Number(expense.amount),
-      0
-    );
+    let remainingBalance = event && event.totalSum ? event.totalSum : 0;
 
-    let remainingBalance = 0;
-    if (event && event.totalSum) {
-      remainingBalance = event.totalSum - totalExpenses;
-    }
+  const totalExpenses = expenses.reduce(
+    (total, expense) => total + Number(expense.amount),
+    0
+  );
+
+  if (remainingBalance > 0) {
+    remainingBalance -= totalExpenses;
+  }
 
     return (
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <View style={{ marginTop: 30 }}>
-          <View style={{ height: 220 }}>
+          <View style={{ height: expenses.length > 0 ? 220 : 0 }}>
             <ScrollView showsVerticalScrollIndicator={true}>
               {[...expenses]
                 .reverse()
