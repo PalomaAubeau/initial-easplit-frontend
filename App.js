@@ -36,6 +36,10 @@ import EventScreen from "./screens/EventScreen";
 import CreatEventScreen from "./screens/CreatEventScreen.js";
 import SuccessScreen from "./screens/SuccessScreen.js";
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 // const persistConfig = {
 //   key: "easplit",
 //   storage: AsyncStorage,
