@@ -103,7 +103,7 @@ export default function SignUpScreen({ navigation }) {
             autoCapitalize="none"
             keyboardType="email-address"
             textContentType="emailAddress"
-            autoComplete="email"
+            autoComplete="off"
             onChangeText={(value) => setEmail(value)}
             value={email}
             style={globalStyles.input}
