@@ -91,17 +91,15 @@ export default function EventScreen({ route, navigation }) {
       }
     };
 
-    const uploadImage = async () => {
+    const takePhoto = async () => {
       try {
         await ImagePicker.requestCameraPermissionsAsync();
         let result = await ImagePicker.launchCameraAsync({
           cameraType: ImagePicker.CameraType.back,
           allowsEditing: true,
-          aspect: [2, 4],
+          aspect: [3, 5],
           quality: 1,
         });
-              console.log(result);
-        // Vérification de l'URI de l'image
         if (!result.canceled) {
           await saveImage(result.assets[0].uri);
           const formData = new FormData();
@@ -112,17 +110,53 @@ export default function EventScreen({ route, navigation }) {
             type: "image/jpeg",
           });
 
-          fetch(`${PATH}/events/upload`, {
+          const response = await fetch(`${PATH}/events/upload`, {
             method: "POST",
             body: formData,
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.result) {
-                setUrlImage(data.url);
-                console.log("Image URL:", data.url);
-              }
-            });
+          });
+          const data = await response.json();
+          if (data.result) {
+            setUrlImage(data.url);
+            console.log("Image URL:", data.url);
+          } else {
+            console.error("Error uploading image:", data.error);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const choosePhotoFromLibrary = async () => {
+      try {
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [3, 5],
+          quality: 1,
+        });
+        if (!result.canceled) {
+          await saveImage(result.assets[0].uri);
+          const formData = new FormData();
+
+          formData.append("photoFromFront", {
+            uri: result.assets[0].uri,
+            name: "photo.jpg",
+            type: "image/jpeg",
+          });
+
+          const response = await fetch(`${PATH}/events/upload`, {
+            method: "POST",
+            body: formData,
+          });
+          const data = await response.json();
+          if (data.result) {
+            setUrlImage(data.url);
+            console.log("Image URL:", data.url);
+          } else {
+            console.error("Error uploading image:", data.error);
+          }
         }
       } catch (error) {
         console.error(error);
@@ -142,6 +176,8 @@ export default function EventScreen({ route, navigation }) {
             invoice: urlImage,
           };
 
+          console.log("Request body:", requestBody);
+
           const response = await fetch(`${PATH}/transactions/create/expense`, {
             method: "POST",
             headers: {
@@ -149,16 +185,16 @@ export default function EventScreen({ route, navigation }) {
             },
             body: JSON.stringify(requestBody),
           });
+
           const data = await response.json();
           console.log("Response:", data);
 
-          if (data.response) {
+          if (data.response) { // Utilisez 'response' au lieu de 'success'
             fetchExpenses();
             setExpenseName("");
             setExpenseAmount("");
-            // setImageName("");
+            setImageName("");
             setUrlImage("");
-            
           } else {
             console.error("Error in response:", data.message);
           }
@@ -183,7 +219,6 @@ export default function EventScreen({ route, navigation }) {
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <View style={{ marginTop: 30 }}>
         <View style={{ height: expenses.length > 0 ? 220 : 0 }}>
-      {/* //ternaire déclaré au dessus, pour affichage conditionnel si il y a des expenses 220 sinon 0 */}
             <ScrollView showsVerticalScrollIndicator={true}>
               {[...expenses]
                 .reverse()
@@ -248,7 +283,7 @@ export default function EventScreen({ route, navigation }) {
                         setExpenseAmount(text);
                       }
                     }}
-                  />
+                  /> 
                   <TouchableOpacity onPress={() => setModalVisible(true)}>
                     <Icon name="document-text-sharp" size={25} color="#EB1194" />
                   </TouchableOpacity>
@@ -269,11 +304,19 @@ export default function EventScreen({ route, navigation }) {
                           value={imageName}
                           onChangeText={(text) => setImageName(text)}
                         />
-                        <Button
-                          color="#4E3CBB"
-                          title="Ajouter l'image"
-                          onPress={uploadImage}
-                        />
+                        
+                        <TouchableOpacity
+                          style={[styles.button, styles.buttonChosePicture]}
+                          onPress={() => takePhoto()}>
+                          <Text style={styles.textStyleChoose}>Prendre une photo</Text>
+                        </TouchableOpacity>
+                        
+                        <TouchableOpacity
+                          style={[styles.button, styles.buttonChosePicture]}
+                          onPress={() => choosePhotoFromLibrary()}>
+                          <Text style={styles.textStyleChoose}>Choisir une photo de la bibliothèque</Text>
+                        </TouchableOpacity>
+
                         <TouchableOpacity
                           style={[styles.button, styles.buttonClose]}
                           onPress={() => setModalVisible(!modalVisible)}
@@ -313,7 +356,6 @@ export default function EventScreen({ route, navigation }) {
             </View>
           </View>
     
-          {/* Modal pour afficher la photo de l'invoice */}
           <Modal
             animationType="slide"
             transparent={true}
@@ -331,7 +373,6 @@ export default function EventScreen({ route, navigation }) {
                 <TouchableOpacity  onPress={() => setModalPhotoVisible(false)}>
                 <Text style={styles.closeImage} >Fermer</Text>
                 </TouchableOpacity>
-               
               </View>
             </View>
           </Modal>
@@ -372,7 +413,6 @@ export default function EventScreen({ route, navigation }) {
     >
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        // pour ne pas devoir fermer le clavier pour submit
         style={{ ...styles.scrollView }}
         showsVerticalScrollIndicator={false}
       >
@@ -418,6 +458,7 @@ export default function EventScreen({ route, navigation }) {
   );
 }
 
+
 const styles = StyleSheet.create({
   //MAINS CONTAINERS
   container: {
@@ -434,7 +475,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     marginBottom: 20,
-    // paddingHorizontal: 20,
   },
   participer: {
     height: 25,
@@ -624,12 +664,25 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
   },
+  buttonChosePicture:{
+    backgroundColor: "#4E3CBB",
+    marginTop: 20,
+    padding: 15,
+    borderRadius: 10,
+    fontSize: 22,
+  },
   textStyle: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
   },
-
+  textStyleChoose:{
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+    fontFamily: "CodecPro-ExtraBold",
+    fontSize: 15,//ou 14 ? 
+  },
   personIconContainer: {
     backgroundColor: "#4E3CBB33",
     padding: 5,
@@ -670,3 +723,4 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
+// coucou petite peruche
