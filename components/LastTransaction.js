@@ -64,7 +64,7 @@ const LastTransactions = () => {
           } else if (transaction.type === "reload") {
             transactionText = "Rechargement";
             transactionDescription = "Rechargement de mon compte";
-            displayAmount = `+ ${transaction.amount} €`;
+            displayAmount = `+ ${transaction.amount.toFixed(2)} €`;
           } else if (transaction.type === "payment") {
             transactionText = `${transaction.name}`;
             transactionDescription = "Participation";
