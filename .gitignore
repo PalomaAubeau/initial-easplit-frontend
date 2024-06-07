@@ -14,4 +14,4 @@ web-build/
 .DS_Store
 
 # //fichier des links de connections
-path.js 
+./utils/path.js 
